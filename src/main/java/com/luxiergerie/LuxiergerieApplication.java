@@ -1,4 +1,4 @@
-package com.luxiergerie.luxiergerie;
+package com.luxiergerie;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
