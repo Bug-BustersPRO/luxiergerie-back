@@ -2,11 +2,10 @@ package com.luxiergerie.Domain.Entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 
 @Entity
 @Table(name = "employee")
