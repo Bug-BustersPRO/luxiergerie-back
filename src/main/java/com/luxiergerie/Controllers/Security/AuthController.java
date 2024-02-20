@@ -68,14 +68,14 @@ public class AuthController {
         String randomInt = String.valueOf((int) (Math.random() * 10000000));
         employee.setSerialNumber(randomInt);
 
-        PasswordEncoder passwordEncoder
-                = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
-
-        if (employee.getFirstName() == null || employee.getLastName() == null || employee.getPassword().length() < 8) {
+        if (employee.getFirstName() == null || employee.getLastName() == null || employee.getPassword().length() <= 7) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "User must have first name, last name and password must be at least 8 characters long");
         }
+
+        PasswordEncoder passwordEncoder
+                = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
 
         return this.employeeRepository.save(employee);
     }
@@ -91,7 +91,7 @@ public class AuthController {
         if (jwt == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username/password supplied");
         }
-        Cookie cookie = new Cookie("token", jwt);
+        Cookie cookie = new Cookie("jwt-token", jwt);
         cookie.setSecure(true);
         cookie.setHttpOnly(false);
         cookie.getValue();
