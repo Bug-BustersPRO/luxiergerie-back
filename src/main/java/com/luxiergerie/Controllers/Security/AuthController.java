@@ -72,9 +72,9 @@ public class AuthController {
                 = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         employee.setPassword(passwordEncoder.encode(employee.getPassword()));
 
-        if (employee.getFirstName() == null || employee.getLastName() == null ||  employee.getPassword() == null) {
+        if (employee.getFirstName() == null || employee.getLastName() == null || employee.getPassword().length() < 8) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "User must have first name, last name and password");
+                    "User must have first name, last name and password must be at least 8 characters long");
         }
 
         return this.employeeRepository.save(employee);
@@ -86,7 +86,7 @@ public class AuthController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must logout before registering");
         }
         Authentication authentication = this.authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginDto.getSerialNumber(), loginDto.getPassword()));
         var jwt = tokenService.generateToken(authentication);
         if (jwt == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username/password supplied");

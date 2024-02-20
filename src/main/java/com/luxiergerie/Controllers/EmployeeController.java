@@ -22,7 +22,7 @@ public class EmployeeController {
         this.employeeRepository = employeeRepository;
     }
 
-    @GetMapping("/")
+    @GetMapping
     public List<Employee> getEmployees(Model out) {
 
         return this.employeeRepository.findAll();

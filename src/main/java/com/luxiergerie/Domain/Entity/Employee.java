@@ -26,7 +26,6 @@ public class Employee {
     private String serialNumber;
 
     @Column(nullable = false, name = "password")
-    @Size(min = 8, max = 50)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
