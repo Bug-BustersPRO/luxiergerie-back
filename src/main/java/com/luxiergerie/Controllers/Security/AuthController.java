@@ -21,8 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -41,11 +39,11 @@ public class AuthController {
     }
 
 
-    private boolean checkCookieToken(HttpServletRequest request) {
+    boolean checkCookieToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")) {
+                if (cookie.getName().equals("jwt-token")) {
                     return true;
                 }
             }
@@ -53,11 +51,13 @@ public class AuthController {
         return false;
     }
 
+
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public Employee registerEmployee(@Valid @RequestBody Employee employee, HttpServletRequest request) {
 
         Role role;
+
         if (this.employeeRepository.findAll().isEmpty()) {
             role = this.roleRepository.findByName("ROLE_ADMIN");
             role.getEmployees().add(employee);

@@ -51,15 +51,17 @@ public class Role implements GrantedAuthority {
     public void setEmployees(List<Employee> employees) {
         this.employees = employees;
     }
-
+    public Role(String name) {
+        this.name = name;
+    }
     public Role(UUID id, String name, List<Employee> employees) {
         this.id = id;
         this.name = name;
         this.employees = employees;
     }
+    public Role(){}
 
-    public Role() {
-    }
+
 
     @Override
     @JsonIgnore
