@@ -72,6 +72,11 @@ public class AuthController {
                 = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         employee.setPassword(passwordEncoder.encode(employee.getPassword()));
 
+        if (employee.getFirstName() == null || employee.getLastName() == null ||  employee.getPassword() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "User must have first name, last name and password");
+        }
+
         return this.employeeRepository.save(employee);
     }
 

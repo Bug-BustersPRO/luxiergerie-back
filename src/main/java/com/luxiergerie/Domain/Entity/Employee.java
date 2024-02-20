@@ -2,6 +2,8 @@ package com.luxiergerie.Domain.Entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -14,13 +16,17 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(name = "first_name", nullable = false)
     private String firstName;
+
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
     @Column(length = 8, nullable = false, name = "serial_number", unique = true)
     private String serialNumber;
 
-    @Column(length = 255, nullable = false, name = "password")
+    @Column(nullable = false, name = "password")
+    @Size(min = 8, max = 50)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
