@@ -34,3 +34,7 @@ data/
 
 target/
 src/main/resources/application-dev.properties
+
+.vscode/
+vscode
+vscode/
