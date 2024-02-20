@@ -55,21 +55,24 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public Employee register(@Valid @RequestBody Employee user, HttpServletRequest request) {
-        if (checkCookieToken(request)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must logout before registering");
+    public Employee registerEmployee(@Valid @RequestBody Employee employee, HttpServletRequest request) {
+
+        Role role;
+        if (this.employeeRepository.findAll().isEmpty()) {
+            role = this.roleRepository.findByName("ROLE_ADMIN");
+            role.getEmployees().add(employee);
         }
-        List<Role> roles = new ArrayList<>();
-        roles.add(roleRepository.findByName("ROLE_USER"));
-        user.setRoles(roles);
+        role = this.roleRepository.findByName("ROLE_EMPLOYEE");
+        role.getEmployees().add(employee);
+
+        String randomInt = String.valueOf((int) (Math.random() * 10000000));
+        employee.setSerialNumber(randomInt);
 
         PasswordEncoder passwordEncoder
                 = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        String randomInt = String.valueOf((int) (Math.random() * 10000000));
-        user.setSerialNumber(randomInt);
+        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
 
-        return this.employeeRepository.save(user);
+        return this.employeeRepository.save(employee);
     }
 
     @PostMapping("/login")
