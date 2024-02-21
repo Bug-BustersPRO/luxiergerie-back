@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
 
 
 
@@ -48,7 +50,6 @@ public class AuthController {
         this.tokenService = tokenService;
     }
 
-
     private boolean checkCookieToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -63,7 +64,7 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public Employee registerEmployee(@Valid @RequestBody Employee employee, HttpServletRequest request) {
+    public Employee registerEmployee(@Valid @RequestBody Employee employee) {
 
         Role role;
         if (this.employeeRepository.findAll().isEmpty()) {
@@ -89,46 +90,64 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto, HttpServletResponse response, HttpServletRequest request) {
-        if (checkCookieToken(request)) {
-          throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must logout before registering");
-        }
-        // We retrieve the token from the request header
-        String token = request.getHeader("Authorization");
-        // We check if the token is blacklisted
-        if (blackListTokenService.isTokenBlacklisted(token)) {
-          throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token is blacklisted");
-        }
+    ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto, HttpServletResponse response,
+        HttpServletRequest request) {
+      if (checkCookieToken(request)) {
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must logout before registering");
+      }
+      // We retrieve the token from the request header
+      String token = request.getHeader("Authorization");
+      // We check if the token is blacklisted
+      if (blackListTokenService.isTokenBlacklisted(token)) {
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token is blacklisted");
+      }
 
-        Authentication authentication = this.authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDto.getSerialNumber(), loginDto.getPassword()));
-        var jwt = tokenService.generateToken(authentication);
-        if (jwt == null) {
-          throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username/password supplied");
+      Authentication authentication = this.authenticationManager.authenticate(
+          new UsernamePasswordAuthenticationToken(loginDto.getSerialNumber(), loginDto.getPassword()));
+      var jwt = tokenService.generateToken(authentication);
+      if (jwt == null) {
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username/password supplied");
+      }
+
+      // Validity of the token in seconds (24 hour)
+      long tokenValiditySeconds = 24 * 60 * 60;
+      // We set the expiration date of the token
+      LocalDateTime expirationDateTime = LocalDateTime.now().plus(tokenValiditySeconds, ChronoUnit.SECONDS);
+      Date expirationDate = Date.from(expirationDateTime.toInstant(ZoneOffset.UTC));
+      // We check if the token is too long
+      int maxTokenLength = 255; // If it is too long, we cut it
+      if (jwt.length() > maxTokenLength) {
+        jwt = jwt.substring(0, maxTokenLength);
+      }
+      // we retrieve the user id
+      UUID userId = employeeRepository.findBySerialNumber(loginDto.getSerialNumber()).getId();
+      // We blacklist the token
+      blackListTokenService.blacklistToken(jwt, expirationDate, userId);
+
+      Cookie cookie = new Cookie("jwt-token", jwt);
+      cookie.setSecure(true);
+      cookie.setHttpOnly(false);
+      cookie.getValue();
+      cookie.setPath("/");
+      cookie.setMaxAge(24 * 60 * 60);
+      response.addCookie(cookie);
+      SecurityContextHolder.getContext().setAuthentication(authentication);
+
+      return new ResponseEntity<>("User login successfully!...", HttpStatus.OK);
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+      Cookie[] cookies = request.getCookies();
+      if (cookies != null) {
+        for (Cookie cookie : cookies) {
+          if (cookie.getName().equals("jwt-token")) {
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+            return new ResponseEntity<>("User logout successfully!...", HttpStatus.OK);
+          }
         }
-
-        // Validity of the token in seconds (24 hour)
-        long tokenValiditySeconds = 24 * 60 * 60;
-        // We set the expiration date of the token
-        LocalDateTime expirationDateTime = LocalDateTime.now().plus(tokenValiditySeconds, ChronoUnit.SECONDS);
-        Date expirationDate = Date.from(expirationDateTime.toInstant(ZoneOffset.UTC));
-        // We check if the token is too long
-        int maxTokenLength = 255; // If it is too long, we cut it
-        if (jwt.length() > maxTokenLength) {
-          jwt = jwt.substring(0, maxTokenLength);
-        }
-        // We blacklist the token
-        blackListTokenService.blacklistToken(jwt, expirationDate);
-
-        Cookie cookie = new Cookie("jwt-token", jwt);
-        cookie.setSecure(true);
-        cookie.setHttpOnly(false);
-        cookie.getValue();
-        cookie.setPath("/");
-        cookie.setMaxAge(24 * 60 * 60);
-        response.addCookie(cookie);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return new ResponseEntity<>("User login successfully!...", HttpStatus.OK);
+      }
+      return new ResponseEntity<>("User logout successfully!...", HttpStatus.OK);
     }
 }

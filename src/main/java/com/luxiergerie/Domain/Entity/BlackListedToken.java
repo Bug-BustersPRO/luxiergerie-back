@@ -24,16 +24,17 @@ public class BlackListedToken {
     @Column(nullable = false, name = "expiry_date")
     private Date expiryDate;
 
-    // @Column(nullable = false, name = "user_id")
-    // private UUID userId;
+    @Column(nullable = false, name = "user_id")
+    private UUID userId;
 
     public BlackListedToken() {
     }
 
-    public BlackListedToken(UUID id, String token, Date expiryDate) {
+    public BlackListedToken(UUID id, String token, Date expiryDate, UUID userId) {
         this.id = id;
         this.token = token;
         this.expiryDate = expiryDate;
+        this.userId = userId;
     }
 
     public UUID getId() {
@@ -60,11 +61,11 @@ public class BlackListedToken {
       this.expiryDate = expiryDate;
     }
 
-    // public UUID getUserId() {
-    //   return userId;
-    // }
+    public UUID getUserId() {
+      return userId;
+    }
 
-    // public void setUserId(UUID userId) {
-    //   this.userId = userId;
-    // }
+    public void setUserId(UUID userId) {
+      this.userId = userId;
+    }
 }
