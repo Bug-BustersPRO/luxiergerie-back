@@ -21,6 +21,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -51,30 +54,44 @@ public class AuthController {
         return false;
     }
 
+    List<Role> getOrCreateEmployeeRole() {
+        List<Role> roles = new ArrayList<>();
+        if (this.employeeRepository.findAll().isEmpty()) {
+            roles.add(this.roleRepository.findByName("ROLE_ADMIN"));
+        }
+        roles.add(this.roleRepository.findByName("ROLE_EMPLOYEE"));
+
+        return roles;
+    }
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public Employee registerEmployee(@Valid @RequestBody Employee employee, HttpServletRequest request) {
+    public Employee registerEmployee(@Valid @RequestBody Employee employee) {
+        List<Role> roles = getOrCreateEmployeeRole();
 
-        Role role;
-
-        if (this.employeeRepository.findAll().isEmpty()) {
-            role = this.roleRepository.findByName("ROLE_ADMIN");
-            role.getEmployees().add(employee);
+        if (roles != null) {
+            for (Role role : roles) {
+                role.getEmployees().add(employee);
+                roleRepository.save(role);
+            }
         }
-        role = this.roleRepository.findByName("ROLE_EMPLOYEE");
-        role.getEmployees().add(employee);
+
+
 
         String randomInt = String.valueOf((int) (Math.random() * 10000000));
         employee.setSerialNumber(randomInt);
 
-        if (employee.getFirstName() == null || employee.getLastName() == null || employee.getPassword().length() <= 7) {
+        if (employee.getFirstName() == null
+                || employee.getFirstName().isEmpty()
+                || employee.getLastName() == null
+                || employee.getLastName().isEmpty()
+                || employee.getPassword().length() <= 7)
+        {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "User must have first name, last name and password must be at least 8 characters long");
+                    "User must have first name, last name, and password must be at least 8 characters long");
         }
 
-        PasswordEncoder passwordEncoder
-                = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         employee.setPassword(passwordEncoder.encode(employee.getPassword()));
 
         return this.employeeRepository.save(employee);
