@@ -16,18 +16,18 @@ public class BlackListTokenService {
 
     @Autowired
     public BlackListTokenService(BlackListedTokenRepository blacklistedTokenRepository) {
-        this.blacklistedTokenRepository = blacklistedTokenRepository;
+      this.blacklistedTokenRepository = blacklistedTokenRepository;
     }
 
     public void blacklistToken(String token, Date expiryDate, UUID userId) {
-        BlackListedToken blacklistedToken = new BlackListedToken();
-        blacklistedToken.setToken(token);
-        blacklistedToken.setExpiryDate(expiryDate);
-        blacklistedToken.setUserId(userId);
-        blacklistedTokenRepository.save(blacklistedToken);
+      BlackListedToken blacklistedToken = new BlackListedToken();
+      blacklistedToken.setToken(token);
+      blacklistedToken.setExpiryDate(expiryDate);
+      blacklistedToken.setUserId(userId);
+      blacklistedTokenRepository.save(blacklistedToken);
     }
 
     public boolean isTokenBlacklisted(String token) {
-        return blacklistedTokenRepository.existsByToken(token);
+      return blacklistedTokenRepository.existsByToken(token);
     }
 }

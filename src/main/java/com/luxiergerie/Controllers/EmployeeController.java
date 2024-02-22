@@ -24,13 +24,12 @@ public class EmployeeController {
 
     @GetMapping
     public List<Employee> getEmployees(Model out) {
-
-        return this.employeeRepository.findAll();
+      return this.employeeRepository.findAll();
     }
 
     @GetMapping("/{id}/roles")
     public List<Role> getRolesByEmployeeId(@PathVariable UUID id) {
-      UUID nonNullId = Objects.requireNonNull(id, "Employee ID must not be nul");
+      UUID nonNullId = Objects.requireNonNull(id, "Employee ID must not be null");
       Employee employee = this.employeeRepository.findById(nonNullId)
           .orElseThrow(() -> new RuntimeException("Employee not found with id: " + nonNullId));
       return employee.getRoles();
@@ -40,6 +39,6 @@ public class EmployeeController {
     public Employee getEmployeeById(@PathVariable UUID id) {
       UUID nonNullId = Objects.requireNonNull(id, "Employee ID must not be null");
       return this.employeeRepository.findById(nonNullId)
-          .orElseThrow(() -> new RuntimeException("Employee not found with id: " + nonNullId));
+        .orElseThrow(() -> new RuntimeException("Employee not found with id: " + nonNullId));
     }
 }

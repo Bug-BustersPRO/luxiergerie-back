@@ -31,6 +31,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 
 
+/**
+ * Controller class for handling authentication-related endpoints.
+ */
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -44,22 +47,21 @@ public class AuthController {
     private BlackListTokenService blackListTokenService;
 
     public AuthController(EmployeeRepository employeeRepository, RoleRepository roleRepository, AuthenticationManager authenticationManager, TokenService tokenService) {
-        this.employeeRepository = employeeRepository;
-        this.authenticationManager = authenticationManager;
-        this.roleRepository = roleRepository;
-        this.tokenService = tokenService;
+      this.employeeRepository = employeeRepository;
+      this.authenticationManager = authenticationManager;
+      this.roleRepository = roleRepository;
+      this.tokenService = tokenService;
     }
 
     private boolean checkCookieToken(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")) {
-                    return true;
-                }
-            }
+      Cookie[] cookies = request.getCookies();
+      if (cookies != null) {
+        for (Cookie cookie : cookies) {
+          if (cookie.getName().equals("token")) {
+            return true;
+          }}
         }
-        return false;
+      return false;
     }
 
     @PostMapping("/register")
