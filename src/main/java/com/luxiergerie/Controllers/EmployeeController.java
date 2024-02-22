@@ -30,7 +30,7 @@ public class EmployeeController {
 
     @GetMapping("/{id}/roles")
     public List<Role> getRolesByEmployeeId(@PathVariable UUID id) {
-      UUID nonNullId = Objects.requireNonNull(id, "Employee ID must not be null");
+      UUID nonNullId = Objects.requireNonNull(id, "Employee ID must not be nul");
       Employee employee = this.employeeRepository.findById(nonNullId)
           .orElseThrow(() -> new RuntimeException("Employee not found with id: " + nonNullId));
       return employee.getRoles();
