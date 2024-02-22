@@ -6,23 +6,32 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * This class initializes the roles in the application.
+ */
 @Configuration
 public class RoleInitializer {
 
-    @Bean
-    public CommandLineRunner initRoles(RoleRepository roleRepository) {
-        return args -> {
-            if (roleRepository.findByName("ROLE_EMPLOYEE") == null) {
-                Role employeeRole = new Role();
-                employeeRole.setName("ROLE_EMPLOYEE");
-                roleRepository.save(employeeRole);
-            }
+  /**
+   * Initializes the roles using the provided RoleRepository.
+   *
+   * @param roleRepository The repository for managing roles.
+   * @return A CommandLineRunner that initializes the roles.
+   */
+  @Bean
+  public CommandLineRunner initRoles(RoleRepository roleRepository) {
+    return args -> {
+      if (roleRepository.findByName("ROLE_EMPLOYEE") == null) {
+        Role employeeRole = new Role();
+        employeeRole.setName("ROLE_EMPLOYEE");
+        roleRepository.save(employeeRole);
+      }
 
-            if (roleRepository.findByName("ROLE_ADMIN") == null) {
-                Role adminRole = new Role();
-                adminRole.setName("ROLE_ADMIN");
-                roleRepository.save(adminRole);
-            }
-        };
-    }
+      if (roleRepository.findByName("ROLE_ADMIN") == null) {
+        Role adminRole = new Role();
+        adminRole.setName("ROLE_ADMIN");
+        roleRepository.save(adminRole);
+      }
+    };
+  }
 }

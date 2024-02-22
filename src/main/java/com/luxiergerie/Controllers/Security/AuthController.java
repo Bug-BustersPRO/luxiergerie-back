@@ -5,18 +5,11 @@ import com.luxiergerie.Domain.Entity.Employee;
 import com.luxiergerie.Domain.Entity.Role;
 import com.luxiergerie.Domain.Repository.EmployeeRepository;
 import com.luxiergerie.Domain.Repository.RoleRepository;
-import com.luxiergerie.Services.BlackListTokenService;
 import com.luxiergerie.Services.TokenService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,6 +27,10 @@ import org.springframework.web.server.ResponseStatusException;
 /**
  * Controller class for handling authentication-related endpoints.
  */
+/**
+ * This class represents the controller for authentication-related operations.
+ * It handles registration, login, and logout functionality.
+ */
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -43,8 +40,6 @@ public class AuthController {
     private final RoleRepository roleRepository;
     private final TokenService tokenService;
 
-    @Autowired
-    private BlackListTokenService blackListTokenService;
 
     public AuthController(EmployeeRepository employeeRepository, RoleRepository roleRepository, AuthenticationManager authenticationManager, TokenService tokenService) {
       this.employeeRepository = employeeRepository;
@@ -97,36 +92,14 @@ public class AuthController {
       if (checkCookieToken(request)) {
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must logout before registering");
       }
-      // We retrieve the token from the request header
-      String token = request.getHeader("Authorization");
-      // We check if the token is blacklisted
-      if (blackListTokenService.isTokenBlacklisted(token)) {
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token is blacklisted");
-      }
-
+      Cookie cookie = new Cookie("jwt-token","");
       Authentication authentication = this.authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(loginDto.getSerialNumber(), loginDto.getPassword()));
       var jwt = tokenService.generateToken(authentication);
       if (jwt == null) {
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username/password supplied");
       }
-
-      // Validity of the token in seconds (24 hour)
-      long tokenValiditySeconds = 24 * 60 * 60;
-      // We set the expiration date of the token
-      LocalDateTime expirationDateTime = LocalDateTime.now().plus(tokenValiditySeconds, ChronoUnit.SECONDS);
-      Date expirationDate = Date.from(expirationDateTime.toInstant(ZoneOffset.UTC));
-      // We check if the token is too long
-      int maxTokenLength = 255; // If it is too long, we cut it
-      if (jwt.length() > maxTokenLength) {
-        jwt = jwt.substring(0, maxTokenLength);
-      }
-      // we retrieve the user id
-      UUID userId = employeeRepository.findBySerialNumber(loginDto.getSerialNumber()).getId();
-      // We blacklist the token
-      blackListTokenService.blacklistToken(jwt, expirationDate, userId);
-
-      Cookie cookie = new Cookie("jwt-token", jwt);
+      cookie.setAttribute("jwt-token", jwt);
       cookie.setSecure(true);
       cookie.setHttpOnly(false);
       cookie.getValue();

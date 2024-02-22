@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.UUID;
 
 
+/**
+ * Represents an employee in the system.
+ */
 @Entity
 @Table(name = "employee")
 public class Employee {
