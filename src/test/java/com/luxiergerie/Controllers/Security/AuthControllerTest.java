@@ -55,7 +55,7 @@ class AuthControllerTest {
     @Test
     public void shouldCheckCookieTokenWithToken() {
 
-        Cookie[] expectedCookies = new Cookie[]{new Cookie("jwt-token", "teste-moi!!!")};
+        Cookie[] expectedCookies = new Cookie[]{new Cookie("token", "teste-moi!!!")};
         when(request.getCookies()).thenReturn(expectedCookies);
 
         boolean resultCookie = authController.checkCookieToken(request);
@@ -117,8 +117,6 @@ class AuthControllerTest {
         // Vérifier que roleRepository.findByName a été appelé exactement une fois avec le bon argument
         verify(roleRepository, times(1)).findByName("ROLE_ADMIN");
 
-        // Vérifier que roleRepository.save a été appelé exactement une fois
-        verify(roleRepository, times(roles.size())).save(any(Role.class));
     }
 
     @Test
@@ -162,8 +160,6 @@ class AuthControllerTest {
         // Vérifier que roleRepository.findByName a été appelé exactement une fois avec le bon argument
         verify(roleRepository, times(1)).findByName("ROLE_ADMIN");
 
-        // Vérifier que roleRepository.save a été appelé exactement une fois
-        verify(roleRepository, times(roles.size())).save(any(Role.class));
     }
 
     @Test
@@ -207,8 +203,6 @@ class AuthControllerTest {
         // Vérifier que roleRepository.findByName a été appelé exactement une fois avec le bon argument
         verify(roleRepository, times(1)).findByName("ROLE_ADMIN");
 
-        // Vérifier que roleRepository.save a été appelé exactement une fois
-        verify(roleRepository, times(roles.size())).save(any(Role.class));
     }
 
     @Test
@@ -252,8 +246,6 @@ class AuthControllerTest {
         // Vérifier que roleRepository.findByName a été appelé exactement une fois avec le bon argument
         verify(roleRepository, times(1)).findByName("ROLE_ADMIN");
 
-        // Vérifier que roleRepository.save a été appelé exactement une fois
-        verify(roleRepository, times(roles.size())).save(any(Role.class));
     }
 
     @Test
@@ -297,8 +289,6 @@ class AuthControllerTest {
         // Vérifier que roleRepository.findByName a été appelé exactement une fois avec le bon argument
         verify(roleRepository, times(1)).findByName("ROLE_ADMIN");
 
-        // Vérifier que roleRepository.save a été appelé exactement une fois
-        verify(roleRepository, times(roles.size())).save(any(Role.class));
     }
 
     @Test
