@@ -46,10 +46,9 @@ public class BlackListTokenService {
       return blacklistedToken.isBlackListed();
     }
 
-    public BlackListedToken deleteToken(String token) {
+    public void deleteToken(String token) {
       BlackListedToken blacklistedToken = blacklistedTokenRepository.findByToken(token);
       blacklistedTokenRepository.delete(blacklistedToken);
-      return blacklistedToken;
     }
 
     // /**
