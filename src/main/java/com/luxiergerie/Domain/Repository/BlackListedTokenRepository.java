@@ -21,4 +21,6 @@ public interface BlackListedTokenRepository extends JpaRepository<BlackListedTok
   // public boolean findByToken(String token);
 
   public BlackListedToken findByUserId(UUID userId);
+
+  public BlackListedToken findByToken(String token);
 }

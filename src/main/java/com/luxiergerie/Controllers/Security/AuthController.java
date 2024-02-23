@@ -3,8 +3,10 @@ package com.luxiergerie.Controllers.Security;
 import com.luxiergerie.DTO.LoginDto;
 import com.luxiergerie.Domain.Entity.Employee;
 import com.luxiergerie.Domain.Entity.Role;
+import com.luxiergerie.Domain.Repository.BlackListedTokenRepository;
 import com.luxiergerie.Domain.Repository.EmployeeRepository;
 import com.luxiergerie.Domain.Repository.RoleRepository;
+import com.luxiergerie.Services.BlackListTokenService;
 import com.luxiergerie.Services.TokenService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,12 +42,19 @@ public class AuthController {
     private final RoleRepository roleRepository;
     private final TokenService tokenService;
 
+    private final BlackListTokenService blackListTokenService;
 
-    public AuthController(EmployeeRepository employeeRepository, RoleRepository roleRepository, AuthenticationManager authenticationManager, TokenService tokenService) {
+
+    public AuthController(EmployeeRepository employeeRepository,
+                          RoleRepository roleRepository,
+                          AuthenticationManager authenticationManager,
+                          TokenService tokenService,
+                          BlackListTokenService blackListTokenService) {
       this.employeeRepository = employeeRepository;
       this.authenticationManager = authenticationManager;
       this.roleRepository = roleRepository;
       this.tokenService = tokenService;
+      this.blackListTokenService = blackListTokenService;
     }
 
     private boolean checkCookieToken(HttpServletRequest request) {
@@ -116,12 +125,12 @@ public class AuthController {
       if (cookies != null) {
         for (Cookie cookie : cookies) {
           if (cookie.getName().equals("jwt-token")) {
-            cookie.setMaxAge(0);
-            response.addCookie(cookie);
+            this.blackListTokenService.deleteToken(cookie.getValue());
+
             return new ResponseEntity<>("User logout successfully!...", HttpStatus.OK);
           }
         }
       }
-      return new ResponseEntity<>("User logout successfully!...", HttpStatus.OK);
+      return new ResponseEntity<>("You were not logged!", HttpStatus.OK);
     }
 }
