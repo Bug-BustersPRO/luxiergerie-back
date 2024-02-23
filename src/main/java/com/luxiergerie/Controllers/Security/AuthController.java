@@ -23,7 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -56,6 +57,7 @@ public class AuthController {
       this.tokenService = tokenService;
       this.blackListTokenService = blackListTokenService;
     }
+
 
     private boolean checkCookieToken(HttpServletRequest request) {
       Cookie[] cookies = request.getCookies();
