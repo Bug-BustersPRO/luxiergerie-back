@@ -3,7 +3,6 @@ package com.luxiergerie.Controllers.Security;
 import com.luxiergerie.DTO.LoginDto;
 import com.luxiergerie.Domain.Entity.Employee;
 import com.luxiergerie.Domain.Entity.Role;
-import com.luxiergerie.Domain.Repository.BlackListedTokenRepository;
 import com.luxiergerie.Domain.Repository.EmployeeRepository;
 import com.luxiergerie.Domain.Repository.RoleRepository;
 import com.luxiergerie.Services.BlackListTokenService;
@@ -24,11 +23,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 
-
-
 /**
  * Controller class for handling authentication-related endpoints.
  */
+
 /**
  * This class represents the controller for authentication-related operations.
  * It handles registration, login, and logout functionality.
@@ -50,22 +48,24 @@ public class AuthController {
                           AuthenticationManager authenticationManager,
                           TokenService tokenService,
                           BlackListTokenService blackListTokenService) {
-      this.employeeRepository = employeeRepository;
-      this.authenticationManager = authenticationManager;
-      this.roleRepository = roleRepository;
-      this.tokenService = tokenService;
-      this.blackListTokenService = blackListTokenService;
+        this.employeeRepository = employeeRepository;
+        this.authenticationManager = authenticationManager;
+        this.roleRepository = roleRepository;
+        this.tokenService = tokenService;
+        this.blackListTokenService = blackListTokenService;
     }
 
+
     private boolean checkCookieToken(HttpServletRequest request) {
-      Cookie[] cookies = request.getCookies();
-      if (cookies != null) {
-        for (Cookie cookie : cookies) {
-          if (cookie.getName().equals("token")) {
-            return true;
-          }}
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("token")) {
+                    return true;
+                }
+            }
         }
-      return false;
+        return false;
     }
 
     @PostMapping("/register")
@@ -97,40 +97,40 @@ public class AuthController {
 
     @PostMapping("/login")
     ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto, HttpServletResponse response,
-        HttpServletRequest request) {
-      if (checkCookieToken(request)) {
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must logout before registering");
-      }
-      Authentication authentication = this.authenticationManager.authenticate(
-          new UsernamePasswordAuthenticationToken(loginDto.getSerialNumber(), loginDto.getPassword()));
-      var jwt = tokenService.generateToken(authentication);
-      if (jwt == null) {
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username/password supplied");
-      }
-      Cookie cookie = new Cookie("jwt-token",jwt);
-      cookie.setSecure(true);
-      cookie.setHttpOnly(false);
-      cookie.getValue();
-      cookie.setPath("/");
-      cookie.setMaxAge(24 * 60 * 60);
-      response.addCookie(cookie);
-      SecurityContextHolder.getContext().setAuthentication(authentication);
+                                            HttpServletRequest request) {
+        if (checkCookieToken(request)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must logout before registering");
+        }
+        Authentication authentication = this.authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginDto.getSerialNumber(), loginDto.getPassword()));
+        var jwt = tokenService.generateToken(authentication);
+        if (jwt == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username/password supplied");
+        }
+        Cookie cookie = new Cookie("jwt-token", jwt);
+        cookie.setSecure(true);
+        cookie.setHttpOnly(false);
+        cookie.getValue();
+        cookie.setPath("/");
+        cookie.setMaxAge(24 * 60 * 60);
+        response.addCookie(cookie);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-      return new ResponseEntity<>("User login successfully!...", HttpStatus.OK);
+        return new ResponseEntity<>("User login successfully!...", HttpStatus.OK);
     }
 
     @GetMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
-      Cookie[] cookies = request.getCookies();
-      if (cookies != null) {
-        for (Cookie cookie : cookies) {
-          if (cookie.getName().equals("jwt-token")) {
-            this.blackListTokenService.deleteToken(cookie.getValue());
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("jwt-token")) {
+                    this.blackListTokenService.deleteToken(cookie.getValue());
 
-            return new ResponseEntity<>("User logout successfully!...", HttpStatus.OK);
-          }
+                    return new ResponseEntity<>("User logout successfully!...", HttpStatus.OK);
+                }
+            }
         }
-      }
-      return new ResponseEntity<>("You were not logged!", HttpStatus.OK);
+        return new ResponseEntity<>("You were not logged!", HttpStatus.OK);
     }
 }
