@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 /**
  * This interface represents a repository for managing blacklisted tokens.
  */
-public interface BlackListedTokenRepository extends JpaRepository<BlackListedToken, Long> {
+public interface BlackListedTokenRepository extends JpaRepository<BlackListedToken, UUID> {
 
   // /**
   //  * Checks if a token exists in the blacklist.
