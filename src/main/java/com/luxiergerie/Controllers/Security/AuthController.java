@@ -56,7 +56,7 @@ public class AuthController {
     }
 
 
-    private boolean checkCookieToken(HttpServletRequest request) {
+    boolean checkCookieToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -83,7 +83,9 @@ public class AuthController {
         String randomInt = String.valueOf((int) (Math.random() * 10000000));
         employee.setSerialNumber(randomInt);
 
-        if (employee.getFirstName() == null || employee.getLastName() == null || employee.getPassword().length() <= 7) {
+        if ((employee.getFirstName() == null || employee.getFirstName().isEmpty())
+                || (employee.getLastName() == null || employee.getLastName().isEmpty())
+                || employee.getPassword().length() <= 7) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "User must have first name, last name and password must be at least 8 characters long");
         }
