@@ -12,13 +12,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface BlackListedTokenRepository extends JpaRepository<BlackListedToken, Long> {
 
-  /**
-   * Checks if a token exists in the blacklist.
-   *
-   * @param token the token to check
-   * @return true if the token exists in the blacklist, false otherwise
-   */
-  boolean existsByToken(String token);
+  // /**
+  //  * Checks if a token exists in the blacklist.
+  //  *
+  //  * @param token the token to check
+  //  * @return true if the token exists in the blacklist, false otherwise
+  //  */
+  // public boolean findByToken(String token);
 
   public BlackListedToken findByUserId(UUID userId);
 }

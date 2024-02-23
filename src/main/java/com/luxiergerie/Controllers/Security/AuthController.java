@@ -92,14 +92,13 @@ public class AuthController {
       if (checkCookieToken(request)) {
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must logout before registering");
       }
-      Cookie cookie = new Cookie("jwt-token","");
       Authentication authentication = this.authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(loginDto.getSerialNumber(), loginDto.getPassword()));
       var jwt = tokenService.generateToken(authentication);
       if (jwt == null) {
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username/password supplied");
       }
-      cookie.setAttribute("jwt-token", jwt);
+      Cookie cookie = new Cookie("jwt-token",jwt);
       cookie.setSecure(true);
       cookie.setHttpOnly(false);
       cookie.getValue();

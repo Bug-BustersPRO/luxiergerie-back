@@ -6,7 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 
@@ -18,14 +18,17 @@ public class BlackListedToken {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @Column(nullable = false, name = "token")
+  @Column(nullable = false, name = "token", length = 600)
   private String token;
 
   @Column(nullable = false, name = "expiry_date")
-  private Date expiryDate;
+  private Instant expiryDate;
 
   @Column(nullable = false, name = "user_id")
   private UUID userId;
+
+  @Column(nullable = false, name = "boolean")
+  private boolean isBlackListed;
 
   /**
    * Default constructor for the BlackListedToken class.
@@ -41,11 +44,12 @@ public class BlackListedToken {
    * @param expiryDate The expiry date of the blacklisted token.
    * @param userId     The ID of the user associated with the blacklisted token.
    */
-  public BlackListedToken(UUID id, String token, Date expiryDate, UUID userId) {
+  public BlackListedToken(UUID id, String token, Instant expiryDate, UUID userId, boolean isBlackListed) {
     this.id = id;
     this.token = token;
     this.expiryDate = expiryDate;
     this.userId = userId;
+    this.isBlackListed = isBlackListed;
   }
 
   /**
@@ -89,7 +93,7 @@ public class BlackListedToken {
    *
    * @return The expiry date of the blacklisted token.
    */
-  public Date getExpiryDate() {
+  public Instant getExpiryDate() {
     return expiryDate;
   }
 
@@ -98,7 +102,7 @@ public class BlackListedToken {
    *
    * @param expiryDate The expiry date of the blacklisted token.
    */
-  public void setExpiryDate(Date expiryDate) {
+  public void setExpiryDate(Instant expiryDate) {
     this.expiryDate = expiryDate;
   }
 
@@ -118,5 +122,23 @@ public class BlackListedToken {
    */
   public void setUserId(UUID userId) {
     this.userId = userId;
+  }
+
+  /**
+   * Get the blacklisted status of the token.
+   *
+   * @return The blacklisted status of the token.
+   */
+  public boolean isBlackListed() {
+    return isBlackListed;
+  }
+
+  /**
+   * Set the blacklisted status of the token.
+   *
+   * @param blackListed The blacklisted status of the token.
+   */
+  public void setBlackListed(boolean blackListed) {
+    isBlackListed = blackListed;
   }
 }
