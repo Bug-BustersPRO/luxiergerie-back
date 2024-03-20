@@ -25,6 +25,6 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
-          docker build -t bugbstrspro/luxiergerie${GITHUB_REF##*/} .
+          docker build -t bugbstrspro/luxiergerie:${GITHUB_REF##*/} .
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
           docker push bugbstrspro/luxiergerie:${GITHUB_REF##*/}
