@@ -2,7 +2,6 @@ package com.luxiergerie.Controllers;
 
 import com.luxiergerie.Domain.Entity.Accomodation;
 import com.luxiergerie.Domain.Entity.Category;
-import com.luxiergerie.Domain.Entity.Section;
 import com.luxiergerie.Domain.Repository.AccomodationRepository;
 import com.luxiergerie.Domain.Repository.CategoryRepository;
 
@@ -24,20 +23,20 @@ public class AccomodationController {
     this.categoryRepository = categoryRepository;
   }
 
-  @GetMapping("api/accomodations")
+  @GetMapping("/accomodations")
   public List<Accomodation> getAccomodations() {
     return accomodationRepository.findAll();
   }
 
 
-  @GetMapping("api/accomodations/{id}")
+  @GetMapping("/accomodations/{id}")
   public Accomodation getAccomodation(@PathVariable("id") UUID id) {
      UUID nonNullId = Objects.requireNonNull(id, "Accomodation ID must not be null");
     return this.accomodationRepository.findById(nonNullId)
         .orElseThrow(() -> new RuntimeException("Accomodation not found with id: " + nonNullId));
   }
 
-   @PostMapping("api/categories/{category_id}/accomodations")
+   @PostMapping("/categories/{category_id}/accomodations")
   public Accomodation createAccomodation(@RequestBody Accomodation accomodation, @PathVariable UUID category_id) {
     Optional<Category> categoryOptional = categoryRepository.findById(category_id);
     if (categoryOptional.isPresent()) {
@@ -49,7 +48,7 @@ public class AccomodationController {
     }
   }
 
-  @PutMapping("api/accomodations/{id}")
+  @PutMapping("/accomodations/{id}")
   public Accomodation updateAccomodation(@PathVariable("id") UUID id, @RequestBody Accomodation accomodation) {
     Optional<Accomodation> accomodationOptional = accomodationRepository.findById(id);
     if (accomodationOptional.isPresent()) {
@@ -64,7 +63,7 @@ public class AccomodationController {
     }
   }
 
-  @DeleteMapping("api/accomodations/{id}")
+  @DeleteMapping("/accomodations/{id}")
   public void deleteAccomodation(@PathVariable("id") UUID id) {
     accomodationRepository.deleteById(id);
   }
