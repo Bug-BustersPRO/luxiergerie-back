@@ -3,8 +3,8 @@ name: Publish Docker image
 on:
   push:
     branches:
-      - main
-      - dev
+      # - main
+      # - dev
       - deployCI
 
 jobs:
@@ -19,7 +19,7 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
       - name: Build with Maven
-        run: ./mvnw --batch-mode --update-snapshots spring-boot:build-image -Dimage.tag=${GITHUB_REF##*/}
+        run: ./mvnw --batch-mode --update-snapshots spring-boot:build-image -Dimage.tag=deployCI
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
@@ -27,4 +27,4 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN_MOHAMED }}
       - name: Push
         run: |
-          docker push mohamedehn/luxiergerie:${GITHUB_REF##*/}
+          docker push mohamedehn/luxiergerie:deployCI
