@@ -8,7 +8,7 @@ To NGINX and dockerHub
 
 1 - Créer un repository sur dockerHub
 
-2 - 1dapter le docker-compose.yml pour le nom du repository et le nom du user sur dockerHub
+2 - Adapter le docker-compose.yml pour le nom du repository et le nom du user sur dockerHub
 (Nginx.conf déjà configuré)
 
 3 - Build les images qui seront push sur dockerHub avec la commande : docker build -t "dockerHubUserName"/luxiergerie:main .

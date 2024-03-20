@@ -19,7 +19,7 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
       - name: Build with Maven
-        run: ./mvnw --batch-mode --update-snapshots spring-boot:build-image -D image.tag=dev
+        run: ./mvnw --batch-mode --update-snapshots spring-boot:build-image -Dimage.tag=${GITHUB_REF##*/}
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
@@ -27,4 +27,4 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN_MOHAMED }}
       - name: Push
         run: |
-          docker push mohamedehn/luxiergerie:dev
+          docker push mohamedehn/luxiergerie:${GITHUB_REF##*/}
