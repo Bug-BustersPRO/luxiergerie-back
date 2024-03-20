@@ -4,6 +4,8 @@ package com.luxiergerie.Domain.Entity;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,9 +31,10 @@ public class Accomodation {
   private String image;
 
   @Column(name = "price")
-  private float price;
+  private Float price;
 
   @ManyToOne
+  @JsonIgnore
   @JoinColumn(name = "category_id")
   private Category category;
 
@@ -39,20 +42,20 @@ public class Accomodation {
   public Accomodation() {
   }
 
-  public Accomodation(String name, float price, Category category) {
+  public Accomodation(String name, Float price, Category category) {
     this.name = name;
     this.price = price;
     this.category = category;
   }
 
-  public Accomodation(String name, String description, float price, Category category) {
+  public Accomodation(String name, String description, Float price, Category category) {
     this.name = name;
     this.description = description;
     this.price = price;
     this.category = category;
   }
 
-  public Accomodation(String name, String description, String image, float price, Category category) {
+  public Accomodation(String name, String description, String image, Float price, Category category) {
     this.name = name;
     this.description = description;
     this.image = image;
@@ -93,11 +96,11 @@ public class Accomodation {
     this.image = image;
   }
 
-  public float getPrice() {
+  public Float getPrice() {
     return price;
   }
 
-  public void setPrice(float price) {
+  public void setPrice(Float price) {
     this.price = price;
   }
 
