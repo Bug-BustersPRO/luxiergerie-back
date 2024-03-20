@@ -11,14 +11,14 @@ To NGINX and dockerHub
 2 - Adapter le docker-compose.yml pour le nom du repository et le nom du user sur dockerHub
 (Nginx.conf déjà configuré)
 
-3 - Build les images qui seront push sur dockerHub avec la commande : docker build -t "dockerHubUserName"/luxiergerie:main .
+3 -  Utiliser la commande docker login pour se connecter à dockerHub (sera indiqué dans la console)
 
-4 - Utiliser la commande docker login pour se connecter à dockerHub (sera indiqué dans la console)
+4 - Build les images qui seront push sur dockerHub avec la commande : docker build -t "dockerHubUserName"/luxiergerie:main .
 
 5 - Push l'image avec : docker push "dockerHubUserName"/luxiergerie:main
 Idem pour luxiergerie:dev
-
 (remplacer le "dockerHubUserName" par le nom de votre compte dockerHub)
+
 6 - Lancer docker-compose up
 
 To GITHUB ACTIONS
