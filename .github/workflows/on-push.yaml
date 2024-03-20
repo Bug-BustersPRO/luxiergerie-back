@@ -18,12 +18,13 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME_MOHAMED }}
-          password: ${{ secrets.DOCKERHUB_TOKEN_MOHAMED }}
       - name: Build with Maven
-        run: ./mvnw --batch-mode --update-snapshots spring-boot:build-image -Dimage.tag=${GITHUB_REF##*/}
-      - name: Push
-        run: docker push mohamedehn/luxiergerie:${GITHUB_REF##*/}
+        run: mvn clean install
+      - name: Build and Push Docker Image
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME_MOHAMED }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN_MOHAMED }}
+        run: |
+          docker build -t mohamedehn/luxiergerie:${GITHUB_REF##*/} .
+          docker login -u ${{ secrets.DOCKERHUB_USERNAME_MOHAMED }} -p ${{ secrets.DOCKERHUB_TOKEN_MOHAMED }}
+          docker push mohamedehn/luxiergerie:${GITHUB_REF##*/}
