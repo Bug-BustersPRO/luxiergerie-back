@@ -34,7 +34,7 @@ services:
       interval: 3s
       timeout: 30s
 
-  luxiergerie-demo-staging:
+  luxiergerie-dev:
     image: mohamedehn/luxiergerie:dev
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/${MYSQL_DATABASE}
@@ -48,7 +48,7 @@ services:
     networks:
       - springboot-mysql-network
 
-  luxiergerie-demo-prod:
+  luxiergerie-main:
     image: mohamedehn/luxiergerie:main
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/${MYSQL_DATABASE}
