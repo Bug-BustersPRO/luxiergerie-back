@@ -27,4 +27,4 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN_MOHAMED }}
       - name: Push
         run: |
-          docker push mohamedehn/luxiergerie:dev
+          docker push luxiergerie:dev
