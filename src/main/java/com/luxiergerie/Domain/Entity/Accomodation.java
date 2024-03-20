@@ -2,17 +2,14 @@
 
 package com.luxiergerie.Domain.Entity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 
 @Entity
 public class Accomodation {
@@ -38,6 +35,9 @@ public class Accomodation {
   @JoinColumn(name = "category_id")
   private Category category;
 
+  @ManyToMany(mappedBy = "accomodations")
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  private List<Purchase> purchases = new ArrayList<>();
 
   public Accomodation() {
   }
@@ -63,6 +63,23 @@ public class Accomodation {
     this.category = category;
   }
 
+  public Accomodation(UUID id, String name, String description, String image, Float price, Category category, List<Purchase> purchases) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.image = image;
+    this.price = price;
+    this.category = category;
+    this.purchases = purchases;
+  }
+
+  public List<Purchase> getPurchases() {
+    return purchases;
+  }
+
+  public void setPurchases(List<Purchase> purchases) {
+    this.purchases = purchases;
+  }
 
   public UUID getId() {
     return id;
