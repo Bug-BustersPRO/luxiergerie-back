@@ -22,9 +22,9 @@ jobs:
         run: mvn clean install
       - name: Build and Push Docker Image
         env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME_MOHAMED }}
-          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN_MOHAMED }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
-          docker build -t mohamedehn/luxiergerie:${GITHUB_REF##*/} .
-          docker login -u ${{ secrets.DOCKERHUB_USERNAME_MOHAMED }} -p ${{ secrets.DOCKERHUB_TOKEN_MOHAMED }}
-          docker push mohamedehn/luxiergerie:${GITHUB_REF##*/}
+          docker build -t bugbstrspro/luxiergerie${GITHUB_REF##*/} .
+          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+          docker push bugbstrspro/luxiergerie:${GITHUB_REF##*/}
