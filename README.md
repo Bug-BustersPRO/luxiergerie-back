@@ -13,7 +13,7 @@ To NGINX and dockerHub
 
 3 -  Utiliser la commande docker login pour se connecter à dockerHub (sera indiqué dans la console)
 
-4 - Build les images qui seront push sur dockerHub avec la commande : docker build -t "dockerHubUserName"/luxiergerie:main .
+4 - Build les images qui seront push sur dockerHub avec la commande : docker buildx build -t bugbstrspro/luxiergerie:main .
 
 5 - Push l'image avec : docker push "dockerHubUserName"/luxiergerie:main
 Idem pour luxiergerie:dev
