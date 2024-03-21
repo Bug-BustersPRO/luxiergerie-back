@@ -48,19 +48,19 @@ services:
     networks:
       - springboot-mysql-network
 
-  # luxiergerie-main:
-  #    image: bugbstrspro/luxiergerie:main
-  #    environment:
-  #      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/${MYSQL_DATABASE}
-  #      - SPRING_DATASOURCE_USERNAME=root
-  #      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
-  #    ports:
-  #      - '9080:8080'
-  #    depends_on:
-  #      mysqldb:
-  #        condition: service_healthy
-  #    networks:
-  #      - springboot-mysql-network
+  luxiergerie-main:
+      image: bugbstrspro/luxiergerie:main
+      environment:
+        - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/${MYSQL_DATABASE}
+        - SPRING_DATASOURCE_USERNAME=root
+        - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+      ports:
+        - '9080:8080'
+      depends_on:
+        mysqldb:
+          condition: service_healthy
+      networks:
+        - springboot-mysql-network
 
 volumes:
   mysql-data:

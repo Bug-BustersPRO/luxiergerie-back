@@ -3,9 +3,8 @@ name: Publish Docker image
 on:
   push:
     branches:
-      # - main
-      # - dev
-      - deployCI
+      - main
+      - dev
 
 jobs:
   build:
