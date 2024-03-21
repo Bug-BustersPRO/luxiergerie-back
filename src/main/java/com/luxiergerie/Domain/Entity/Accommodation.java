@@ -1,5 +1,3 @@
-
-
 package com.luxiergerie.Domain.Entity;
 
 import java.util.ArrayList;

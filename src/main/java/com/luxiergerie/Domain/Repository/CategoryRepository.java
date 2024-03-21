@@ -8,5 +8,4 @@ import com.luxiergerie.Domain.Entity.Category;
 
 public interface CategoryRepository extends JpaRepository<Category, UUID>{
 
-
 }
