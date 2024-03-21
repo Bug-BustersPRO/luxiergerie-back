@@ -1,6 +1,6 @@
 package com.luxiergerie.Controllers;
 
-import com.luxiergerie.Domain.Entity.Accomodation;
+import com.luxiergerie.Domain.Entity.Accommodation;
 import com.luxiergerie.Domain.Entity.Category;
 import com.luxiergerie.Domain.Entity.Section;
 import com.luxiergerie.Domain.Repository.CategoryRepository;
@@ -35,12 +35,12 @@ public class CategoryController {
         .orElseThrow(() -> new RuntimeException("Category not found with id: " + nonNullId));
   }
 
-  @GetMapping("/categories/{id}/accomodations")
-  public List<Accomodation> getAccomodationsByCategories(@PathVariable UUID id) {
+  @GetMapping("/categories/{id}/accommodations")
+  public List<Accommodation> getAccommodationsByCategories(@PathVariable UUID id) {
     Optional<Category> categoryOptional = categoryRepository.findById(id);
     if (categoryOptional.isPresent()) {
         Category category = categoryOptional.get();
-        return category.getAccomodations();
+        return category.getAccommodations();
     } else {
         throw new RuntimeException("Section not found with id: " + id);
     }

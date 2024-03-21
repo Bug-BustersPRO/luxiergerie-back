@@ -31,11 +31,11 @@ public class Purchase {
     @ManyToMany
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinTable(
-        name = "purchase_accomodation",
+        name = "purchase_accommodation",
         joinColumns = @JoinColumn(name = "purchase_id"),
-        inverseJoinColumns = @JoinColumn(name = "accomodation_id")
+        inverseJoinColumns = @JoinColumn(name = "accommodation_id")
     )
-    private List<Accomodation> accomodations = new ArrayList<>();
+    private List<Accommodation> accommodations = new ArrayList<>();
 
     public Purchase() {
     }
@@ -72,19 +72,19 @@ public class Purchase {
         this.status = status;
     }
 
-    public List<Accomodation> getAccomodations() {
-        return accomodations;
+    public List<Accommodation> getAccommodations() {
+        return accommodations;
     }
 
-    public void setAccomodations(List<Accomodation> accomodations) {
-        this.accomodations = accomodations;
+    public void setAccommodations(List<Accommodation> accommodations) {
+        this.accommodations = accommodations;
     }
 
-    public Purchase(UUID id, Date date, Room room, String status, List<Accomodation> accomodations) {
+    public Purchase(UUID id, Date date, Room room, String status, List<Accommodation> accommodations) {
         this.id = id;
         this.date = date;
         this.room = room;
         this.status = status;
-        this.accomodations = accomodations;
+        this.accommodations = accommodations;
     }
 }

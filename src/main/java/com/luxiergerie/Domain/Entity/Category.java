@@ -31,7 +31,7 @@ public class Category {
   private String image;
 
   @OneToMany(mappedBy = "category")
-  private List<Accomodation> accomodations;
+  private List<Accommodation> accommodations;
 
   @ManyToOne
   @JsonIgnore
@@ -43,19 +43,19 @@ public class Category {
   }
 
 
-  public Category(String name, String image, List<Accomodation> accomodations, Section section) {
+  public Category(String name, String image, List<Accommodation> accommodations, Section section) {
     this.name = name;
     this.image = image;
-    this.accomodations = accomodations;
+    this.accommodations = accommodations;
     this.section = section;
   }
 
 
-  public Category(String name, String description, String image, List<Accomodation> accomodations, Section section) {
+  public Category(String name, String description, String image, List<Accommodation> accommodations, Section section) {
     this.name = name;
     this.description = description;
     this.image = image;
-    this.accomodations = accomodations;
+    this.accommodations = accommodations;
     this.section = section;
   }
 
@@ -92,12 +92,12 @@ public class Category {
     this.image = image;
   }
 
-  public List<Accomodation> getAccomodations() {
-    return accomodations;
+  public List<Accommodation> getAccommodations() {
+    return accommodations;
   }
 
-  public void setAccomodations(List<Accomodation> accomodations) {
-    this.accomodations = accomodations;
+  public void setAccommodations(List<Accommodation> accommodations) {
+    this.accommodations = accommodations;
   }
 
   public Section getSection() {

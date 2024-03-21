@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
-public class Accomodation {
+public class Accommodation {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
@@ -35,27 +35,27 @@ public class Accomodation {
   @JoinColumn(name = "category_id")
   private Category category;
 
-  @ManyToMany(mappedBy = "accomodations")
+  @ManyToMany(mappedBy = "accommodations")
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private List<Purchase> purchases = new ArrayList<>();
 
-  public Accomodation() {
+  public Accommodation() {
   }
 
-  public Accomodation(String name, Float price, Category category) {
+  public Accommodation(String name, Float price, Category category) {
     this.name = name;
     this.price = price;
     this.category = category;
   }
 
-  public Accomodation(String name, String description, Float price, Category category) {
+  public Accommodation(String name, String description, Float price, Category category) {
     this.name = name;
     this.description = description;
     this.price = price;
     this.category = category;
   }
 
-  public Accomodation(String name, String description, String image, Float price, Category category) {
+  public Accommodation(String name, String description, String image, Float price, Category category) {
     this.name = name;
     this.description = description;
     this.image = image;
@@ -63,7 +63,7 @@ public class Accomodation {
     this.category = category;
   }
 
-  public Accomodation(UUID id, String name, String description, String image, Float price, Category category, List<Purchase> purchases) {
+  public Accommodation(UUID id, String name, String description, String image, Float price, Category category, List<Purchase> purchases) {
     this.id = id;
     this.name = name;
     this.description = description;
