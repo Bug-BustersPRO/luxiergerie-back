@@ -14,6 +14,7 @@ import java.util.UUID;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api")
 public class CategoryController {
   private final CategoryRepository categoryRepository;
   private final SectionRepository sectionRepository;

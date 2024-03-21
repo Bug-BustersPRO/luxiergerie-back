@@ -12,7 +12,7 @@ import java.util.UUID;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/sections")
+@RequestMapping("/api/sections")
 public class SectionController {
 
   private final SectionRepository sectionRepository;

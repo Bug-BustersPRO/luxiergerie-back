@@ -13,6 +13,7 @@ import java.util.UUID;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api")
 public class AccommodationController {
 
   private final AccommodationRepository accommodationRepository;
