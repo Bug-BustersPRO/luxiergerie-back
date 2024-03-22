@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS luxiergerie;
+-- CREATE DATABASE IF NOT EXISTS luxiergerie;
 
 INSERT INTO employee (id, serial_number, first_name, last_name, password) VALUES ('1', '12345678', 'John', 'Doe', 'password');
 INSERT INTO employee (id, serial_number, first_name, last_name, password) VALUES ('2', '12345679', 'Dédé', 'Le Dé', 'password1');

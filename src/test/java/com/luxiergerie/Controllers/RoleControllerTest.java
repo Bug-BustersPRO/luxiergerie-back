@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,10 +40,11 @@ class RoleControllerTest {
         Role addedRole = roleController.addANewRole(expectedRole);
 
         // Assert
-
-        assertThat(addedRole.getId()).isEqualTo(expectedRole.getId());
-        assertThat(addedRole.getName()).isEqualTo(expectedRole.getName());
+        assertAll(
+                () -> assertThat(addedRole).isNotNull(),
+                () -> assertThat(addedRole.getId()).isEqualTo(expectedRole.getId()),
+                () -> assertThat(addedRole.getName()).isEqualTo(expectedRole.getName())
+        );
     }
-
 
 }
