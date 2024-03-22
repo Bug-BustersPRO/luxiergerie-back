@@ -81,10 +81,18 @@ public class Purchase {
     }
 
     public Purchase(UUID id, Date date, Room room, String status, List<Accommodation> accommodations) {
-        this.id = id;
-        this.date = date;
-        this.room = room;
-        this.status = status;
-        this.accommodations = accommodations;
+      this.id = id;
+      this.date = date;
+      this.room = room;
+      this.status = status;
+      this.accommodations = accommodations;
     }
+
+    public Purchase(UUID id, Date date, Room room, String status) {
+      this.id = id;
+      this.date = date;
+      this.room = room;
+      this.status = status;
+    }
+
 }
