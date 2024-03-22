@@ -32,8 +32,19 @@
 //        adminRole.setName("ROLE_ADMIN");
 //        roleRepository.save(adminRole);
 //      }
+//
+//      if (roleRepository.findByName("ROLE_DIAMOND") == null) {
+//        Role diamondRole = new Role();
+//        diamondRole.setName("ROLE_DIAMOND");
+//        roleRepository.save(diamondRole);
+//      }
+//
+//      if (roleRepository.findByName("ROLE_GOLD") == null) {
+//        Role goldRole = new Role();
+//        goldRole.setName("ROLE_GOLD");
+//        roleRepository.save(goldRole);
+//      }
 //    };
 //  }
 //}
-
 // A DECOMMENTER SI ON N'UTILISE PAS UNE DB LOCALE

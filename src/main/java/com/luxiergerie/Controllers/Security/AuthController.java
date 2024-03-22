@@ -1,23 +1,31 @@
 package com.luxiergerie.Controllers.Security;
 
+import com.luxiergerie.DTO.LoginClientDTO;
 import com.luxiergerie.DTO.LoginDto;
+import com.luxiergerie.Domain.Entity.Client;
 import com.luxiergerie.Domain.Entity.Employee;
 import com.luxiergerie.Domain.Entity.Role;
+import com.luxiergerie.Domain.Entity.Room;
+import com.luxiergerie.Domain.Mapper.ClientMapper;
+import com.luxiergerie.Domain.Repository.ClientRepository;
 import com.luxiergerie.Domain.Repository.EmployeeRepository;
 import com.luxiergerie.Domain.Repository.RoleRepository;
+import com.luxiergerie.Domain.Repository.RoomRepository;
 import com.luxiergerie.Services.BlackListTokenService;
+import com.luxiergerie.Services.RoomPinAuthenticationProvider;
+import com.luxiergerie.Services.RoomPinAuthenticationToken;
 import com.luxiergerie.Services.TokenService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,21 +46,30 @@ import org.springframework.web.server.ResponseStatusException;
 public class AuthController {
 
     private final EmployeeRepository employeeRepository;
-    private AuthenticationManager authenticationManager;
+
+    private final AuthenticationManager authenticationManager;
+
+    private final AuthenticationManagerBuilder authBuilder;
     private final RoleRepository roleRepository;
+    private final ClientRepository clientRepository;
+    private final RoomRepository roomRepository;
     private final TokenService tokenService;
 
     private final BlackListTokenService blackListTokenService;
 
 
     public AuthController(EmployeeRepository employeeRepository,
+                          AuthenticationManagerBuilder authBuilder,
                           RoleRepository roleRepository,
                           AuthenticationManager authenticationManager,
-                          TokenService tokenService,
+                          ClientRepository clientRepository, RoomRepository roomRepository, TokenService tokenService,
                           BlackListTokenService blackListTokenService) {
         this.employeeRepository = employeeRepository;
+        this.authBuilder = authBuilder;
         this.authenticationManager = authenticationManager;
         this.roleRepository = roleRepository;
+        this.clientRepository = clientRepository;
+        this.roomRepository = roomRepository;
         this.tokenService = tokenService;
         this.blackListTokenService = blackListTokenService;
     }
@@ -136,5 +153,41 @@ public class AuthController {
             }
         }
         return new ResponseEntity<>("You were not logged!", HttpStatus.OK);
+    }
+
+    @PostMapping("/room/login")
+    public ResponseEntity<?> clientLogin(@RequestBody LoginClientDTO loginClientDTO, HttpServletResponse response) {
+        try {
+            Room room = this.roomRepository.findByRoomNumber(loginClientDTO.getRoomNumber());
+            if (room == null) {
+                return new ResponseEntity<>("Room not found with number: " + loginClientDTO.getRoomNumber(), HttpStatus.NOT_FOUND);
+            }
+
+            Client client = room.getClient();
+            if (client == null) {
+                return new ResponseEntity<>("No client found in room with number: " + loginClientDTO.getRoomNumber(), HttpStatus.NOT_FOUND);
+            }
+
+            if (client.getPin() != loginClientDTO.getPassword()) {
+                return new ResponseEntity<>("Invalid pin code", HttpStatus.UNAUTHORIZED);
+            }
+
+            this.authBuilder.authenticationProvider(new RoomPinAuthenticationProvider(roomRepository));
+            Authentication authentication = authenticationManager.authenticate(
+                    new RoomPinAuthenticationToken(loginClientDTO.getRoomNumber(), loginClientDTO.getPassword()));
+            String jwt = tokenService.generateToken(authentication);
+
+            Cookie cookie = new Cookie("client-JWT-token", jwt);
+            cookie.setSecure(true);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            return new ResponseEntity<>(ClientMapper.toDTO(client), HttpStatus.OK);
+        } catch (AuthenticationException e) {
+            return new ResponseEntity<>("Invalid room number or password", HttpStatus.UNAUTHORIZED);
+        }
     }
 }

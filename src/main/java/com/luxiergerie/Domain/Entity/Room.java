@@ -24,8 +24,7 @@ public class Room {
     @JoinColumn(name = "role_id")
     private Role role;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "client_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "room")
     private Client client;
 
     @OneToMany(mappedBy = "room")

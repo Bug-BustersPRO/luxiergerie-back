@@ -1,8 +1,13 @@
 package com.luxiergerie.Domain.Entity;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "client")
@@ -24,11 +29,30 @@ public class Client {
     @Column(nullable = false, name = "phone_number", length = 50)
     private String phoneNumber;
 
-    @Column(nullable = false, name = "pin")
+    @Column(name = "pin")
     private int pin;
 
-    @OneToOne(mappedBy = "client")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "room_id", referencedColumnName = "id")
     private Room room;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "client_authorities", joinColumns = @JoinColumn(name = "client_id"))
+    @Column(name = "authority")
+    private List<String> authorities;
+
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.authorities.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+    }
+
+    public void setAuthorities(List<String> authorities) {
+        this.authorities = authorities;
+    }
+
+    public Client() {
+    }
 
     public UUID getId() {
         return id;
@@ -94,8 +118,5 @@ public class Client {
         this.phoneNumber = phoneNumber;
         this.pin = pin;
         this.room = room;
-    }
-
-    public Client() {
     }
 }

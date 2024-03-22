@@ -86,6 +86,24 @@ public class Role implements GrantedAuthority {
     this.employees = employees;
   }
 
+    /**
+     * Gets the list of rooms associated with the role.
+     *
+     * @return the list of rooms associated with the role
+     */
+    public List<Room> getRooms() {
+        return rooms;
+    }
+
+    /**
+     * Sets the list of rooms associated with the role.
+     *
+     * @param rooms the list of rooms associated with the role
+     */
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
+    }
+
   /**
    * Constructs a new Role object with the specified ID, name, and employees.
    *
