@@ -19,9 +19,9 @@ INSERT INTO client (id, first_name, last_name, pin, email, phone_number) VALUES 
 INSERT INTO client (id, first_name, last_name, pin, email, phone_number) VALUES ('2', 'Mohammed', 'Ali', '1235', 'ali@ali.fr' , '06 01 02 03 05');
 INSERT INTO client (id, first_name, last_name, pin, email, phone_number) VALUES ('3', 'Jean', 'Bon', '1236', 'jambon@yummi.gloups', '06 01 02 03 06');
 
-INSERT INTO room (id, number, client_id, floor) VALUES ('1', '237', '1', '2');
-INSERT INTO room (id, number, client_id, floor) VALUES ('2', '238', '2', '2');
-INSERT INTO room (id, number, client_id, floor) VALUES ('3', '239', '3', '2');
+INSERT INTO room (id, number, client, floor) VALUES ('1', '237', '1', '2');
+INSERT INTO room (id, number, client, floor) VALUES ('2', '238', '2', '2');
+INSERT INTO room (id, number, client, floor) VALUES ('3', '239', '3', '2');
 
 INSERT INTO section (id, name, image) VALUES ('1', 'Room service', 'hostesse.jpg');
 INSERT INTO section (id, name, image) VALUES ('2', 'Concergierie', 'concergiere_a_moustache.jpg');
