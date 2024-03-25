@@ -37,9 +37,8 @@ public class PurchaseController {
     Optional<Purchase> purchaseOptional = purchaseRepository.findById(purchaseId);
     if (purchaseOptional.isPresent()) {
         return purchaseOptional.get();
-    } else {
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Purchase not found with ID: " + purchaseId);
     }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Purchase not found with ID: " + purchaseId);
   }
 
 
