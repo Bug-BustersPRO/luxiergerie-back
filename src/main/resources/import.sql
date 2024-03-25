@@ -69,5 +69,3 @@ INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES ('3', 
 INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES ('7', '14');
 INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES ('7', '1');
 INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES ('7', '3');
-
-
