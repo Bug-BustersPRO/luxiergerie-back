@@ -79,7 +79,6 @@ public class SectionController {
     sectionRepository.deleteById(id);
   }
 
-  // Méthode utilitaire pour convertir une entité Section en DTO
   private SectionDTO convertToDTO(Section section) {
     SectionDTO sectionDTO = new SectionDTO();
     sectionDTO.setId(section.getId());
@@ -88,7 +87,6 @@ public class SectionController {
     return sectionDTO;
 }
 
-// Méthode utilitaire pour convertir un DTO Section en entité
 private Section convertToEntity(SectionDTO sectionDTO) {
     Section section = new Section();
     section.setId(sectionDTO.getId());

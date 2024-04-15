@@ -122,7 +122,6 @@ public class CategoryController {
       accommodationDTO.setId(accommodation.getId());
       accommodationDTO.setName(accommodation.getName());
       accommodationDTO.setDescription(accommodation.getDescription());
-      // Ajoutez d'autres propriétés au besoin
       return accommodationDTO;
   }
 
