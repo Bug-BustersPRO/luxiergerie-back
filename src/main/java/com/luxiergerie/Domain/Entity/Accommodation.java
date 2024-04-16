@@ -34,7 +34,7 @@ public class Accommodation {
   private Category category;
 
   @ManyToMany(mappedBy = "accommodations")
-  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  @JsonIgnore
   private List<Purchase> purchases = new ArrayList<>();
 
   public Accommodation() {

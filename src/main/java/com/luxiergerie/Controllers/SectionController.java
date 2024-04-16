@@ -84,6 +84,7 @@ public class SectionController {
     sectionDTO.setId(section.getId());
     sectionDTO.setName(section.getName());
     sectionDTO.setImage(section.getImage());
+    sectionDTO.setCategories(section.getCategories());
     return sectionDTO;
 }
 
@@ -92,6 +93,7 @@ private Section convertToEntity(SectionDTO sectionDTO) {
     section.setId(sectionDTO.getId());
     section.setName(sectionDTO.getName());
     section.setImage(sectionDTO.getImage());
+    section.setCategories(sectionDTO.getCategories());
     return section;
 }
 }

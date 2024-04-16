@@ -7,6 +7,7 @@ import com.luxiergerie.Domain.Entity.Category;
 import com.luxiergerie.Domain.Repository.AccommodationRepository;
 import com.luxiergerie.Domain.Repository.CategoryRepository;
 
+import static java.lang.String.*;
 import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
@@ -89,6 +90,7 @@ public class AccommodationController {
         accommodationDTO.setName(accommodation.getName());
         accommodationDTO.setDescription(accommodation.getDescription());
         accommodationDTO.setPrice(accommodation.getPrice());
+        accommodationDTO.setPriceToDisplay(convertPriceToDisplay(accommodation.getPrice()));
         accommodationDTO.setImage(accommodation.getImage());
         // Set CategoryDTO
         Category category = accommodation.getCategory();
@@ -100,6 +102,11 @@ public class AccommodationController {
             accommodationDTO.setCategory(categoryDTO);
         }
         return accommodationDTO;
+    }
+
+    private String convertPriceToDisplay(Float price) {
+      String convertedPrice = format("%.2f", price);
+      return convertedPrice + " euros";
     }
 
     private Accommodation convertToEntity(AccommodationDTO accommodationDTO) {
