@@ -88,6 +88,8 @@ public class CategoryController {
           categoryToUpdate.setName(categoryDTO.getName());
           categoryToUpdate.setImage(categoryDTO.getImage());
           categoryToUpdate.setDescription(categoryDTO.getDescription());
+          categoryToUpdate.setAccommodations(categoryDTO.getAccommodations());
+          categoryToUpdate.setSection(categoryDTO.getSection());
           Category updatedCategory = categoryRepository.save(categoryToUpdate);
           return convertToDTO(updatedCategory);
       }
@@ -105,6 +107,8 @@ public class CategoryController {
     categoryDTO.setId(category.getId());
     categoryDTO.setName(category.getName());
     categoryDTO.setImage(category.getImage());
+    categoryDTO.setAccommodations(category.getAccommodations());
+    categoryDTO.setSection(category.getSection());
     return categoryDTO;
     }
 
@@ -114,6 +118,8 @@ public class CategoryController {
     category.setId(categoryDTO.getId());
     category.setName(categoryDTO.getName());
     category.setImage(categoryDTO.getImage());
+    category.setAccommodations(categoryDTO.getAccommodations());
+    category.setSection(categoryDTO.getSection());
     return category;
     }
 
