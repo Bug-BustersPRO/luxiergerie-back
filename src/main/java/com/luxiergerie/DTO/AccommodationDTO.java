@@ -3,6 +3,7 @@ package com.luxiergerie.DTO;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.luxiergerie.Domain.Entity.Category;
 import com.luxiergerie.Domain.Entity.Purchase;
 
@@ -13,7 +14,11 @@ public class AccommodationDTO {
   private String description;
   private String image;
   private Float price;
+  private String priceToDisplay;
+
+  @JsonIgnore
   private CategoryDTO category;
+  @JsonIgnore
   private List<Purchase> purchases;
 
   public AccommodationDTO() {
@@ -73,6 +78,14 @@ public class AccommodationDTO {
 
   public void setCategory(CategoryDTO category) {
     this.category = category;
+  }
+
+  public String getPriceToDisplay() {
+    return priceToDisplay;
+  }
+
+  public void setPriceToDisplay(String priceToDisplay) {
+    this.priceToDisplay = priceToDisplay;
   }
 
 }

@@ -31,6 +31,7 @@ public class Category {
   private String image;
 
   @OneToMany(mappedBy = "category")
+  @JsonIgnore
   private List<Accommodation> accommodations;
 
   @ManyToOne
