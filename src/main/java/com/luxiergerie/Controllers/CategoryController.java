@@ -107,6 +107,7 @@ public class CategoryController {
     categoryDTO.setId(category.getId());
     categoryDTO.setName(category.getName());
     categoryDTO.setImage(category.getImage());
+    categoryDTO.setDescription(category.getDescription());
     categoryDTO.setAccommodations(category.getAccommodations());
     categoryDTO.setSection(category.getSection());
     return categoryDTO;
@@ -118,6 +119,7 @@ public class CategoryController {
     category.setId(categoryDTO.getId());
     category.setName(categoryDTO.getName());
     category.setImage(categoryDTO.getImage());
+    category.setDescription(categoryDTO.getDescription());
     category.setAccommodations(categoryDTO.getAccommodations());
     category.setSection(categoryDTO.getSection());
     return category;
