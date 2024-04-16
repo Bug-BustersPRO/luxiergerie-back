@@ -1,7 +1,7 @@
 package com.luxiergerie.Controllers.Security;
 
 import com.luxiergerie.DTO.LoginClientDTO;
-import com.luxiergerie.DTO.LoginDto;
+import com.luxiergerie.DTO.LoginDTO;
 import com.luxiergerie.Domain.Entity.Client;
 import com.luxiergerie.Domain.Entity.Employee;
 import com.luxiergerie.Domain.Entity.Role;
@@ -121,7 +121,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto, HttpServletResponse response,
+    ResponseEntity<String> authenticateUser(@RequestBody LoginDTO loginDto, HttpServletResponse response,
                                             HttpServletRequest request) {
         if (checkCookieToken(request)) {
             throw new ResponseStatusException(UNAUTHORIZED, "User must logout before registering");

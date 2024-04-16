@@ -3,7 +3,7 @@ package com.luxiergerie.DTO;
 /**
  * This class represents a LoginDto object, which is used for transferring login information.
  */
-public class LoginDto {
+public class LoginDTO {
 
     private String serialNumber;
 
@@ -12,7 +12,7 @@ public class LoginDto {
     /**
      * Constructs a new LoginDto object.
      */
-    public LoginDto() {
+    public LoginDTO() {
     }
 
     /**
