@@ -23,8 +23,8 @@ INSERT INTO room (id, number, client, floor) VALUES ('1', '237', '1', '2');
 INSERT INTO room (id, number, client, floor) VALUES ('2', '238', '2', '2');
 INSERT INTO room (id, number, client, floor) VALUES ('3', '239', '3', '2');
 
-INSERT INTO section (id, name, image) VALUES ('1', 'Room service', 'hostesse.jpg');
-INSERT INTO section (id, name, image) VALUES ('2', 'Concergierie', 'concergiere_a_moustache.jpg');
+INSERT INTO section (id, name, image, title, description) VALUES ('1', 'Room service', 'hostesse.jpg', 'Le service de chambre', 'Bénéficiez de notre service de chambre 24h/24 et 7j/7 pour toutes vos envies');
+INSERT INTO section (id, name, image, title, description) VALUES ('2', 'Concergierie', 'concergiere_a_moustache.jpg', 'Le service de concergierie', 'Notre concergierie est à votre service pour toutes vos demandes : pressing, nettoyage, garage, ...');
 
 INSERT INTO category (id, name, image, description, section_id) VALUES ('1', 'Boissons', 'boissons.jpg', 'La carte des boissons froides et chaudes', '1');
 INSERT INTO category (id, name, image, description, section_id) VALUES ('2', 'Entrées', 'entrees.jpg', 'La carte des entrées', '1');
