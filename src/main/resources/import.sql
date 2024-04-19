@@ -26,13 +26,13 @@ INSERT INTO room (id, number, client, floor) VALUES ('3', '239', '3', '2');
 INSERT INTO section (id, name, image) VALUES ('1', 'Room service', 'hostesse.jpg');
 INSERT INTO section (id, name, image) VALUES ('2', 'Concergierie', 'concergiere_a_moustache.jpg');
 
-INSERT INTO category (id, name, image, description, section_id) VALUES ('1', 'Boissons', 'boissons.jpg', 'La carte des boissons froides et chaudes', '1');
-INSERT INTO category (id, name, image, description, section_id) VALUES ('2', 'Entrées', 'entrees.jpg', 'La carte des entrées', '1');
-INSERT INTO category (id, name, image, description, section_id) VALUES ('3', 'Plats', 'plats.jpg', 'La carte des plats', '1');
-INSERT INTO category (id, name, image, description, section_id) VALUES ('4', 'Desserts', 'desserts.jpg', 'La carte des desserts', '1');
-INSERT INTO category (id, name, image, description, section_id) VALUES ('5', 'Pressing', 'pressing.jpg', 'Le pressing de l"hotel', '2');
-INSERT INTO category (id, name, image, description, section_id) VALUES ('6', 'Nettoyage', 'nettoyage.jpg', 'Le service de nettoyage', '2');
-INSERT INTO category (id, name, image, description, section_id) VALUES ('7', 'Garage', 'garage.jpg', 'Le garagiste à votre service', '2');
+INSERT INTO category (id, name, image, description, section_id) VALUES ('1', 'Boissons', 'https://images.unsplash.com/photo-1551024709-8f23befc6f87', 'La carte des boissons froides et chaudes', '1');
+INSERT INTO category (id, name, image, description, section_id) VALUES ('2', 'Entrées', 'https://images.unsplash.com/photo-1607532941433-304659e8198a', 'La carte des entrées', '1');
+INSERT INTO category (id, name, image, description, section_id) VALUES ('3', 'Plats', 'https://images.unsplash.com/photo-1504674900247-0877df9cc836', 'La carte des plats', '1');
+INSERT INTO category (id, name, image, description, section_id) VALUES ('4', 'Desserts', 'https://images.unsplash.com/photo-1528975604071-b4dc52a2d18c', 'La carte des desserts', '1');
+INSERT INTO category (id, name, image, description, section_id) VALUES ('5', 'Pressing', 'https://images.unsplash.com/photo-1549037173-e3b717902c57', 'Le pressing de l"hotel', '2');
+INSERT INTO category (id, name, image, description, section_id) VALUES ('6', 'Nettoyage', 'https://images.unsplash.com/photo-1686828751885-040f0a0fb77a', 'Le service de nettoyage', '2');
+INSERT INTO category (id, name, image, description, section_id) VALUES ('7', 'Garage', 'https://images.unsplash.com/photo-1486006920555-c77dcf18193c', 'Le garagiste à votre service', '2');
 
 INSERT INTO accommodation (id, category_id, name, image, description, price) VALUES ('1', '1', 'Coca', 'coca.jpg', 'Coca cola', '2.5');
 INSERT INTO accommodation (id, category_id, name, image, description, price) VALUES ('2', '1', 'Fanta', 'fanta.jpg', 'Fanta orange', '2.5');
