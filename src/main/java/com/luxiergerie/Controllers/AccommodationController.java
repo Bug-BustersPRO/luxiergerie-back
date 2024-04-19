@@ -3,14 +3,19 @@ package com.luxiergerie.Controllers;
 import com.luxiergerie.DTO.AccommodationDTO;
 import com.luxiergerie.Domain.Entity.Accommodation;
 import com.luxiergerie.Domain.Entity.Category;
+import com.luxiergerie.Domain.Mapper.AccommodationMapper;
 import com.luxiergerie.Domain.Repository.AccommodationRepository;
 import com.luxiergerie.Domain.Repository.CategoryRepository;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 import static com.luxiergerie.Domain.Mapper.AccommodationMapper.MappedAccommodationFrom;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping("/api")
@@ -27,11 +32,9 @@ public class AccommodationController {
     @GetMapping("/accommodations")
     public List<AccommodationDTO> getAccommodations() {
         List<Accommodation> accommodations = accommodationRepository.findAll();
-        List<AccommodationDTO> accommodationDTOs = new ArrayList<>();
-        for (Accommodation accommodation : accommodations) {
-            accommodationDTOs.add(MappedAccommodationFrom(accommodation));
-        }
-        return accommodationDTOs;
+        return accommodations.stream()
+                .map(AccommodationMapper::MappedAccommodationFrom)
+                .collect(toList());
     }
 
     @GetMapping("/accommodations/{id}")
