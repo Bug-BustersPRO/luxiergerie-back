@@ -4,7 +4,7 @@ import com.luxiergerie.DTO.SectionDTO;
 import com.luxiergerie.Domain.Entity.Section;
 
 public class SectionMapper {
-    public static SectionDTO toDTO(Section section) {
+    public static SectionDTO MappedSectionFrom(Section section) {
         SectionDTO dto = new SectionDTO();
         dto.setId(section.getId());
         dto.setName(section.getName());
@@ -15,7 +15,7 @@ public class SectionMapper {
         return dto;
     }
 
-    public static Section toEntity(SectionDTO dto) {
+    public static Section MappedSectionFrom(SectionDTO dto) {
         Section section = new Section();
         section.setName(dto.getName());
         section.setImage(dto.getImage());

@@ -4,7 +4,6 @@ import com.luxiergerie.Domain.Entity.Category;
 import java.util.List;
 import java.util.UUID;
 
-
 public class SectionDTO {
 
   private UUID id;
@@ -13,7 +12,6 @@ public class SectionDTO {
   private String description;
   private String title;
   private List<Category> categories;
-
 
   public SectionDTO() {
   }

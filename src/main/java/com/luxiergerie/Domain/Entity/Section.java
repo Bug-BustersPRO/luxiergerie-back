@@ -10,7 +10,6 @@ import jakarta.persistence.OneToMany;
 import java.util.List;
 import java.util.UUID;
 
-
 @Entity
 public class Section {
 
@@ -33,8 +32,6 @@ public class Section {
   @OneToMany(mappedBy = "section")
   @JsonIgnore
   private List<Category> categories;
-
-
 
   public Section(String name, String image, String description, String title, List<Category> categories) {
     this.name = name;

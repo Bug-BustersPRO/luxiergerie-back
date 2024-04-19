@@ -3,7 +3,6 @@ package com.luxiergerie.Controllers;
 import com.luxiergerie.DTO.SectionDTO;
 import com.luxiergerie.Domain.Entity.Category;
 import com.luxiergerie.Domain.Entity.Section;
-import com.luxiergerie.Domain.Mapper.SectionMapper;
 import com.luxiergerie.Domain.Repository.SectionRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +10,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.web.bind.annotation.*;
-
-
+import static com.luxiergerie.Domain.Mapper.SectionMapper.MappedSectionFrom;
 
 @RestController
 @RequestMapping("/api/sections")
@@ -29,7 +27,7 @@ public class SectionController {
         List<Section> sections = sectionRepository.findAll();
         List<SectionDTO> sectionDTOs = new ArrayList<>();
         for (Section section : sections) {
-            sectionDTOs.add(SectionMapper.toDTO(section));
+            sectionDTOs.add(MappedSectionFrom(section));
         }
         return sectionDTOs;
       }
@@ -39,7 +37,7 @@ public class SectionController {
         UUID nonNullId = Objects.requireNonNull(id, "Section ID must not be null");
         Section section = sectionRepository.findById(nonNullId)
                 .orElseThrow(() -> new RuntimeException("Section not found with id: " + nonNullId));
-        return SectionMapper.toDTO(section);
+        return MappedSectionFrom(section);
     }
 
   @GetMapping("/{id}/categories")
@@ -55,9 +53,9 @@ public class SectionController {
 
   @PostMapping("")
   public SectionDTO createSection(@RequestBody SectionDTO sectionDTO) {
-    Section section = SectionMapper.toEntity(sectionDTO);
+    Section section = MappedSectionFrom(sectionDTO);
     Section savedSection = sectionRepository.save(section);
-    return SectionMapper.toDTO(savedSection);
+    return MappedSectionFrom(savedSection);
   }
 
   @PutMapping("/{id}")
@@ -69,7 +67,7 @@ public class SectionController {
         sectionToUpdate.setName(sectionDTO.getName());
         sectionToUpdate.setImage(sectionDTO.getImage());
         Section updatedSection = sectionRepository.save(sectionToUpdate);
-        return SectionMapper.toDTO(updatedSection);
+        return MappedSectionFrom(updatedSection);
     } else {
         throw new RuntimeException("Section not found with id: " + nonNullId);
     }
