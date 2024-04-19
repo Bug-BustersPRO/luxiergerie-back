@@ -58,7 +58,7 @@ public class CategoryController {
                 AccommodationDTO accommodationDTO = convertToAccommodationDTO(accommodation);
                 // Ajouter les informations de CategoryDTO à chaque AccommodationDTO
                 CategoryDTO categoryDTO = convertToDTO(category);
-                accommodationDTO.setCategory(categoryDTO);
+                accommodationDTO.setCategory(category.getId());
                 accommodationDTOs.add(accommodationDTO);
             }
             return accommodationDTOs;
