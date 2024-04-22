@@ -1,7 +1,10 @@
 package com.luxiergerie.Controllers;
 
+import com.luxiergerie.DTO.PurchaseDTO;
 import com.luxiergerie.Domain.Entity.Purchase;
 import com.luxiergerie.Domain.Repository.PurchaseRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import static com.luxiergerie.Domain.Mapper.PurchaseMapper.MappedPurchaseFrom;
+
 
 @RestController
 @RequestMapping("/api")
@@ -28,41 +33,46 @@ public class PurchaseController {
   }
 
   @GetMapping("/purchases")
-  public List<Purchase> getPurchases() {
-    return purchaseRepository.findAll();
+  public List<PurchaseDTO> getPurchases() {
+    List<Purchase> purchases = purchaseRepository.findAll();
+    List<PurchaseDTO> purchaseDTOs = new ArrayList<>();
+    for (Purchase purchase : purchases) {
+      purchaseDTOs.add(MappedPurchaseFrom(purchase));
+    }
+    return purchaseDTOs;
   }
 
   @GetMapping("/purchases/{id}")
-  public Purchase getPurchase(@PathVariable("id") UUID purchaseId) {
+  public PurchaseDTO getPurchase(@PathVariable("id") UUID purchaseId) {
     Optional<Purchase> purchaseOptional = purchaseRepository.findById(purchaseId);
     if (purchaseOptional.isPresent()) {
-        return purchaseOptional.get();
+      return MappedPurchaseFrom(purchaseOptional.get());
     }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Purchase not found with ID: " + purchaseId);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Purchase not found with ID: " + purchaseId);
   }
 
 
   @PostMapping("/purchase")
-  public Purchase createPurchase(@RequestBody Purchase purchase) {
-    if (purchase.getId() != null) {
-      throw new RuntimeException("New Purchase must not have an id");
-    } else {
-      return purchaseRepository.save(purchase);
+  public PurchaseDTO createPurchase(@RequestBody PurchaseDTO purchaseDTO) {
+    Optional<Purchase> purchaseOptional = purchaseRepository.findById(purchaseDTO.getId());
+    if(purchaseOptional.isPresent()){
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Purchase already exists with ID: " + purchaseDTO.getId());
     }
+    Purchase purchase = MappedPurchaseFrom(purchaseDTO);
+    Purchase savedPurchase = purchaseRepository.save(purchase);
+    return MappedPurchaseFrom(savedPurchase);
   }
 
   @PutMapping("/purchases/{id}")
-  public Purchase updatePurchase(@PathVariable("id") UUID purchaseId, @RequestBody Purchase updatedPurchase) {
-    Optional<Purchase> purchaseOptional = purchaseRepository.findById(purchaseId);
-    if (purchaseOptional.isPresent()) {
-      Purchase existingPurchase = purchaseOptional.get();
-      existingPurchase.setDate(updatedPurchase.getDate());
-      existingPurchase.setStatus(updatedPurchase.getStatus());
-      existingPurchase.setRoom(updatedPurchase.getRoom());
-      return purchaseRepository.save(existingPurchase);
-    } else {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Purchase not found with ID: " + purchaseId);
+  public PurchaseDTO updatePurchase(@PathVariable("id") UUID id, @RequestBody PurchaseDTO purchaseDTO) {
+    Optional<Purchase> purchaseOptional = purchaseRepository.findById(id);
+    if (!purchaseOptional.isPresent()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Purchase not found with ID: " + id);
     }
+    Purchase purchase = MappedPurchaseFrom(purchaseDTO);
+    purchase.setId(id);
+    Purchase savedPurchase = purchaseRepository.save(purchase);
+    return MappedPurchaseFrom(savedPurchase);
   }
 
 
