@@ -44,8 +44,10 @@ public class Category {
   }
 
 
-  public Category(String name, String image, List<Accommodation> accommodations, Section section) {
+  public Category(UUID id, String name, String description, String image, List<Accommodation> accommodations, Section section) {
+    this.id = id;
     this.name = name;
+    this.description = description;
     this.image = image;
     this.accommodations = accommodations;
     this.section = section;
@@ -59,7 +61,6 @@ public class Category {
     this.accommodations = accommodations;
     this.section = section;
   }
-
 
   public UUID getId() {
     return id;
