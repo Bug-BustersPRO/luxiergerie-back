@@ -66,7 +66,7 @@ public class ClientController {
 
         int pin = (int) (Math.random() * 10000);
 
-        room.setClient(client);
+       // room.setClient(client);
         client.setRoom(room);
         client.setPin(pin);
         this.clientRepository.save(client);

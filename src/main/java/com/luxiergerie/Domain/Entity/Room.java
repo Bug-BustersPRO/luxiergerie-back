@@ -1,9 +1,11 @@
 package com.luxiergerie.Domain.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -21,10 +23,13 @@ public class Room {
     private int floor;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "role_id")
     private Role role;
 
-    @OneToOne(mappedBy = "room")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
+    @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Client client;
 
     @OneToMany(mappedBy = "room")
@@ -73,4 +78,23 @@ public class Room {
         this.client = client;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Room room = (Room) o;
+        return roomNumber == room.roomNumber && floor == room.floor && Objects.equals(id, room.id) && Objects.equals(role, room.role) && Objects.equals(client, room.client) && Objects.equals(orders, room.orders);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(id);
+        result = 31 * result + roomNumber;
+        result = 31 * result + floor;
+        result = 31 * result + Objects.hashCode(role);
+        result = 31 * result + Objects.hashCode(client);
+        result = 31 * result + Objects.hashCode(orders);
+        return result;
+    }
 }
