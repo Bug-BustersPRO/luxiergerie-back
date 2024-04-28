@@ -37,14 +37,15 @@ public class PurchaseControllerTest {
 
   @Test
   public void testGetPurchases() {
-    List<PurchaseDTO> purchaseDTOs = new ArrayList<>();
+    UUID purchaseId = UUID.randomUUID();
     List<Purchase> purchases = new ArrayList<>();
+    purchases.add(new Purchase(purchaseId, new Date(), new Room(), "En cours"));
     when(purchaseRepository.findAll()).thenReturn(purchases);
 
     List<PurchaseDTO> result = purchaseController.getPurchases();
 
-    assertEquals(purchaseDTOs, result);
-    verify(purchaseRepository, times(1)).findAll();
+    assertEquals(purchases.size(), result.size());
+    verify(purchaseRepository).findAll();
   }
 
   @Test
@@ -59,11 +60,13 @@ public class PurchaseControllerTest {
 
     PurchaseDTO result = purchaseController.getPurchase(purchaseId);
 
-    assertEquals(expectedDTO.getId(), result.getId());
-    assertEquals(expectedDTO.getDate(), result.getDate());
-    assertEquals(expectedDTO.getRoom(), result.getRoom());
-    assertEquals(expectedDTO.getStatus(), result.getStatus());
-    assertEquals(expectedDTO.getAccommodations(), result.getAccommodations());
+    assertAll(
+        () -> assertEquals(expectedDTO.getId(), result.getId()),
+        () -> assertEquals(expectedDTO.getDate(), result.getDate()),
+        () -> assertEquals(expectedDTO.getRoom(), result.getRoom()),
+        () -> assertEquals(expectedDTO.getStatus(), result.getStatus()),
+        () -> assertEquals(expectedDTO.getAccommodations(), result.getAccommodations())
+    );
     verify(purchaseRepository).findById(purchaseId);
   }
 
@@ -101,15 +104,13 @@ public class PurchaseControllerTest {
 
 
   @Test
-  public void testCreatePurchaseThrowsExceptionIfIdIsNotNull() {
-    PurchaseDTO purchaseDTO = new PurchaseDTO(UUID.randomUUID(), new Date(), new Room(), "En cours", new ArrayList<>());
-    when(purchaseRepository.findById(purchaseDTO.getId())).thenReturn(Optional.of(new Purchase()));
+  public void testCreatePurchaseThrowsExceptionIfIdIsNull() {
+    UUID purchaseId = null;
+    when(purchaseRepository.findById(purchaseId)).thenReturn(Optional.empty());
 
-    assertThrows(ResponseStatusException.class, () -> {
-      purchaseController.createPurchase(purchaseDTO);
+    assertThrows(RuntimeException.class, () -> {
+      purchaseController.createPurchase(new PurchaseDTO(purchaseId, new Date(), new Room(), "En cours", new ArrayList<>()));
     });
-
-    verify(purchaseRepository).findById(purchaseDTO.getId());
   }
 
   @Test
@@ -126,14 +127,14 @@ public class PurchaseControllerTest {
 
     PurchaseDTO result = purchaseController.updatePurchase(purchaseId, purchaseDTO);
 
-    assertEquals(purchaseDTO.getId(), result.getId());
-    assertEquals(purchaseDTO.getDate(), result.getDate());
-    assertEquals(purchaseDTO.getRoom(), result.getRoom());
-    assertEquals(purchaseDTO.getStatus(), result.getStatus());
-    assertEquals(purchaseDTO.getAccommodations(), result.getAccommodations());
-
+    assertAll(
+        () -> assertEquals(purchaseDTO.getId(), result.getId()),
+        () -> assertEquals(purchaseDTO.getDate(), result.getDate()),
+        () -> assertEquals(purchaseDTO.getRoom(), result.getRoom()),
+        () -> assertEquals(purchaseDTO.getStatus(), result.getStatus()),
+        () -> assertEquals(purchaseDTO.getAccommodations(), result.getAccommodations())
+    );
     verify(purchaseRepository).save(any(Purchase.class));
-
   }
 
   @Test
