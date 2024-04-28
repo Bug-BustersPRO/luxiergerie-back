@@ -20,7 +20,6 @@ import static java.util.stream.Collectors.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -47,7 +46,7 @@ public class CategoryController {
         if(categoryOptional.isPresent()) {
             return MappedCategoryFrom(categoryOptional.get());
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Purchase not found with ID: " + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found with ID: " + id);
         }
     }
 

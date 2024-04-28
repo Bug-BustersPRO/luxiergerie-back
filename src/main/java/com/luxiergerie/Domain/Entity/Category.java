@@ -21,7 +21,7 @@ public class Category {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-   @Column(name = "name")
+  @Column(name = "name")
   private String name;
 
   @Column(nullable= true, name = "description")
@@ -43,18 +43,8 @@ public class Category {
   public Category() {
   }
 
-
   public Category(UUID id, String name, String description, String image, List<Accommodation> accommodations, Section section) {
     this.id = id;
-    this.name = name;
-    this.description = description;
-    this.image = image;
-    this.accommodations = accommodations;
-    this.section = section;
-  }
-
-
-  public Category(String name, String description, String image, List<Accommodation> accommodations, Section section) {
     this.name = name;
     this.description = description;
     this.image = image;

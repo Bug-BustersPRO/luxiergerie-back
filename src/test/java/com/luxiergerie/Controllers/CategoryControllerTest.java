@@ -45,9 +45,8 @@ public class CategoryControllerTest {
     @Test
     public void getCategoryById() {
         UUID id = UUID.randomUUID();
-        when(categoryRepository.findById(id)).thenReturn(Optional.of(new Category(
-                id, "name", "description", "image", new ArrayList<>(), new Section()
-        )));
+        when(categoryRepository.findById(id))
+                .thenReturn(Optional.of(new Category(id, "name", "description", "image", new ArrayList<>(), new Section())));
         assertNotNull(categoryController.getCategoryById(id));
     }
 
