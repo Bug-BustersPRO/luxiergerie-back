@@ -29,6 +29,7 @@ public class Role implements GrantedAuthority {
   private List<Employee> employees = new ArrayList<>();
 
   @OneToMany(mappedBy = "role")
+  @JsonIgnore
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private List<Room> rooms = new ArrayList<>();
 

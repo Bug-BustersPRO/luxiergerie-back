@@ -1,5 +1,6 @@
 package com.luxiergerie.Domain.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,8 +33,8 @@ public class Client {
     @Column(name = "pin")
     private int pin;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "room_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "client")
+    @JsonIgnore
     private Room room;
 
     @ElementCollection(fetch = FetchType.EAGER)
