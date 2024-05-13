@@ -18,6 +18,14 @@ public class PurchaseDTO {
   public PurchaseDTO() {
   }
 
+  public PurchaseDTO(UUID id, Date date, Room room, String status, List<Accommodation> accommodations) {
+    this.id = id;
+    this.date = date;
+    this.room = room;
+    this.status = status;
+    this.accommodations = accommodations;
+  }
+
   public UUID getId() {
     return id;
   }

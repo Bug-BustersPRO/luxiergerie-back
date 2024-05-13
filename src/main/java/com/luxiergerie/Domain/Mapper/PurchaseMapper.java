@@ -4,7 +4,7 @@ import com.luxiergerie.DTO.PurchaseDTO;
 import com.luxiergerie.Domain.Entity.Purchase;
 
 public class PurchaseMapper {
-  public static PurchaseDTO toDto(Purchase purchase) {
+  public static PurchaseDTO MappedPurchaseFrom(Purchase purchase) {
     PurchaseDTO purchaseDto = new PurchaseDTO();
     purchaseDto.setId(purchase.getId());
     purchaseDto.setDate(purchase.getDate());
@@ -14,7 +14,7 @@ public class PurchaseMapper {
     return purchaseDto;
   }
 
-  public static Purchase toEntity(PurchaseDTO purchaseDto) {
+  public static Purchase MappedPurchaseFrom(PurchaseDTO purchaseDto) {
     Purchase purchase = new Purchase();
     purchase.setId(purchaseDto.getId());
     purchase.setDate(purchaseDto.getDate());

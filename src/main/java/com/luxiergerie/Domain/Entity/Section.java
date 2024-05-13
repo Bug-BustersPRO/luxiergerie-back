@@ -33,7 +33,8 @@ public class Section {
   @JsonIgnore
   private List<Category> categories;
 
-  public Section(String name, String image, String description, String title, List<Category> categories) {
+  public Section(UUID id, String name, String image, String description, String title, List<Category> categories) {
+    this.id = id;
     this.name = name;
     this.image = image;
     this.description = description;
