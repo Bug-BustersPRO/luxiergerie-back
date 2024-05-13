@@ -11,14 +11,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 public class RoomControllerTest {
@@ -34,7 +32,7 @@ public class RoomControllerTest {
     }
 
     @Test
-    public void testGetRooms() {
+    public void getRooms() {
         List<RoomDTO> roomDTOs = new ArrayList<>();
         List<Room> rooms = new ArrayList<>();
         List<Role> roles = new ArrayList<>();
@@ -105,4 +103,24 @@ public class RoomControllerTest {
 
         assertEquals(roomDTOs, newList);
     }
+
+    @Test
+    public void getAvailableRooms() {
+        List<Room> roomsWithClients = new ArrayList<>();
+        List<Room> roomsWithoutClients = new ArrayList<>();
+
+        Room roomWithClient = new Room();
+        roomWithClient.setClient(new Client());
+        roomsWithClients.add(roomWithClient);
+
+        Room roomWithoutClient = new Room();
+        roomsWithoutClients.add(roomWithoutClient);
+
+        when(roomRepository.findAllRoomByClientIsNull()).thenReturn(roomsWithoutClients);
+
+        List<RoomDTO> availableRooms = roomController.getAvailableRooms();
+
+        assertEquals(roomsWithoutClients.size(), availableRooms.size());
+    }
+
 }
