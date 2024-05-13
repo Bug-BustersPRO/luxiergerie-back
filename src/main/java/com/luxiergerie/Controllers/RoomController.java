@@ -7,12 +7,9 @@ import com.luxiergerie.Domain.Mapper.RoomMapper;
 import com.luxiergerie.Domain.Repository.RoleRepository;
 import com.luxiergerie.Domain.Repository.RoomRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLOutput;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -112,7 +109,7 @@ public class RoomController {
             Room room = roomToChange.get();
             room.setRoomNumber(roomDTO.getRoomNumber());
             room.setFloor(roomDTO.getFloor());
-            room.setRole(roomDTO.getRole());
+            room.setRole(role);
             room.setClient(roomDTO.getClient());
             this.roomRepository.save(room);
             return RoomMapper.toDTO(room);

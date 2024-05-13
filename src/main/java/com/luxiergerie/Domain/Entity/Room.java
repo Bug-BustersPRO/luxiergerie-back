@@ -22,7 +22,7 @@ public class Room {
     @Column(nullable = false, name = "floor")
     private int floor;
 
-    @ManyToOne
+    @ManyToOne( cascade = CascadeType.ALL)
     @JsonIgnore
     @JoinColumn(name = "role_id")
     private Role role;
@@ -32,7 +32,7 @@ public class Room {
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Client client;
 
-    @OneToMany(mappedBy = "room")
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
     private List<Purchase> orders = new ArrayList<>();
 
     public Room() {
