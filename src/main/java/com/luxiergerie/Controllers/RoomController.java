@@ -14,6 +14,8 @@ import java.sql.SQLOutput;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 @RestController
 @RequestMapping("/api/rooms")
 public class RoomController {
@@ -29,21 +31,17 @@ public class RoomController {
     @GetMapping
     public List<RoomDTO> getRooms() {
         List<Room> rooms = this.roomRepository.findAll();
-        List<RoomDTO> roomDTOs = new ArrayList<>();
-        for (Room room : rooms) {
-            roomDTOs.add(RoomMapper.toDTO(room));
-        }
-        return roomDTOs;
+        return rooms.stream()
+                .map(RoomMapper::toDTO)
+                .collect(toList());
     }
 
     @GetMapping("/available")
     public List<RoomDTO> getAvailableRooms() {
         List<Room> rooms = this.roomRepository.findAllRoomByClientIsNull();
-        List<RoomDTO> roomDTOs = new ArrayList<>();
-        for (Room room : rooms) {
-            roomDTOs.add(RoomMapper.toDTO(room));
-        }
-        return roomDTOs;
+        return rooms.stream()
+                .map(RoomMapper::toDTO)
+                .collect(toList());
     }
 
     @PostMapping("/create-multiple/{maxRooms}")
@@ -58,7 +56,7 @@ public class RoomController {
             existingRole = roleRepository.findByName("ROLE_GOLD");
         }
         if (existingRole == null) {
-            throw new RuntimeException("Role not found with id: " + roomDTO.getRole().getName());
+            throw new RuntimeException("Role not found with name: " + roomDTO.getRole().getName());
         }
 
         if (existingRoomCount >= maxRooms) {
@@ -84,7 +82,7 @@ public class RoomController {
         }
 
         List<Room> savedRooms = this.roomRepository.saveAll(rooms);
-        return savedRooms.stream().map(RoomMapper::toDTO).collect(Collectors.toList());
+        return savedRooms.stream().map(RoomMapper::toDTO).collect(toList());
     }
 
     @PostMapping
