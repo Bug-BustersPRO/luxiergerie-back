@@ -1,4 +1,4 @@
-package com.luxiergerie.luxiergerie;
+package com.luxiergerie;
 
 // import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
