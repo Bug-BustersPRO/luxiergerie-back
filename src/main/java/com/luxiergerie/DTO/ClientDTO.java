@@ -1,5 +1,7 @@
 package com.luxiergerie.DTO;
 
+import com.luxiergerie.Domain.Entity.Role;
+
 import java.util.UUID;
 
 public class ClientDTO {
@@ -8,6 +10,8 @@ public class ClientDTO {
     private String lastname;
     private String email;
     private String phoneNumber;
+    private UUID room;
+    private Role role;
 
     public ClientDTO() {
     }
@@ -50,5 +54,21 @@ public class ClientDTO {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public UUID getRoom() {
+        return room;
+    }
+
+    public void setRoom(UUID room) {
+        this.room = room;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
