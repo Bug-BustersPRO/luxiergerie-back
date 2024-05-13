@@ -22,7 +22,7 @@ public class WebHexagonalConfig implements WebMvcConfigurer {
       registry.addMapping("/**")
           .allowedOrigins("http://localhost:4200")
           .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
-          .allowedHeaders("Content-Type", "Date", "Total-Count", "loginInfo", "Authorization")
+          .allowedHeaders("Content-Type", "Date", "Total-Count", "loginInfo", "Authorization", "Token")
           .allowCredentials(true);
     } else {
       throw new RuntimeException("CorsRegistry must not be null");

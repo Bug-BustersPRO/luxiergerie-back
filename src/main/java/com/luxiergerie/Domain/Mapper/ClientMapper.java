@@ -3,6 +3,8 @@ package com.luxiergerie.Domain.Mapper;
 import com.luxiergerie.DTO.ClientDTO;
 import com.luxiergerie.Domain.Entity.Client;
 
+import java.util.Objects;
+
 public class ClientMapper {
     public static ClientDTO toDTO(Client client) {
         ClientDTO dto = new ClientDTO();
@@ -11,6 +13,10 @@ public class ClientMapper {
         dto.setLastname(client.getLastName());
         dto.setEmail(client.getEmail());
         dto.setPhoneNumber(client.getPhoneNumber());
+        if (Objects.nonNull(client.getRoom())) {
+            dto.setRoom(client.getRoom().getId());
+            dto.setRole(client.getRoom().getRole());
+        }
         return dto;
     }
 

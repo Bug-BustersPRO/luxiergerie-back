@@ -2,7 +2,6 @@ package com.luxiergerie.Services;
 
 import com.luxiergerie.Domain.Entity.Client;
 import com.luxiergerie.Domain.Entity.Room;
-import com.luxiergerie.Domain.Repository.ClientRepository;
 import com.luxiergerie.Domain.Repository.RoomRepository;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -27,7 +26,7 @@ public class RoomPinAuthenticationProvider implements AuthenticationProvider {
         }
         Client client = room.getClient();
 
-        return new RoomPinAuthenticationToken(roomNumber, pin, client.getAuthorities());
+        return new RoomPinAuthenticationToken(roomNumber, pin);
     }
 
     @Override

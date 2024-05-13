@@ -1,5 +1,6 @@
 package com.luxiergerie.Services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luxiergerie.Domain.Entity.BlackListedToken;
 import com.luxiergerie.Domain.Entity.Employee;
 import com.luxiergerie.Domain.Entity.Room;
@@ -7,8 +8,13 @@ import com.luxiergerie.Domain.Repository.BlackListedTokenRepository;
 import com.luxiergerie.Domain.Repository.EmployeeRepository;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import jakarta.servlet.http.Cookie;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 
 import com.luxiergerie.Domain.Repository.RoomRepository;
 import org.springframework.security.core.Authentication;
@@ -30,6 +36,7 @@ public class TokenService {
   private final BlackListedTokenRepository blackListedTokenRepository;
   private final EmployeeRepository  employeeRepository;
   private final RoomRepository roomRepository;
+  private final JwtDecoder jwtDecoder;
 
   /**
    * Constructs a TokenService object with the specified JwtEncoder.
@@ -38,12 +45,13 @@ public class TokenService {
    * @param roomRepository
    */
   public TokenService(JwtEncoder encoder, BlackListTokenService blackListTokenService,
-                      BlackListedTokenRepository blackListedTokenRepository, EmployeeRepository employeeRepository, RoomRepository roomRepository) {
+                      BlackListedTokenRepository blackListedTokenRepository, EmployeeRepository employeeRepository, RoomRepository roomRepository, JwtDecoder jwtDecoder) {
     this.encoder = encoder;
     this.blackListTokenService = blackListTokenService;
     this.blackListedTokenRepository = blackListedTokenRepository;
     this.employeeRepository = employeeRepository;
     this.roomRepository = roomRepository;
+    this.jwtDecoder = jwtDecoder;
   }
 
   /**
@@ -68,7 +76,7 @@ public class TokenService {
 
     BlackListedToken blackListedToken = blackListedTokenRepository.findByUserId(userId);
     if (blackListedToken != null) {
-      if (blackListTokenService.isBlacklistTokenExpired(blackListedToken.getExpiryDate(), blackListedToken) == false) {
+      if (!blackListTokenService.isBlacklistTokenExpired(blackListedToken.getExpiryDate(), blackListedToken)) {
         return blackListedToken.getToken();
       } else {
         var newToken = "";
@@ -130,5 +138,34 @@ public class TokenService {
     var jwtEncoded = this.encoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
     blackListTokenService.blacklistToken(jwtEncoded, expirationDate, userId);
     return jwtEncoded;
+  }
+
+  private boolean validateToken(String token) {
+    BlackListedToken blackListedToken = blackListedTokenRepository.findByToken(token);
+    if (blackListedToken != null) {
+      if (blackListedToken.isBlackListed()) {
+        return !blackListTokenService.isBlacklistTokenExpired(blackListedToken.getExpiryDate(), blackListedToken);
+      } else {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean isTokenValidAndNotExpired(String token) {
+    boolean isValid = this.validateToken(token);
+    if (!isValid) {
+      return false;
+    }
+
+    Date expirationDate = this.getTokenExpirationDate(String.valueOf(token));
+    return expirationDate.after(new Date());
+  }
+
+  private Date getTokenExpirationDate(String token) {
+    Jwt jwt = this.jwtDecoder.decode(token);
+    Map<String, Object> claims = jwt.getClaims();
+    Instant expInstant = (Instant) claims.get("exp");
+    return new Date(expInstant.getEpochSecond() * 1000);
   }
 }
