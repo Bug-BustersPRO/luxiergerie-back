@@ -4,14 +4,13 @@ import com.luxiergerie.DTO.SectionDTO;
 import com.luxiergerie.Domain.Entity.Category;
 import com.luxiergerie.Domain.Entity.Section;
 import com.luxiergerie.Domain.Repository.SectionRepository;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.springframework.web.bind.annotation.*;
+import static com.luxiergerie.Domain.Mapper.SectionMapper.MappedSectionFrom;
 
 @RestController
 @RequestMapping("/api/sections")
@@ -28,7 +27,7 @@ public class SectionController {
         List<Section> sections = sectionRepository.findAll();
         List<SectionDTO> sectionDTOs = new ArrayList<>();
         for (Section section : sections) {
-            sectionDTOs.add(convertToDTO(section));
+            sectionDTOs.add(MappedSectionFrom(section));
         }
         return sectionDTOs;
       }
@@ -38,7 +37,7 @@ public class SectionController {
         UUID nonNullId = Objects.requireNonNull(id, "Section ID must not be null");
         Section section = sectionRepository.findById(nonNullId)
                 .orElseThrow(() -> new RuntimeException("Section not found with id: " + nonNullId));
-        return convertToDTO(section);
+        return MappedSectionFrom(section);
     }
 
   @GetMapping("/{id}/categories")
@@ -54,9 +53,9 @@ public class SectionController {
 
   @PostMapping("")
   public SectionDTO createSection(@RequestBody SectionDTO sectionDTO) {
-    Section section = convertToEntity(sectionDTO);
+    Section section = MappedSectionFrom(sectionDTO);
     Section savedSection = sectionRepository.save(section);
-    return convertToDTO(savedSection);
+    return MappedSectionFrom(savedSection);
   }
 
   @PutMapping("/{id}")
@@ -68,7 +67,7 @@ public class SectionController {
         sectionToUpdate.setName(sectionDTO.getName());
         sectionToUpdate.setImage(sectionDTO.getImage());
         Section updatedSection = sectionRepository.save(sectionToUpdate);
-        return convertToDTO(updatedSection);
+        return MappedSectionFrom(updatedSection);
     } else {
         throw new RuntimeException("Section not found with id: " + nonNullId);
     }
@@ -79,21 +78,4 @@ public class SectionController {
     sectionRepository.deleteById(id);
   }
 
-  private SectionDTO convertToDTO(Section section) {
-    SectionDTO sectionDTO = new SectionDTO();
-    sectionDTO.setId(section.getId());
-    sectionDTO.setName(section.getName());
-    sectionDTO.setImage(section.getImage());
-    sectionDTO.setCategories(section.getCategories());
-    return sectionDTO;
-}
-
-private Section convertToEntity(SectionDTO sectionDTO) {
-    Section section = new Section();
-    section.setId(sectionDTO.getId());
-    section.setName(sectionDTO.getName());
-    section.setImage(sectionDTO.getImage());
-    section.setCategories(sectionDTO.getCategories());
-    return section;
-}
 }

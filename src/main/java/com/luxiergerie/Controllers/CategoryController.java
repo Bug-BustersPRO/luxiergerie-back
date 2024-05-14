@@ -2,24 +2,27 @@ package com.luxiergerie.Controllers;
 
 import com.luxiergerie.DTO.AccommodationDTO;
 import com.luxiergerie.DTO.CategoryDTO;
-import com.luxiergerie.DTO.SectionDTO;
 import com.luxiergerie.Domain.Entity.Accommodation;
 import com.luxiergerie.Domain.Entity.Category;
 import com.luxiergerie.Domain.Entity.Section;
+import com.luxiergerie.Domain.Mapper.AccommodationMapper;
+import com.luxiergerie.Domain.Mapper.CategoryMapper;
 import com.luxiergerie.Domain.Repository.CategoryRepository;
 import com.luxiergerie.Domain.Repository.SectionRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import static java.util.Objects.requireNonNull;
+import static com.luxiergerie.Domain.Mapper.CategoryMapper.MappedCategoryFrom;
+import static java.util.stream.Collectors.*;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static java.util.Objects.requireNonNull;
-
-import java.util.ArrayList;
-
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/categories")
 public class CategoryController {
     private final CategoryRepository categoryRepository;
     private final SectionRepository sectionRepository;
@@ -29,39 +32,33 @@ public class CategoryController {
         this.sectionRepository = sectionRepository;
     }
 
-    @GetMapping("/categories")
+    @GetMapping("")
     public List<CategoryDTO> getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
-        List<CategoryDTO> categoryDTOs = new ArrayList<>();
-        for (Category category : categories) {
-          categoryDTOs.add(convertToDTO(category));
-        }
-        return categoryDTOs;
+        return categories.stream()
+                .map(CategoryMapper::MappedCategoryFrom)
+                .collect(toList());
     }
 
-    @GetMapping("/categories/{id}")
+    @GetMapping("/{id}")
     public CategoryDTO getCategoryById(@PathVariable UUID id) {
-        UUID nonNullId = requireNonNull(id, "Category ID must not be null");
-        Category category = categoryRepository.findById(nonNullId)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + nonNullId));
-          return convertToDTO(category);
+        Optional<Category> categoryOptional = categoryRepository.findById(id);
+        if(categoryOptional.isPresent()) {
+            return MappedCategoryFrom(categoryOptional.get());
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found with ID: " + id);
+        }
     }
 
-    @GetMapping("/categories/{id}/accommodations")
+    @GetMapping("/{id}/accommodations")
     public List<AccommodationDTO> getAccommodationsByCategories(@PathVariable UUID id) {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
         if (categoryOptional.isPresent()) {
             Category category = categoryOptional.get();
             List<Accommodation> accommodations = category.getAccommodations();
-            List<AccommodationDTO> accommodationDTOs = new ArrayList<>();
-            for (Accommodation accommodation : accommodations) {
-                AccommodationDTO accommodationDTO = convertToAccommodationDTO(accommodation);
-                // Ajouter les informations de CategoryDTO à chaque AccommodationDTO
-                CategoryDTO categoryDTO = convertToDTO(category);
-                accommodationDTO.setCategory(categoryDTO);
-                accommodationDTOs.add(accommodationDTO);
-            }
-            return accommodationDTOs;
+            return accommodations.stream()
+                    .map(AccommodationMapper::MappedAccommodationFrom)
+                    .collect(toList());
         }
         throw new RuntimeException("Category not found with id: " + id);
     }
@@ -71,10 +68,10 @@ public class CategoryController {
       Optional<Section> sectionOptional = sectionRepository.findById(section_id);
       if (sectionOptional.isPresent()) {
           Section section = sectionOptional.get();
-          Category category = convertToEntity(categoryDTO);
+          Category category = MappedCategoryFrom(categoryDTO);
           category.setSection(section);
           Category savedCategory = categoryRepository.save(category);
-          return convertToDTO(savedCategory);
+          return MappedCategoryFrom(savedCategory);
       }
       throw new RuntimeException("Section not found with id: " + section_id);
   }
@@ -91,7 +88,7 @@ public class CategoryController {
           categoryToUpdate.setAccommodations(categoryDTO.getAccommodations());
           categoryToUpdate.setSection(categoryDTO.getSection());
           Category updatedCategory = categoryRepository.save(categoryToUpdate);
-          return convertToDTO(updatedCategory);
+          return MappedCategoryFrom(updatedCategory);
       }
       throw new RuntimeException("Category not found with id: " + nonNullId);
   }
@@ -100,37 +97,5 @@ public class CategoryController {
     public void deleteCategory(@PathVariable UUID id) {
         categoryRepository.deleteById(id);
     }
-
-      // Méthode utilitaire pour convertir une entité Section en DTO
-    private CategoryDTO convertToDTO(Category category) {
-    CategoryDTO categoryDTO = new CategoryDTO();
-    categoryDTO.setId(category.getId());
-    categoryDTO.setName(category.getName());
-    categoryDTO.setImage(category.getImage());
-    categoryDTO.setDescription(category.getDescription());
-    categoryDTO.setAccommodations(category.getAccommodations());
-    categoryDTO.setSection(category.getSection());
-    return categoryDTO;
-    }
-
-// Méthode utilitaire pour convertir un DTO Section en entité
-    private Category convertToEntity(CategoryDTO categoryDTO) {
-    Category category = new Category();
-    category.setId(categoryDTO.getId());
-    category.setName(categoryDTO.getName());
-    category.setImage(categoryDTO.getImage());
-    category.setDescription(categoryDTO.getDescription());
-    category.setAccommodations(categoryDTO.getAccommodations());
-    category.setSection(categoryDTO.getSection());
-    return category;
-    }
-
-    private AccommodationDTO convertToAccommodationDTO(Accommodation accommodation) {
-      AccommodationDTO accommodationDTO = new AccommodationDTO();
-      accommodationDTO.setId(accommodation.getId());
-      accommodationDTO.setName(accommodation.getName());
-      accommodationDTO.setDescription(accommodation.getDescription());
-      return accommodationDTO;
-  }
 
 }

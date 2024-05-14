@@ -17,13 +17,6 @@ public class RoomPinAuthenticationToken extends AbstractAuthenticationToken {
         setAuthenticated(false);
     }
 
-    public RoomPinAuthenticationToken(int roomNumber, int pin, Collection<? extends GrantedAuthority> authorities) {
-        super(authorities);
-        this.roomNumber = roomNumber;
-        this.pin = pin;
-        super.setAuthenticated(true);
-    }
-
     @Override
     public Object getCredentials() {
         return pin;

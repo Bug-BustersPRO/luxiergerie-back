@@ -19,6 +19,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +29,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
 
 import static io.micrometer.common.util.StringUtils.isEmpty;
 import static java.lang.String.valueOf;
@@ -132,13 +137,7 @@ public class AuthController {
         if (jwt == null) {
             throw new ResponseStatusException(UNAUTHORIZED, "Invalid username/password supplied");
         }
-        Cookie cookie = new Cookie("jwt-token", jwt);
-        cookie.setSecure(true);
-        cookie.setHttpOnly(false);
-        cookie.getValue();
-        cookie.setPath("/");
-        cookie.setMaxAge(24 * 60 * 60);
-        response.addCookie(cookie);
+        generateCookie(jwt, response);
         getContext().setAuthentication(authentication);
 
         return new ResponseEntity<>("User login successfully!...", OK);
@@ -185,11 +184,7 @@ public class AuthController {
                     new RoomPinAuthenticationToken(loginClientDTO.getRoomNumber(), loginClientDTO.getPassword()));
             String jwt = tokenService.generateToken(authentication);
 
-            Cookie cookie = new Cookie("client-JWT-token", jwt);
-            cookie.setSecure(true);
-            cookie.setHttpOnly(true);
-            cookie.setPath("/");
-            response.addCookie(cookie);
+            generateCookie(jwt, response);
 
             getContext().setAuthentication(authentication);
 
@@ -197,6 +192,27 @@ public class AuthController {
         } catch (AuthenticationException e) {
             return new ResponseEntity<>("Invalid room number or password", UNAUTHORIZED);
         }
+    }
+
+    @GetMapping("/validate-token")
+    public ResponseEntity<String> validateToken(HttpServletRequest request, @RequestHeader("Token") String test){
+        if (!Objects.equals(test, "")) {
+            if (tokenService.isTokenValidAndNotExpired(test)) {
+                return ResponseEntity.ok("Token is valid");
+            }
+        }
+
+        return ResponseEntity.status(NOT_ACCEPTABLE).body("Token is not valid or expired");
+    }
+
+    private void generateCookie(String jwt, HttpServletResponse response) {
+        Cookie cookie = new Cookie("jwt-token", jwt);
+        cookie.setSecure(true);
+        cookie.setHttpOnly(false);
+        cookie.getValue();
+        cookie.setPath("/");
+        cookie.setMaxAge(24 * 60 * 60);
+        response.addCookie(cookie);
     }
 
 }

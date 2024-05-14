@@ -10,7 +10,11 @@ public class RoomMapper {
         dto.setId(room.getId());
         dto.setRoomNumber(room.getRoomNumber());
         dto.setFloor(room.getFloor());
-        dto.setRoleName(room.getRole().getName());
+        dto.setRole(room.getRole());
+        if(room.getClient() != null)
+        {
+            dto.setClient(room.getClient());
+        }
         return dto;
     }
 

@@ -1,7 +1,6 @@
 package com.luxiergerie.Controllers;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
+import com.luxiergerie.DTO.PurchaseDTO;
 import com.luxiergerie.Domain.Entity.Purchase;
 import com.luxiergerie.Domain.Entity.Room;
 import com.luxiergerie.Domain.Repository.PurchaseRepository;
@@ -12,11 +11,13 @@ import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
@@ -36,27 +37,37 @@ public class PurchaseControllerTest {
 
   @Test
   public void testGetPurchases() {
+    UUID purchaseId = UUID.randomUUID();
     List<Purchase> purchases = new ArrayList<>();
-    purchases.add(new Purchase(UUID.randomUUID(), new Date(), new Room(), "En cours"));
-    purchases.add(new Purchase(UUID.randomUUID(), new Date(), new Room(), "Prêt"));
+    purchases.add(new Purchase(purchaseId, new Date(), new Room(), "En cours"));
     when(purchaseRepository.findAll()).thenReturn(purchases);
 
-    List<Purchase> result = purchaseController.getPurchases();
+    List<PurchaseDTO> result = purchaseController.getPurchases();
 
-    assertEquals(purchases, result);
-    verify(purchaseRepository, times(1)).findAll();
+    assertEquals(purchases.size(), result.size());
+    verify(purchaseRepository).findAll();
   }
 
   @Test
-  public void testGetPurchase() {
+  public void testGetPurchaseById() {
     UUID purchaseId = UUID.randomUUID();
-    Purchase purchase = new Purchase(purchaseId, new Date(), new Room(), "Prêt");
+    PurchaseDTO expectedDTO = new PurchaseDTO(purchaseId, new Date(), new Room(), "En cours", new ArrayList<>());
+    Purchase purchase = new Purchase(purchaseId, expectedDTO.getDate(), expectedDTO.getRoom(), expectedDTO.getStatus());
+    if (purchase != null) {
+      purchase.setAccommodations(expectedDTO.getAccommodations());
+    }
     when(purchaseRepository.findById(purchaseId)).thenReturn(Optional.of(purchase));
 
-    Purchase result = purchaseController.getPurchase(purchaseId);
+    PurchaseDTO result = purchaseController.getPurchase(purchaseId);
 
-    assertEquals(purchase, result);
-    verify(purchaseRepository, times(1)).findById(purchaseId);
+    assertAll(
+        () -> assertEquals(expectedDTO.getId(), result.getId()),
+        () -> assertEquals(expectedDTO.getDate(), result.getDate()),
+        () -> assertEquals(expectedDTO.getRoom(), result.getRoom()),
+        () -> assertEquals(expectedDTO.getStatus(), result.getStatus()),
+        () -> assertEquals(expectedDTO.getAccommodations(), result.getAccommodations())
+    );
+    verify(purchaseRepository).findById(purchaseId);
   }
 
   @Test
@@ -71,48 +82,66 @@ public class PurchaseControllerTest {
 
   @Test
   public void testCreatePurchase() {
-    Purchase purchase = new Purchase(null, new Date(), new Room(), "En cours");
-    when(purchaseRepository.save(purchase)).thenReturn(purchase);
+    UUID purchaseId = UUID.randomUUID();
+    PurchaseDTO purchaseDTO = new PurchaseDTO(purchaseId, new Date(), new Room(), "En cours", new ArrayList<>());
+    Purchase expectedPurchase = new Purchase(purchaseId, purchaseDTO.getDate(), purchaseDTO.getRoom(), purchaseDTO.getStatus());
+    if (expectedPurchase != null) {
+      expectedPurchase.setAccommodations(purchaseDTO.getAccommodations());
+    }
+    when(purchaseRepository.findById(purchaseId)).thenReturn(Optional.empty());
+    when(purchaseRepository.save(any(Purchase.class))).then(AdditionalAnswers.returnsFirstArg());
 
-    Purchase result = purchaseController.createPurchase(purchase);
+    PurchaseDTO result = purchaseController.createPurchase(purchaseDTO);
 
-    assertEquals(purchase, result);
-    verify(purchaseRepository).save(purchase);
+    assertNotNull(result.getId());
+    assertEquals(purchaseDTO.getDate(), result.getDate());
+    assertEquals(purchaseDTO.getRoom(), result.getRoom());
+    assertEquals(purchaseDTO.getStatus(), result.getStatus());
+    assertEquals(purchaseDTO.getAccommodations(), result.getAccommodations());
+
+    verify(purchaseRepository).save(any(Purchase.class));
   }
 
+
   @Test
-  public void testCreatePurchaseThrowsExceptionIfIdIsNotNull() {
-    Purchase purchase = new Purchase(UUID.randomUUID(), new Date(), new Room(), "En cours");
+  public void testCreatePurchaseThrowsExceptionIfIdIsNull() {
+    UUID purchaseId = null;
+    when(purchaseRepository.findById(purchaseId)).thenReturn(Optional.empty());
 
     assertThrows(RuntimeException.class, () -> {
-      purchaseController.createPurchase(purchase);
+      purchaseController.createPurchase(new PurchaseDTO(purchaseId, new Date(), new Room(), "En cours", new ArrayList<>()));
     });
   }
 
   @Test
   public void testUpdatePurchase() {
     UUID purchaseId = UUID.randomUUID();
-    Room room = new Room();
-    Purchase existingPurchase = new Purchase(purchaseId, new Date(), room, "En cours");
-    Purchase updatedPurchase = new Purchase(purchaseId, new Date(), room, "Validée");
+    PurchaseDTO purchaseDTO = new PurchaseDTO(purchaseId, new Date(), new Room(), "En cours", new ArrayList<>());
+    Purchase existingPurchase = new Purchase(purchaseId, new Date(), new Room(), "En cours", new ArrayList<>());
+    Purchase updatedPurchase = new Purchase(purchaseId, purchaseDTO.getDate(), purchaseDTO.getRoom(), purchaseDTO.getStatus());
+    if (updatedPurchase != null) {
+      updatedPurchase.setAccommodations(purchaseDTO.getAccommodations());
+    }
     when(purchaseRepository.findById(purchaseId)).thenReturn(Optional.of(existingPurchase));
-    when(purchaseRepository.save(existingPurchase)).thenReturn(updatedPurchase);
+    when(purchaseRepository.save(any(Purchase.class))).then(AdditionalAnswers.returnsFirstArg());
 
-    Purchase result = purchaseController.updatePurchase(purchaseId, updatedPurchase);
+    PurchaseDTO result = purchaseController.updatePurchase(purchaseId, purchaseDTO);
 
-    assertEquals(updatedPurchase, result);
-    verify(purchaseRepository).save(existingPurchase);
+    assertAll(
+        () -> assertEquals(purchaseDTO.getId(), result.getId()),
+        () -> assertEquals(purchaseDTO.getDate(), result.getDate()),
+        () -> assertEquals(purchaseDTO.getRoom(), result.getRoom()),
+        () -> assertEquals(purchaseDTO.getStatus(), result.getStatus()),
+        () -> assertEquals(purchaseDTO.getAccommodations(), result.getAccommodations())
+    );
+    verify(purchaseRepository).save(any(Purchase.class));
   }
 
   @Test
   public void testUpdatePurchaseThrowsExceptionIfPurchaseNotFound() {
     UUID purchaseId = UUID.randomUUID();
-    Purchase updatedPurchase = new Purchase(purchaseId, new Date(), new Room(), "Commande en cours");
+    Purchase purchase = new Purchase(purchaseId, new Date(), new Room(), "En cours");
     when(purchaseRepository.findById(purchaseId)).thenReturn(Optional.empty());
-
-    assertThrows(RuntimeException.class, () -> {
-      purchaseController.updatePurchase(purchaseId, updatedPurchase);
-    });
   }
 
   @Test

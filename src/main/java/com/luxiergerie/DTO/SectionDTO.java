@@ -1,17 +1,17 @@
 package com.luxiergerie.DTO;
 
+import com.luxiergerie.Domain.Entity.Category;
 import java.util.List;
 import java.util.UUID;
-
-import com.luxiergerie.Domain.Entity.Category;
 
 public class SectionDTO {
 
   private UUID id;
   private String name;
   private String image;
+  private String description;
+  private String title;
   private List<Category> categories;
-
 
   public SectionDTO() {
   }
@@ -46,6 +46,22 @@ public class SectionDTO {
 
   public void setCategories(List<Category> categories) {
     this.categories = categories;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
   }
 
 }
