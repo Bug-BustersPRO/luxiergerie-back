@@ -29,8 +29,6 @@ public class Accommodation {
     @Column(name="is_reservable")
     private boolean isReservable;
 
-
-
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "category_id")

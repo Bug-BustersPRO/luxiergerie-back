@@ -16,7 +16,6 @@ public class AccommodationDTO {
     private String priceToDisplay;
     private boolean isReservable;
 
-
     @JsonIgnore
     private UUID categoryId;
     @JsonIgnore
