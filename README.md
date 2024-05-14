@@ -2,7 +2,7 @@ To RUN (en local ou via une image issu de dockerHub)
 
 mvn clean install -DskipTests (à lancer après toute modification du fichier docker-compose)
 
-Si le fichier d'import SQL ne fonctionne pas, pensez à lancer la commande : chmod +r import.sql
+Si le fichier d'import SQL ne fonctionne pas, pensez à lancer la commande : chmod +r ../src/main/resources/import.sql
 
 docker-compose up --build
 
