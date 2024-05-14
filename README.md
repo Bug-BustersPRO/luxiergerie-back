@@ -1,6 +1,8 @@
-To RUN (en local)
+To RUN (en local ou via une image issu de dockerHub)
 
-mvn clean install -DskipTests
+mvn clean install -DskipTests (à lancer après toute modification du fichier docker-compose)
+
+Si le fichier d'import SQL ne fonctionne pas, pensez à lancer la commande : chmod +r ../src/main/resources/import.sql
 
 docker-compose up --build
 
@@ -15,9 +17,8 @@ To NGINX and dockerHub
 
 4 - Build les images qui seront push sur dockerHub avec la commande : docker buildx build -t bugbstrspro/luxiergerie:main .
 
-5 - Push l'image avec : docker push "dockerHubUserName"/luxiergerie:main
+5 - Push l'image avec : docker push "bugbstrspro"/luxiergerie:main
 Idem pour luxiergerie:dev
-(remplacer le "dockerHubUserName" par le nom de votre compte dockerHub)
 
 6 - Lancer docker-compose up
 
