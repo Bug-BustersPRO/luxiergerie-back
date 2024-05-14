@@ -68,6 +68,7 @@ public class AccommodationController {
             accommodationToUpdate.setDescription(accommodationDTO.getDescription());
             accommodationToUpdate.setPrice(accommodationDTO.getPrice());
             accommodationToUpdate.setImage(accommodationDTO.getImage());
+            accommodationToUpdate.setReservable(accommodationDTO.isReservable());
             Accommodation updatedAccommodation = accommodationRepository.save(accommodationToUpdate);
             return MappedAccommodationFrom(updatedAccommodation);
         } else {

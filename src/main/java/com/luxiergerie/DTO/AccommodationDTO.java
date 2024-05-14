@@ -14,6 +14,8 @@ public class AccommodationDTO {
     private String image;
     private Float price;
     private String priceToDisplay;
+    private boolean isReservable;
+
 
     @JsonIgnore
     private UUID categoryId;
@@ -87,5 +89,12 @@ public class AccommodationDTO {
         this.priceToDisplay = priceToDisplay;
     }
 
+    public boolean isReservable() {
+      return isReservable;
+    }
+
+    public void setReservable(boolean isReservable) {
+      this.isReservable = isReservable;
+    }
 
 }

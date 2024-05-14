@@ -26,6 +26,11 @@ public class Accommodation {
     @Column(name = "price")
     private Float price;
 
+    @Column(name="is_reservable")
+    private boolean isReservable;
+
+
+
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "category_id")
@@ -123,6 +128,14 @@ public class Accommodation {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public boolean isReservable() {
+      return isReservable;
+    }
+
+    public void setReservable(boolean isReservable) {
+      this.isReservable = isReservable;
     }
 
 }
