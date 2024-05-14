@@ -15,6 +15,7 @@ public class AccommodationMapper {
         accommodationDTO.setDescription(accommodation.getDescription());
         accommodationDTO.setImage(accommodation.getImage());
         accommodationDTO.setPrice(accommodation.getPrice());
+        accommodationDTO.setReservable(accommodation.isReservable());
         String setDisplayPrice = convertPriceToDisplay(accommodation.getPrice());
         accommodationDTO.setPriceToDisplay(setDisplayPrice);
         accommodationDTO.setCategory(accommodation.getCategory().getId());
@@ -30,6 +31,7 @@ public class AccommodationMapper {
         accommodation.setPrice(accommodationDTO.getPrice());
         accommodation.setCategory(new Category());
         accommodation.setPurchases(accommodationDTO.getPurchases());
+        accommodation.setReservable(accommodationDTO.isReservable());
 
         return accommodation;
     }
