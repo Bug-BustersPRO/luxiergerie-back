@@ -29,6 +29,10 @@ public class Accommodation {
     @Column(name="is_reservable")
     private boolean isReservable;
 
+    @Column(name="quantity")
+    private Integer quantity = 0;
+
+
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "category_id")
@@ -118,6 +122,14 @@ public class Accommodation {
 
     public void setPrice(Float price) {
         this.price = price;
+    }
+
+    public Integer getQuantity() {
+      return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+      this.quantity = quantity;
     }
 
     public Category getCategory() {

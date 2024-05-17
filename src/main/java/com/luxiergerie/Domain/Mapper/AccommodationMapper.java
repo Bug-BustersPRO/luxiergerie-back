@@ -19,6 +19,7 @@ public class AccommodationMapper {
         String setDisplayPrice = convertPriceToDisplay(accommodation.getPrice());
         accommodationDTO.setPriceToDisplay(setDisplayPrice);
         accommodationDTO.setCategory(accommodation.getCategory().getId());
+        accommodationDTO.setQuantity(accommodation.getQuantity());
 
         return accommodationDTO;
     }
@@ -32,6 +33,7 @@ public class AccommodationMapper {
         accommodation.setCategory(new Category());
         accommodation.setPurchases(accommodationDTO.getPurchases());
         accommodation.setReservable(accommodationDTO.isReservable());
+        accommodationDTO.setQuantity(accommodation.getQuantity());
 
         return accommodation;
     }
