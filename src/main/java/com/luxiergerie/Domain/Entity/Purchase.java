@@ -22,8 +22,8 @@ public class Purchase {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "room_id")
-    private Room room;
+    @JoinColumn(name = "client_id")
+    private Client client;
 
     @Column(name = "status")
     private String status;
@@ -52,16 +52,16 @@ public class Purchase {
         return date;
     }
 
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
     public void setDate(Date date) {
         this.date = date;
-    }
-
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setRoom(Room room) {
-        this.room = room;
     }
 
     public String getStatus() {
@@ -80,18 +80,18 @@ public class Purchase {
         this.accommodations = accommodations;
     }
 
-    public Purchase(UUID id, Date date, Room room, String status, List<Accommodation> accommodations) {
+    public Purchase(UUID id, Date date, Client client, String status, List<Accommodation> accommodations) {
       this.id = id;
       this.date = date;
-      this.room = room;
+      this.client = client;
       this.status = status;
       this.accommodations = accommodations;
     }
 
-    public Purchase(UUID id, Date date, Room room, String status) {
+    public Purchase(UUID id, Date date, Client client, String status) {
       this.id = id;
       this.date = date;
-      this.room = room;
+      this.client = client;
       this.status = status;
     }
 

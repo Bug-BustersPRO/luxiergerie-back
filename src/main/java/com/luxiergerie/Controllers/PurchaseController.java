@@ -1,7 +1,9 @@
 package com.luxiergerie.Controllers;
 
 import com.luxiergerie.DTO.PurchaseDTO;
+import com.luxiergerie.Domain.Entity.Accommodation;
 import com.luxiergerie.Domain.Entity.Purchase;
+import com.luxiergerie.Domain.Entity.Room;
 import com.luxiergerie.Domain.Mapper.PurchaseMapper;
 import com.luxiergerie.Domain.Repository.PurchaseRepository;
 
@@ -11,6 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.luxiergerie.Domain.Repository.RoomRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,18 +34,37 @@ import static java.util.stream.Collectors.*;
 public class PurchaseController {
 
   private final PurchaseRepository purchaseRepository;
+  private final RoomRepository roomRepository;
 
-  public PurchaseController(PurchaseRepository purchaseRepository) {
+  public PurchaseController(PurchaseRepository purchaseRepository, RoomRepository roomRepository) {
     this.purchaseRepository = purchaseRepository;
+      this.roomRepository = roomRepository;
   }
 
   @GetMapping("")
   public List<PurchaseDTO> getPurchases() {
     List<Purchase> purchases = purchaseRepository.findAll();
+    List<Room> rooms = roomRepository.findAll();
+
     return purchases.stream()
             .map(PurchaseMapper::MappedPurchaseFrom)
-            .collect(toList());
+            .map(purchaseDTO -> {
+              rooms.stream()
+                      .filter(room -> room.getClient().getId().equals(purchaseDTO.getClient().getId()))
+                      .findFirst()
+                      .ifPresent(room -> purchaseDTO.setRoomNumber(room.getRoomNumber()));
+
+              // Calculate the total price
+              Float totalPrice = (float) purchaseDTO.getAccommodations().stream()
+                      .mapToDouble(Accommodation::getPrice)
+                      .sum();
+              purchaseDTO.setTotalPrice(totalPrice);
+
+              return purchaseDTO;
+            })
+            .collect(Collectors.toList());
   }
+
 
   @GetMapping("/{id}")
   public PurchaseDTO getPurchase(@PathVariable("id") UUID purchaseId) {
@@ -71,7 +93,7 @@ public class PurchaseController {
     if (purchaseOptional.isPresent()) {
         Purchase purchase = purchaseOptional.get();
         purchase.setDate(purchaseDTO.getDate());
-        purchase.setRoom(purchaseDTO.getRoom());
+        purchase.setClient(purchaseDTO.getClient());
         purchase.setStatus(purchaseDTO.getStatus());
         purchase.setAccommodations(purchaseDTO.getAccommodations());
         Purchase updatedPurchase = purchaseRepository.save(purchase);
@@ -88,5 +110,4 @@ public class PurchaseController {
     }
     purchaseRepository.deleteById(id);
   }
-
 }
