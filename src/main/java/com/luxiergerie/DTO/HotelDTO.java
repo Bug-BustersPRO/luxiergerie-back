@@ -1,32 +1,17 @@
-package com.luxiergerie.Domain.Entity;
-
-
-import jakarta.persistence.*;
+package com.luxiergerie.DTO;
 
 import java.util.List;
 import java.util.UUID;
 
-@Entity
-@Table(name = "hotel")
-public class Hotel {
+public class HotelDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    @Column(nullable = false, name = "name", length = 50)
     private String name;
-
-    @Column(nullable = false, name = "image", columnDefinition = "LONGBLOB")
-    @Lob
     private byte[] image;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "hotel_colors", joinColumns = @JoinColumn(name = "hotel_id"))
-    @Column(nullable = false, name = "colors", length = 50)
     private List<String> colors;
 
-    public Hotel() {
+    public HotelDTO(){
+
     }
 
     public UUID getId() {
@@ -61,4 +46,3 @@ public class Hotel {
         this.colors = colors;
     }
 }
-
