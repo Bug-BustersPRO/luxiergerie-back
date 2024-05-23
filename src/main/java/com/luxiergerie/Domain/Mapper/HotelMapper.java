@@ -8,7 +8,7 @@ public class HotelMapper {
     public static HotelDTO MappedHotelFrom(Hotel hotel) {
         HotelDTO hotelDTO = new HotelDTO();
         hotelDTO.setId(hotel.getId());
-        hotelDTO.setName(hotelDTO.getName());
+        hotelDTO.setName(hotel.getName());
         hotelDTO.setImage(hotel.getImage());
         hotelDTO.setColors(hotel.getColors());
 

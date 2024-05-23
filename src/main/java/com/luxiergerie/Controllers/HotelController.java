@@ -5,6 +5,7 @@ import com.luxiergerie.Domain.Entity.Hotel;
 import com.luxiergerie.Domain.Mapper.HotelMapper;
 import com.luxiergerie.Domain.Repository.HotelRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,6 +41,17 @@ public class HotelController {
         Optional<Hotel> hotelOptional = hotelRepository.findById(id);
         if (hotelOptional.isPresent()) {
             return new ResponseEntity<>(HotelMapper.MappedHotelFrom(hotelOptional.get()), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/{id}/image")
+    public ResponseEntity<byte[]> getHotelImage(@PathVariable UUID id) {
+        Optional<Hotel> hotelOptional = hotelRepository.findById(id);
+        if (hotelOptional.isPresent()) {
+            byte[] image = hotelOptional.get().getImage();
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
