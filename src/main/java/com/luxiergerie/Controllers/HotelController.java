@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.luxiergerie.Domain.Mapper.HotelMapper.MappedHotelFrom;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 @RestController
@@ -29,7 +31,7 @@ public class HotelController {
     }
 
     @GetMapping
-    public List<HotelDTO> getAllHotels() {
+    public List<HotelDTO> getHotel() {
         List<Hotel> hotels = hotelRepository.findAll();
         return hotels.stream()
                 .map(HotelMapper::MappedHotelFrom)
@@ -40,15 +42,15 @@ public class HotelController {
     public ResponseEntity<HotelDTO> getHotelById(@PathVariable UUID id) {
         Optional<Hotel> hotelOptional = hotelRepository.findById(id);
         if (hotelOptional.isPresent()) {
-            return new ResponseEntity<>(HotelMapper.MappedHotelFrom(hotelOptional.get()), HttpStatus.OK);
+            return new ResponseEntity<>(MappedHotelFrom(hotelOptional.get()), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @GetMapping("/{id}/image")
-    public ResponseEntity<byte[]> getHotelImage(@PathVariable UUID id) {
-        Optional<Hotel> hotelOptional = hotelRepository.findById(id);
+    @GetMapping("/image")
+    public ResponseEntity<byte[]> getHotelImage() {
+        Optional<Hotel> hotelOptional = hotelRepository.findAll().stream().findFirst();
         if (hotelOptional.isPresent()) {
             byte[] image = hotelOptional.get().getImage();
             return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
@@ -57,15 +59,52 @@ public class HotelController {
         }
     }
 
+    @PutMapping
+    public ResponseEntity<HotelDTO> updateHotel(@RequestParam(value = "name", required = false) String name,
+                                                @RequestParam(value = "image", required = false) MultipartFile image,
+                                                @RequestParam(value = "colors", required = false) List<String> colors) throws IOException {
+        Optional<Hotel> hotelOptional = hotelRepository.findAll().stream().findFirst();
+        if (hotelOptional.isPresent()) {
+            Hotel hotelToUpdate = hotelOptional.get();
+
+            if (name != null) {
+                hotelToUpdate.setName(name);
+            }
+            if (colors != null) {
+                if (colors.size() > 3) {
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+                hotelToUpdate.setColors(colors);
+            }
+            if (image != null && !image.isEmpty()) {
+                hotelToUpdate.setImage(image.getBytes());
+            }
+
+            Hotel updatedHotel = hotelRepository.save(hotelToUpdate);
+            return new ResponseEntity<>(MappedHotelFrom(updatedHotel), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PostMapping
     public ResponseEntity<HotelDTO> createHotel(@RequestParam("name") String name,
                                                 @RequestParam("image") MultipartFile image,
-                                                @RequestParam("colors")  List<String> colors) throws IOException {
+                                                @RequestParam("colors") List<String> colors) throws IOException {
+        List<Hotel> hotels = hotelRepository.findAll();
+        if (!hotels.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
+        if (colors.size() > 3) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         Hotel hotel = new Hotel();
         hotel.setName(name);
         hotel.setColors(colors);
         hotel.setImage(image.getBytes());
         Hotel savedHotel = hotelRepository.save(hotel);
-        return new ResponseEntity<>(HotelMapper.MappedHotelFrom(savedHotel), HttpStatus.CREATED);
+        return new ResponseEntity<>(MappedHotelFrom(savedHotel), HttpStatus.CREATED);
     }
 }
