@@ -38,16 +38,6 @@ public class HotelController {
                 .collect(toList());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<HotelDTO> getHotelById(@PathVariable UUID id) {
-        Optional<Hotel> hotelOptional = hotelRepository.findById(id);
-        if (hotelOptional.isPresent()) {
-            return new ResponseEntity<>(MappedHotelFrom(hotelOptional.get()), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
     @GetMapping("/image")
     public ResponseEntity<byte[]> getHotelImage() {
         Optional<Hotel> hotelOptional = hotelRepository.findAll().stream().findFirst();
