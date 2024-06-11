@@ -1,16 +1,16 @@
 package com.luxiergerie.Controllers;
 
+import com.luxiergerie.DTO.BillDTO;
 import com.luxiergerie.DTO.PurchaseDTO;
+import com.luxiergerie.DTO.PurchaseForBillDTO;
 import com.luxiergerie.Domain.Entity.Accommodation;
 import com.luxiergerie.Domain.Entity.Purchase;
 import com.luxiergerie.Domain.Entity.Room;
+import com.luxiergerie.Domain.Mapper.BillMapper;
 import com.luxiergerie.Domain.Mapper.PurchaseMapper;
 import com.luxiergerie.Domain.Repository.PurchaseRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.luxiergerie.Domain.Repository.RoomRepository;
@@ -26,47 +26,92 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import static com.luxiergerie.Domain.Mapper.PurchaseMapper.MappedPurchaseFrom;
-import static java.util.stream.Collectors.*;
 
 
 @RestController
 @RequestMapping("/api/purchases")
 public class PurchaseController {
 
-  private final PurchaseRepository purchaseRepository;
-  private final RoomRepository roomRepository;
+    private final PurchaseRepository purchaseRepository;
+    private final RoomRepository roomRepository;
 
-  public PurchaseController(PurchaseRepository purchaseRepository, RoomRepository roomRepository) {
-    this.purchaseRepository = purchaseRepository;
-      this.roomRepository = roomRepository;
-  }
+    public PurchaseController(PurchaseRepository purchaseRepository, RoomRepository roomRepository) {
+        this.purchaseRepository = purchaseRepository;
+        this.roomRepository = roomRepository;
+    }
 
-  @GetMapping("")
-  public List<PurchaseDTO> getPurchases() {
-    List<Purchase> purchases = purchaseRepository.findAll();
-    List<Room> rooms = roomRepository.findAll();
+    @GetMapping("")
+    public List<PurchaseDTO> getPurchases() {
+        List<Purchase> purchases = purchaseRepository.findAll();
+        List<Room> rooms = roomRepository.findAll();
 
-    return purchases.stream()
-            .map(PurchaseMapper::MappedPurchaseFrom)
-            .map(purchaseDTO -> {
-              rooms.stream()
-                      .filter(room -> room.getClient().getId().equals(purchaseDTO.getClient().getId()))
-                      .findFirst()
-                      .ifPresent(room -> purchaseDTO.setRoomNumber(room.getRoomNumber()));
+        return purchases.stream()
+                .map(PurchaseMapper::MappedPurchaseFrom)
+                .map(purchaseDTO -> {
+                    rooms.stream()
+                            .filter(room -> room.getClient().getId().equals(purchaseDTO.getClient().getId()))
+                            .findFirst()
+                            .ifPresent(room -> purchaseDTO.setRoomNumber(room.getRoomNumber()));
 
-              // Calculate the total price
-              Float totalPrice = (float) purchaseDTO.getAccommodations().stream()
-                      .mapToDouble(Accommodation::getPrice)
-                      .sum();
-              purchaseDTO.setTotalPrice(totalPrice);
+                    // Calculate the total price
+                    Float totalPrice = (float) purchaseDTO.getAccommodations().stream()
+                            .mapToDouble(Accommodation::getPrice)
+                            .sum();
+                    purchaseDTO.setTotalPrice(totalPrice);
 
-              return purchaseDTO;
-            })
-            .collect(Collectors.toList());
-  }
+                    return purchaseDTO;
+                })
+                .collect(Collectors.toList());
+    }
 
+    @GetMapping("/allByClient")
+    public List<BillDTO> getPurchasesByClient() {
+        // Fetch all purchases and rooms
+        List<Purchase> purchases = purchaseRepository.findAll();
+        List<PurchaseDTO> purchaseDTOs = purchases.stream()
+                .map(PurchaseMapper::MappedPurchaseFrom)
+                .toList();
 
-  @GetMapping("/{id}")
+        List<Room> rooms = roomRepository.findAll();
+
+        // Create a map of client IDs to room numbers for quick lookup
+        Map<UUID, Integer> clientIdToRoomNumber = rooms.stream()
+                .collect(Collectors.toMap(room -> room.getClient().getId(), Room::getRoomNumber));
+
+        // Process the purchases
+        Map<Integer, BillDTO> purchasesByRoom = new HashMap<>();
+        for (PurchaseDTO purchaseDTO : purchaseDTOs) {
+            PurchaseForBillDTO purchaseForBillDTO = PurchaseMapper.MappedPurchaseForBillFrom(purchaseDTO);
+            BillDTO billDTO = BillMapper.MappedPurchaseFrom(purchaseForBillDTO, purchaseDTO);
+
+            // Set the room number using the map
+            UUID clientId = purchaseDTO.getClient().getId();
+            if (clientIdToRoomNumber.containsKey(clientId)) {
+                billDTO.setRoomNumber(clientIdToRoomNumber.get(clientId));
+            }
+
+            float totalPrice = (float) purchaseDTO.getAccommodations().stream()
+                    .mapToDouble(Accommodation::getPrice)
+                    .sum();
+            billDTO.setTotalPrice(totalPrice);
+
+            // Add the purchase to the list of purchases for the room number
+            int roomNumber = billDTO.getRoomNumber();
+            if (purchasesByRoom.containsKey(roomNumber)) {
+                BillDTO existingBill = purchasesByRoom.get(roomNumber);
+                existingBill.setTotalPrice(existingBill.getTotalPrice() + totalPrice);
+                existingBill.getPurchasesForBillDTO().add(purchaseForBillDTO);
+            } else {
+                billDTO.getPurchasesForBillDTO().add(purchaseForBillDTO);
+                purchasesByRoom.put(roomNumber, billDTO);
+            }
+        }
+
+        // Convert the map values to a list and return
+        return new ArrayList<>(purchasesByRoom.values());
+    }
+
+    @GetMapping("/{id}")
   public PurchaseDTO getPurchase(@PathVariable("id") UUID purchaseId) {
     Optional<Purchase> purchaseOptional = purchaseRepository.findById(purchaseId);
     if (purchaseOptional.isPresent()) {

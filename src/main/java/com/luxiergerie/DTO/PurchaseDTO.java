@@ -2,6 +2,7 @@
 
   import com.luxiergerie.Domain.Entity.Accommodation;
   import com.luxiergerie.Domain.Entity.Client;
+  import com.luxiergerie.Domain.Entity.Purchase;
   import com.luxiergerie.Domain.Entity.Room;
   import java.util.ArrayList;
   import java.util.Date;
@@ -17,6 +18,19 @@
     private List<Accommodation> accommodations = new ArrayList<>();
     private int roomNumber;
     private Float totalPrice;
+    //private List<Purchase> purchases = new ArrayList<>();
+
+    public void setTotalPrice(Float totalPrice) {
+      this.totalPrice = totalPrice;
+    }
+
+//    public List<Purchase> getPurchases() {
+//      return purchases;
+//    }
+//
+//    public void setPurchases(List<Purchase> purchases) {
+//      this.purchases = purchases;
+//    }
 
     public Float getTotalPrice() {
       return totalPrice;
@@ -34,6 +48,7 @@
       this.accommodations = accommodations;
       this.roomNumber = roomNumber;
       this.totalPrice = totalPrice;
+      //  this.purchases = purchases;
     }
 
     public UUID getId() {

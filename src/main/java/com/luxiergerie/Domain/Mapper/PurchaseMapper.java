@@ -1,6 +1,9 @@
 package com.luxiergerie.Domain.Mapper;
 
+import com.luxiergerie.DTO.BillDTO;
 import com.luxiergerie.DTO.PurchaseDTO;
+import com.luxiergerie.DTO.PurchaseForBillDTO;
+import com.luxiergerie.Domain.Entity.Accommodation;
 import com.luxiergerie.Domain.Entity.Purchase;
 import com.luxiergerie.Domain.Entity.Room;
 
@@ -12,6 +15,7 @@ public class PurchaseMapper {
     purchaseDto.setClient(purchase.getClient());
     purchaseDto.setStatus(purchase.getStatus());
     purchaseDto.setAccommodations(purchase.getAccommodations());
+    purchaseDto.setTotalPrice(purchase.getAccommodations().stream().map(Accommodation::getPrice).reduce(0f, Float::sum));
     return purchaseDto;
   }
 
@@ -23,5 +27,16 @@ public class PurchaseMapper {
     purchase.setStatus(purchaseDto.getStatus());
     purchase.setAccommodations(purchaseDto.getAccommodations());
     return purchase;
+  }
+
+  public static PurchaseForBillDTO MappedPurchaseForBillFrom(PurchaseDTO purchaseDTO) {
+    PurchaseForBillDTO purchaseForBillDTO = new PurchaseForBillDTO();
+    purchaseForBillDTO.setId(purchaseDTO.getId());
+    purchaseForBillDTO.setDate(purchaseDTO.getDate());
+    purchaseForBillDTO.setStatus(purchaseDTO.getStatus());
+    purchaseForBillDTO.setAccommodations(purchaseDTO.getAccommodations());
+    purchaseForBillDTO.setTotalPrice(purchaseDTO.getTotalPrice());
+
+    return purchaseForBillDTO;
   }
 }

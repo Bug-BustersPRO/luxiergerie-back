@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.luxiergerie.Domain.Repository.RoomRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
@@ -30,6 +32,7 @@ public class PurchaseControllerTest {
 
   @Mock
   private PurchaseRepository purchaseRepository;
+  private RoomRepository roomRepository;
 
   @BeforeEach
   void setUp() {
@@ -40,8 +43,10 @@ public class PurchaseControllerTest {
   public void testGetPurchases() {
     UUID purchaseId = UUID.randomUUID();
     List<Purchase> purchases = new ArrayList<>();
-    purchases.add(new Purchase(purchaseId, new Date(), new Client(), "En cours"));
+    List<Room> rooms = new ArrayList<>();
+    purchases.add(new Purchase(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>()));
     when(purchaseRepository.findAll()).thenReturn(purchases);
+    when(roomRepository.findAll()).thenReturn(rooms);
 
     List<PurchaseDTO> result = purchaseController.getPurchases();
 
@@ -52,7 +57,7 @@ public class PurchaseControllerTest {
   @Test
   public void testGetPurchaseById() {
     UUID purchaseId = UUID.randomUUID();
-    PurchaseDTO expectedDTO = new PurchaseDTO(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>());
+    PurchaseDTO expectedDTO = new PurchaseDTO(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>(), 217, 1000.0f);
     Purchase purchase = new Purchase(purchaseId, expectedDTO.getDate(), expectedDTO.getClient(), expectedDTO.getStatus());
     if (purchase != null) {
       purchase.setAccommodations(expectedDTO.getAccommodations());
@@ -84,7 +89,7 @@ public class PurchaseControllerTest {
   @Test
   public void testCreatePurchase() {
     UUID purchaseId = UUID.randomUUID();
-    PurchaseDTO purchaseDTO = new PurchaseDTO(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>());
+    PurchaseDTO purchaseDTO = new PurchaseDTO(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>(), 217, 1000.0f);
     Purchase expectedPurchase = new Purchase(purchaseId, purchaseDTO.getDate(), purchaseDTO.getClient(), purchaseDTO.getStatus());
     if (expectedPurchase != null) {
       expectedPurchase.setAccommodations(purchaseDTO.getAccommodations());
@@ -110,14 +115,14 @@ public class PurchaseControllerTest {
     when(purchaseRepository.findById(purchaseId)).thenReturn(Optional.empty());
 
     assertThrows(RuntimeException.class, () -> {
-      purchaseController.createPurchase(new PurchaseDTO(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>()));
+      purchaseController.createPurchase(new PurchaseDTO(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>(), 217, 1000.0f));
     });
   }
 
   @Test
   public void testUpdatePurchase() {
     UUID purchaseId = UUID.randomUUID();
-    PurchaseDTO purchaseDTO = new PurchaseDTO(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>());
+    PurchaseDTO purchaseDTO = new PurchaseDTO(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>(), 217, 1000.0f);
     Purchase existingPurchase = new Purchase(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>());
     Purchase updatedPurchase = new Purchase(purchaseId, purchaseDTO.getDate(), purchaseDTO.getClient(), purchaseDTO.getStatus());
     if (updatedPurchase != null) {
