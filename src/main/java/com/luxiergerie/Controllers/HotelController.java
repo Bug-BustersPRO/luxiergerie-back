@@ -11,10 +11,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import static com.luxiergerie.Domain.Mapper.HotelMapper.MappedHotelFrom;
+import static java.util.Objects.*;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/api/hotel")
@@ -41,7 +44,7 @@ public class HotelController {
             byte[] image = hotelOptional.get().getImage();
             return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(NOT_FOUND);
         }
     }
 
@@ -54,23 +57,23 @@ public class HotelController {
         if (hotelOptional.isPresent()) {
             Hotel hotelToUpdate = hotelOptional.get();
 
-            if (name != null) {
+            if (nonNull(name)) {
                 hotelToUpdate.setName(name);
             }
-            if (colors != null) {
+            if (nonNull(colors)) {
                 if (colors.size() > 3) {
-                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(BAD_REQUEST);
                 }
                 hotelToUpdate.setColors(colors);
             }
-            if (image != null && !image.isEmpty()) {
+            if (nonNull(image) && !image.isEmpty()) {
                 hotelToUpdate.setImage(image.getBytes());
             }
 
             Hotel updatedHotel = hotelRepository.save(hotelToUpdate);
-            return new ResponseEntity<>(MappedHotelFrom(updatedHotel), HttpStatus.OK);
+            return new ResponseEntity<>(MappedHotelFrom(updatedHotel), OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(NOT_FOUND);
         }
     }
 
@@ -80,11 +83,11 @@ public class HotelController {
                                                 @RequestParam("colors") List<String> colors) throws IOException {
         List<Hotel> hotels = hotelRepository.findAll();
         if (!hotels.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            return new ResponseEntity<>(CONFLICT);
         }
 
         if (colors.size() > 3) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(BAD_REQUEST);
         }
 
         Hotel hotel = new Hotel();
@@ -92,7 +95,7 @@ public class HotelController {
         hotel.setColors(colors);
         hotel.setImage(image.getBytes());
         Hotel savedHotel = hotelRepository.save(hotel);
-        return new ResponseEntity<>(MappedHotelFrom(savedHotel), HttpStatus.CREATED);
+        return new ResponseEntity<>(MappedHotelFrom(savedHotel), CREATED);
     }
 
 }
