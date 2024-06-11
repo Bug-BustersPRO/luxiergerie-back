@@ -14,6 +14,13 @@ public class HotelDTO {
 
     }
 
+    public HotelDTO(UUID id, String name, byte[] image, List<String> colors) {
+        this.id = id;
+        this.name = name;
+        this.image = image;
+        this.colors = colors;
+    }
+
     public UUID getId() {
         return id;
     }
@@ -45,4 +52,5 @@ public class HotelDTO {
     public void setColors(List<String> colors) {
         this.colors = colors;
     }
+
 }

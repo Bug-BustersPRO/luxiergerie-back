@@ -1,5 +1,6 @@
 package com.luxiergerie.Controllers;
 
+import com.luxiergerie.DTO.HotelDTO;
 import com.luxiergerie.Domain.Entity.Hotel;
 import com.luxiergerie.Domain.Repository.HotelRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,13 +9,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 import java.util.Collections;
 import java.util.List;
-
+import java.util.Optional;
+import java.util.UUID;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -53,31 +56,28 @@ public class HotelControllerTest {
         verify(hotelRepository, times(1)).findAll();
     }
 
-    // TEST TO FIX
     @Test
     public void testUpdateHotel() throws Exception {
         MockMultipartFile image = new MockMultipartFile("image", "image.jpg", MediaType.IMAGE_JPEG_VALUE, "image".getBytes());
 
-        Hotel hotel = new Hotel();
-        hotel.setImage(image.getBytes());
-        hotel.setName("Hotel Name");
-        hotel.setColors(List.of("Red", "Blue", "Green"));
+        UUID hotelId = UUID.randomUUID();
+        Hotel existingHotel = new Hotel(hotelId, "Hotel Name", image.getBytes(), List.of("Red", "Blue", "Green"));
+        Hotel updatedHotel = new Hotel(hotelId, "Updated Hotel Name", image.getBytes(), List.of("White", "Yellow", "Green"));
+        HotelDTO updatedHotelDto = new HotelDTO(hotelId, "Updated Hotel Name", image.getBytes(), List.of("White", "Yellow", "Green"));
 
-        when(hotelRepository.findAll()).thenReturn(Collections.singletonList(hotel));
-
-        Hotel updatedHotel = new Hotel();
-        updatedHotel.setImage(image.getBytes());
-        updatedHotel.setName("Updated Hotel Name");
-        updatedHotel.setColors(List.of("Red", "Blue", "Green"));
-
+        when(hotelRepository.findById(hotelId)).thenReturn(Optional.of(existingHotel));
         when(hotelRepository.save(any(Hotel.class))).thenReturn(updatedHotel);
 
-        mockMvc.perform(multipart("/api/hotel")
-                        .file(image)
-                        .param("name", "Updated Hotel Name")
-                        .param("colors", "Red", "Blue", "Green"))
-                .andExpect(status().isOk());
+        ResponseEntity<HotelDTO> result = hotelController.updateHotel(hotelId, "Updated Hotel Name", image, List.of("White", "Yellow", "Green"));
 
+        assertAll(
+                () -> assertEquals(updatedHotelDto.getId(), result.getBody().getId()),
+                () -> assertEquals(updatedHotelDto.getName(), result.getBody().getName()),
+                () -> assertArrayEquals(updatedHotelDto.getImage(), result.getBody().getImage()),
+                () -> assertEquals(updatedHotelDto.getColors(), result.getBody().getColors())
+        );
+
+        verify(hotelRepository, times(1)).findById(hotelId);
         verify(hotelRepository, times(1)).save(any(Hotel.class));
     }
 

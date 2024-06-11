@@ -9,15 +9,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import static com.luxiergerie.Domain.Mapper.HotelMapper.MappedHotelFrom;
-import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 @RestController
@@ -49,11 +45,12 @@ public class HotelController {
         }
     }
 
-    @PutMapping
-    public ResponseEntity<HotelDTO> updateHotel(@RequestParam(value = "name", required = false) String name,
+    @PutMapping("/{id}")
+    public ResponseEntity<HotelDTO> updateHotel(@PathVariable UUID id,
+                                                @RequestParam(value = "name", required = false) String name,
                                                 @RequestParam(value = "image", required = false) MultipartFile image,
                                                 @RequestParam(value = "colors", required = false) List<String> colors) throws IOException {
-        Optional<Hotel> hotelOptional = hotelRepository.findAll().stream().findFirst();
+        Optional<Hotel> hotelOptional = hotelRepository.findById(id);
         if (hotelOptional.isPresent()) {
             Hotel hotelToUpdate = hotelOptional.get();
 
@@ -97,4 +94,5 @@ public class HotelController {
         Hotel savedHotel = hotelRepository.save(hotel);
         return new ResponseEntity<>(MappedHotelFrom(savedHotel), HttpStatus.CREATED);
     }
+
 }

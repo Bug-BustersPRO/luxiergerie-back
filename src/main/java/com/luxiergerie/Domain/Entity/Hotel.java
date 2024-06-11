@@ -2,7 +2,6 @@ package com.luxiergerie.Domain.Entity;
 
 
 import jakarta.persistence.*;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -27,6 +26,13 @@ public class Hotel {
     private List<String> colors;
 
     public Hotel() {
+    }
+
+    public Hotel(UUID id, String name, byte[] image, List<String> colors) {
+        this.id = id;
+        this.name = name;
+        this.image = image;
+        this.colors = colors;
     }
 
     public UUID getId() {
@@ -60,5 +66,6 @@ public class Hotel {
     public void setColors(List<String> colors) {
         this.colors = colors;
     }
+
 }
 
