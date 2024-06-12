@@ -1,5 +1,6 @@
 package com.luxiergerie.DTO;
 
+import com.luxiergerie.Domain.Entity.Purchase;
 import com.luxiergerie.Domain.Entity.Role;
 
 import java.util.UUID;
@@ -12,6 +13,15 @@ public class ClientDTO {
     private String phoneNumber;
     private UUID room;
     private Role role;
+    private Purchase purchase;
+
+    public Purchase getPurchase() {
+        return purchase;
+    }
+
+    public void setPurchase(Purchase purchase) {
+        this.purchase = purchase;
+    }
 
     public ClientDTO() {
     }

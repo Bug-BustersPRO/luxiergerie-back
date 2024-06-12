@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -62,9 +63,9 @@ public class CategoryControllerTest {
         UUID id = UUID.randomUUID();
         Category category = new Category( UUID.randomUUID(), "name", "description", "image", new ArrayList<>(), new Section());
         category.setId(id);
-        Accommodation accommodation1 = new Accommodation(UUID.randomUUID(), "name", "description", "image", 10F, category, new ArrayList<>());
+        Accommodation accommodation1 = new Accommodation(UUID.randomUUID(), "name", "description", "image", BigDecimal.valueOf(10.00), category, new ArrayList<>());
         accommodation1.setCategory(category);
-        Accommodation accommodation2 = new Accommodation( UUID.randomUUID(), "name", "description", "image", 10F, category, new ArrayList<>());
+        Accommodation accommodation2 = new Accommodation( UUID.randomUUID(), "name", "description", "image", BigDecimal.valueOf(10.00), category, new ArrayList<>());
         accommodation2.setCategory(category);
         category.setAccommodations(Arrays.asList(accommodation1, accommodation2));
         when(categoryRepository.findById(id)).thenReturn(Optional.of(category));
@@ -100,7 +101,7 @@ public class CategoryControllerTest {
     @Test
     public void updateCategory() {
         UUID id = UUID.randomUUID();
-        Accommodation accommodation = new Accommodation(UUID.randomUUID(), "name", "description", "image", 10F, new Category(), new ArrayList<>());
+        Accommodation accommodation = new Accommodation(UUID.randomUUID(), "name", "description", "image", BigDecimal.valueOf(10.00), new Category(), new ArrayList<>());
         Category existingCategory = new Category(id, "name", "description", "image", Collections.singletonList(accommodation), new Section());
         Category updatedCategory = new Category(id, "new name", "new description", "new image", Collections.singletonList(accommodation), new Section());
 

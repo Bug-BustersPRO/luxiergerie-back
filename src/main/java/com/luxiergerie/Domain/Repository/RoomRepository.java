@@ -14,4 +14,6 @@ public interface RoomRepository extends JpaRepository<Room, UUID> {
     public List<Room> findAllRoomByClientIsNull();
 
     public Room findByRoomNumber(int roomNumber);
+
+    public Room findByClient_Id(UUID id);
 }
