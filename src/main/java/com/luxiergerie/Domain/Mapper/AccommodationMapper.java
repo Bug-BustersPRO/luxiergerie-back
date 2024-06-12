@@ -4,8 +4,6 @@ import com.luxiergerie.DTO.AccommodationDTO;
 import com.luxiergerie.Domain.Entity.Accommodation;
 import com.luxiergerie.Domain.Entity.Category;
 
-import static java.lang.String.format;
-
 public class AccommodationMapper {
 
     public static AccommodationDTO MappedAccommodationFrom(Accommodation accommodation) {
@@ -33,4 +31,5 @@ public class AccommodationMapper {
 
         return accommodation;
     }
+
 }

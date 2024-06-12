@@ -3,7 +3,6 @@ package com.luxiergerie.Controllers;
 import com.luxiergerie.DTO.BillDTO;
 import com.luxiergerie.DTO.PurchaseDTO;
 import com.luxiergerie.DTO.PurchaseForBillDTO;
-import com.luxiergerie.Domain.Entity.Accommodation;
 import com.luxiergerie.Domain.Entity.Purchase;
 import com.luxiergerie.Domain.Entity.Room;
 import com.luxiergerie.Domain.Mapper.BillMapper;
@@ -28,7 +27,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import static com.luxiergerie.Domain.Mapper.PurchaseMapper.MappedPurchaseFrom;
 
-
 @RestController
 @RequestMapping("/api/purchases")
 public class PurchaseController {
@@ -48,11 +46,12 @@ public class PurchaseController {
 
         return purchases.stream()
                 .map(PurchaseMapper::MappedPurchaseFrom)
-                .peek(purchaseDTO -> {
+                .map(purchaseDTO -> {
                     rooms.stream()
                             .filter(room -> room.getClient().getId().equals(purchaseDTO.getClient().getId()))
                             .findFirst()
                             .ifPresent(room -> purchaseDTO.setRoomNumber(room.getRoomNumber()));
+                return purchaseDTO;
                 })
                 .collect(Collectors.toList());
     }
@@ -111,7 +110,6 @@ public class PurchaseController {
     }
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Purchase not found with ID: " + purchaseId);
   }
-
 
   @PostMapping("")
   public PurchaseDTO createPurchase(@RequestBody PurchaseDTO purchaseDTO) {

@@ -5,8 +5,6 @@ import com.luxiergerie.DTO.PurchaseDTO;
 import com.luxiergerie.DTO.PurchaseForBillDTO;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 public class BillMapper {

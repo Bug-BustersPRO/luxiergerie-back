@@ -1,14 +1,12 @@
   package com.luxiergerie.DTO;
 
   import com.luxiergerie.Domain.Entity.Accommodation;
-  import com.luxiergerie.Domain.Entity.Client;
 
   import java.math.BigDecimal;
   import java.util.ArrayList;
   import java.util.Date;
   import java.util.List;
   import java.util.UUID;
-
 
   public class PurchaseForBillDTO {
     private UUID id;

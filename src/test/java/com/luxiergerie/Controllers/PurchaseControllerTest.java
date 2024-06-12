@@ -3,17 +3,8 @@ package com.luxiergerie.Controllers;
 import com.luxiergerie.DTO.PurchaseDTO;
 import com.luxiergerie.Domain.Entity.Client;
 import com.luxiergerie.Domain.Entity.Purchase;
-import com.luxiergerie.Domain.Entity.Role;
 import com.luxiergerie.Domain.Entity.Room;
 import com.luxiergerie.Domain.Repository.PurchaseRepository;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
 import com.luxiergerie.Domain.Repository.RoomRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,10 +14,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
+import java.util.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
-
 
 public class PurchaseControllerTest {
 
@@ -54,7 +46,6 @@ public class PurchaseControllerTest {
 
     purchases.add(new Purchase(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>()));
     when(purchaseRepository.findAll()).thenReturn(purchases);
-
 
     List<PurchaseDTO> result = purchaseController.getPurchases();
 
@@ -116,7 +107,6 @@ public class PurchaseControllerTest {
     verify(purchaseRepository).save(any(Purchase.class));
   }
 
-
   @Test
   public void testCreatePurchaseThrowsExceptionIfIdIsNull() {
     UUID purchaseId = null;
@@ -177,4 +167,5 @@ public class PurchaseControllerTest {
        purchaseController.deletePurchase(purchaseId);
      });
   }
+
 }
