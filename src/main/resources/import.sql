@@ -52,15 +52,15 @@ INSERT INTO accommodation (id, category_id, name, image, description, price, is_
 INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca114'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca55'), 'Vidange', 'reparation.jpg', 'Vidange de votre véhicule, huile premium de qualité, pressée depuis l"olivier du jardin', '150', 0);
 INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca115'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca55'), 'Pneus', 'reparation.jpg', 'Une sélection de pneus de qualité, à partir de 200€ le pneu', '200', 0);
 
-INSERT INTO purchase (id, room_id, status) VALUES (UUID_TO_BIN('ed0c5d4b-171e-442f-9531-ae7893d07ecf'), UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd72'), 'En cours');
-INSERT INTO purchase (id, room_id, status) VALUES (UUID_TO_BIN('730eff62-3b62-4153-aba2-d1e62cb10ed5'), UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd73'), 'Validée');
-INSERT INTO purchase (id, room_id, status) VALUES (UUID_TO_BIN('a495ce02-ad51-4382-908b-180905ea344c'), UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd74'), 'Terminée');
-INSERT INTO purchase (id, room_id, status) VALUES (UUID_TO_BIN('2e14b496-2e14-411a-80e5-3adcb3268527'), UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd72'), 'En cours');
-INSERT INTO purchase (id, room_id, status) VALUES (UUID_TO_BIN('b73c0879-fe7f-4f30-9666-6b8f305cd93b'), UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd73'), 'En cours');
-INSERT INTO purchase (id, room_id, status) VALUES (UUID_TO_BIN('92caa110-e261-491f-b4d1-c4c53d7befd2'), UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd74'), 'Terminée');
-INSERT INTO purchase (id, room_id, status) VALUES (UUID_TO_BIN('8166c677-a237-4936-b639-9ffec6c2862c'), UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd72'), 'Terminée');
-INSERT INTO purchase (id, room_id, status) VALUES (UUID_TO_BIN('349f12f9-fafd-48ef-a975-ea722b2635b6'), UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd73'), 'Terminée');
-INSERT INTO purchase (id, room_id, status) VALUES (UUID_TO_BIN('3c9896fd-7751-4bcf-90fb-457a4ff7ffd0'), UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd74'), 'Validée');
+INSERT INTO purchase (id, client_id, status, date) VALUES (UUID_TO_BIN('ed0c5d4b-171e-442f-9531-ae7893d07ecf'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910755'), 'En cours', '2021-06-01 12:00:00');
+INSERT INTO purchase (id, client_id, status, date) VALUES (UUID_TO_BIN('730eff62-3b62-4153-aba2-d1e62cb10ed5'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910756'), 'Validée', '2021-06-01 12:00:00');
+INSERT INTO purchase (id, client_id, status, date) VALUES (UUID_TO_BIN('a495ce02-ad51-4382-908b-180905ea344c'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910757'), 'Terminée', '2021-06-01 12:00:00');
+INSERT INTO purchase (id, client_id, status, date) VALUES (UUID_TO_BIN('2e14b496-2e14-411a-80e5-3adcb3268527'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910755'), 'En cours', '2021-06-01 12:00:00');
+INSERT INTO purchase (id, client_id, status, date) VALUES (UUID_TO_BIN('b73c0879-fe7f-4f30-9666-6b8f305cd93b'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910756'), 'En cours', '2021-06-01 12:00:00');
+INSERT INTO purchase (id, client_id, status, date) VALUES (UUID_TO_BIN('92caa110-e261-491f-b4d1-c4c53d7befd2'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910757'), 'Terminée', '2021-06-01 12:00:00');
+INSERT INTO purchase (id, client_id, status, date) VALUES (UUID_TO_BIN('8166c677-a237-4936-b639-9ffec6c2862c'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910755'), 'Terminée', '2021-06-01 12:00:00');
+INSERT INTO purchase (id, client_id, status, date) VALUES (UUID_TO_BIN('349f12f9-fafd-48ef-a975-ea722b2635b6'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910756'), 'Terminée', '2021-06-01 12:00:00');
+INSERT INTO purchase (id, client_id, status, date) VALUES (UUID_TO_BIN('3c9896fd-7751-4bcf-90fb-457a4ff7ffd0'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910757'), 'Validée', '2021-06-01 12:00:00');
 
 INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('ed0c5d4b-171e-442f-9531-ae7893d07ecf'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a2'));
 INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('ed0c5d4b-171e-442f-9531-ae7893d07ecf'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a4'));

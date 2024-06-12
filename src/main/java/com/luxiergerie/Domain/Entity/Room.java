@@ -32,9 +32,6 @@ public class Room {
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Client client;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
-    private List<Purchase> orders = new ArrayList<>();
-
     public Room() {
     }
 
@@ -84,7 +81,7 @@ public class Room {
         if (o == null || getClass() != o.getClass()) return false;
 
         Room room = (Room) o;
-        return roomNumber == room.roomNumber && floor == room.floor && Objects.equals(id, room.id) && Objects.equals(role, room.role) && Objects.equals(client, room.client) && Objects.equals(orders, room.orders);
+        return roomNumber == room.roomNumber && floor == room.floor && Objects.equals(id, room.id) && Objects.equals(role, room.role) && Objects.equals(client, room.client);
     }
 
     @Override
@@ -94,7 +91,10 @@ public class Room {
         result = 31 * result + floor;
         result = 31 * result + Objects.hashCode(role);
         result = 31 * result + Objects.hashCode(client);
-        result = 31 * result + Objects.hashCode(orders);
         return result;
+    }
+
+    public Room findByClient_Id(UUID id) {
+        return this;
     }
 }

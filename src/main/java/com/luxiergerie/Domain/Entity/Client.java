@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -36,6 +37,10 @@ public class Client {
     @OneToOne(mappedBy = "client")
     @JsonIgnore
     private Room room;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    private List<Purchase> purchases = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "client_authorities", joinColumns = @JoinColumn(name = "client_id"))
@@ -111,7 +116,15 @@ public class Client {
         this.room = room;
     }
 
-    public Client(UUID id, String firstName, String lastName, String email, String phoneNumber, int pin, Room room) {
+    public List<Purchase> getPurchases() {
+        return purchases;
+    }
+
+    public void setPurchases(List<Purchase> purchases) {
+        this.purchases = purchases;
+    }
+
+    public Client(UUID id, String firstName, String lastName, String email, String phoneNumber, int pin, Room room, List<Purchase> purchases) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -119,5 +132,6 @@ public class Client {
         this.phoneNumber = phoneNumber;
         this.pin = pin;
         this.room = room;
+        this.purchases = purchases;
     }
 }

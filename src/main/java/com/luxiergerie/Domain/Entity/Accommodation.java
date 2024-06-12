@@ -3,6 +3,7 @@ package com.luxiergerie.Domain.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -24,7 +25,7 @@ public class Accommodation {
     private String image;
 
     @Column(name = "price")
-    private Float price;
+    private BigDecimal price;
 
     @Column(name="is_reservable")
     private boolean isReservable;
@@ -45,20 +46,20 @@ public class Accommodation {
     public Accommodation() {
     }
 
-    public Accommodation(String name, Float price, Category category) {
+    public Accommodation(String name, BigDecimal price, Category category) {
         this.name = name;
         this.price = price;
         this.category = category;
     }
 
-    public Accommodation(String name, String description, Float price, Category category) {
+    public Accommodation(String name, String description, BigDecimal price, Category category) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.category = category;
     }
 
-    public Accommodation(String name, String description, String image, Float price, Category category) {
+    public Accommodation(String name, String description, String image, BigDecimal price, Category category) {
         this.name = name;
         this.description = description;
         this.image = image;
@@ -66,7 +67,7 @@ public class Accommodation {
         this.category = category;
     }
 
-    public Accommodation(UUID id, String name, String description, String image, Float price, Category category, List<Purchase> purchases) {
+    public Accommodation(UUID id, String name, String description, String image, BigDecimal price, Category category, List<Purchase> purchases) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -116,11 +117,11 @@ public class Accommodation {
         this.image = image;
     }
 
-    public Float getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Float price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

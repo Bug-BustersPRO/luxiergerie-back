@@ -3,6 +3,7 @@ package com.luxiergerie.DTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.luxiergerie.Domain.Entity.Purchase;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ public class AccommodationDTO {
     private String name;
     private String description;
     private String image;
-    private Float price;
+    private BigDecimal price;
     private String priceToDisplay;
     private boolean isReservable;
     @Value("0")
@@ -68,11 +69,11 @@ public class AccommodationDTO {
         this.image = image;
     }
 
-    public Float getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Float price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
