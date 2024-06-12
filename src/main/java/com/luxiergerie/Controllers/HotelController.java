@@ -81,12 +81,18 @@ public class HotelController {
     public ResponseEntity<HotelDTO> createHotel(@RequestParam("name") String name,
                                                 @RequestParam("image") MultipartFile image,
                                                 @RequestParam("colors") List<String> colors) throws IOException {
+
+        List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
         List<Hotel> hotels = hotelRepository.findAll();
         if (!hotels.isEmpty()) {
             return new ResponseEntity<>(CONFLICT);
         }
 
         if (colors.size() > 3) {
+            return new ResponseEntity<>(BAD_REQUEST);
+        }
+
+        if (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType())) {
             return new ResponseEntity<>(BAD_REQUEST);
         }
 
