@@ -48,17 +48,11 @@ public class PurchaseController {
 
         return purchases.stream()
                 .map(PurchaseMapper::MappedPurchaseFrom)
-                .map(purchaseDTO -> {
+                .peek(purchaseDTO -> {
                     rooms.stream()
                             .filter(room -> room.getClient().getId().equals(purchaseDTO.getClient().getId()))
                             .findFirst()
                             .ifPresent(room -> purchaseDTO.setRoomNumber(room.getRoomNumber()));
-
-                    // Calculate the total price
-                    BigDecimal totalPrice = purchaseDTO.getAccommodations().stream().map(Accommodation::getPrice).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
-                    purchaseDTO.setTotalPrice(totalPrice);
-
-                    return purchaseDTO;
                 })
                 .collect(Collectors.toList());
     }
@@ -89,7 +83,8 @@ public class PurchaseController {
                 billDTO.setRoomNumber(clientIdToRoomNumber.get(clientId));
             }
 
-            BigDecimal totalPrice = purchaseDTO.getAccommodations().stream().map(Accommodation::getPrice).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+            // Set the total price for the bill from the purchases
+            BigDecimal totalPrice = purchaseForBillDTO.getTotalPrice();
             billDTO.setTotalPrice(totalPrice);
 
             // Add the purchase to the list of purchases for the room number

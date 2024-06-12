@@ -3,6 +3,7 @@ package com.luxiergerie.Controllers;
 import com.luxiergerie.DTO.PurchaseDTO;
 import com.luxiergerie.Domain.Entity.Client;
 import com.luxiergerie.Domain.Entity.Purchase;
+import com.luxiergerie.Domain.Entity.Role;
 import com.luxiergerie.Domain.Entity.Room;
 import com.luxiergerie.Domain.Repository.PurchaseRepository;
 
@@ -34,9 +35,11 @@ public class PurchaseControllerTest {
 
   @Mock
   private PurchaseRepository purchaseRepository;
+
+  @Mock
   private RoomRepository roomRepository;
 
-  @BeforeEach
+    @BeforeEach
   void setUp() {
     MockitoAnnotations.openMocks(this);
   }
@@ -46,9 +49,12 @@ public class PurchaseControllerTest {
     UUID purchaseId = UUID.randomUUID();
     List<Purchase> purchases = new ArrayList<>();
     List<Room> rooms = new ArrayList<>();
+
+    when(roomRepository.findAll()).thenReturn(rooms);
+
     purchases.add(new Purchase(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>()));
     when(purchaseRepository.findAll()).thenReturn(purchases);
-    when(roomRepository.findAll()).thenReturn(rooms);
+
 
     List<PurchaseDTO> result = purchaseController.getPurchases();
 
