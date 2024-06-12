@@ -10,6 +10,7 @@ import com.luxiergerie.Domain.Mapper.BillMapper;
 import com.luxiergerie.Domain.Mapper.PurchaseMapper;
 import com.luxiergerie.Domain.Repository.PurchaseRepository;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -54,9 +55,7 @@ public class PurchaseController {
                             .ifPresent(room -> purchaseDTO.setRoomNumber(room.getRoomNumber()));
 
                     // Calculate the total price
-                    Float totalPrice = (float) purchaseDTO.getAccommodations().stream()
-                            .mapToDouble(Accommodation::getPrice)
-                            .sum();
+                    BigDecimal totalPrice = purchaseDTO.getAccommodations().stream().map(Accommodation::getPrice).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
                     purchaseDTO.setTotalPrice(totalPrice);
 
                     return purchaseDTO;
@@ -64,8 +63,8 @@ public class PurchaseController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/allByClient")
-    public List<BillDTO> getPurchasesByClient() {
+    @GetMapping("/billByClient")
+    public List<BillDTO> getBillByClient() {
         // Fetch all purchases and rooms
         List<Purchase> purchases = purchaseRepository.findAll();
         List<PurchaseDTO> purchaseDTOs = purchases.stream()
@@ -90,16 +89,14 @@ public class PurchaseController {
                 billDTO.setRoomNumber(clientIdToRoomNumber.get(clientId));
             }
 
-            float totalPrice = (float) purchaseDTO.getAccommodations().stream()
-                    .mapToDouble(Accommodation::getPrice)
-                    .sum();
+            BigDecimal totalPrice = purchaseDTO.getAccommodations().stream().map(Accommodation::getPrice).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
             billDTO.setTotalPrice(totalPrice);
 
             // Add the purchase to the list of purchases for the room number
             int roomNumber = billDTO.getRoomNumber();
             if (purchasesByRoom.containsKey(roomNumber)) {
                 BillDTO existingBill = purchasesByRoom.get(roomNumber);
-                existingBill.setTotalPrice(existingBill.getTotalPrice() + totalPrice);
+                existingBill.setTotalPrice(existingBill.getTotalPrice().add(totalPrice));
                 existingBill.getPurchasesForBillDTO().add(purchaseForBillDTO);
             } else {
                 billDTO.getPurchasesForBillDTO().add(purchaseForBillDTO);

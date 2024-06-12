@@ -2,6 +2,7 @@
 
   import com.luxiergerie.Domain.Entity.Client;
 
+  import java.math.BigDecimal;
   import java.util.ArrayList;
   import java.util.Date;
   import java.util.List;
@@ -14,7 +15,7 @@
     private Client client;
     private String status;
     private int roomNumber;
-    private Float totalPrice;
+    private BigDecimal totalPrice;
     private List<PurchaseForBillDTO> purchasesForBillDTO = new ArrayList<>();
 
     public UUID getId() {
@@ -57,11 +58,11 @@
       this.roomNumber = roomNumber;
     }
 
-    public Float getTotalPrice() {
+    public BigDecimal getTotalPrice() {
       return totalPrice;
     }
 
-    public void setTotalPrice(Float totalPrice) {
+    public void setTotalPrice(BigDecimal totalPrice) {
       this.totalPrice = totalPrice;
     }
 
@@ -73,7 +74,7 @@
       this.purchasesForBillDTO = purchasesForBillDTO;
     }
 
-    public BillDTO(UUID id, Date date, Client client, String status, int roomNumber, Float totalPrice, List<PurchaseForBillDTO> purchasesForBillDTO) {
+    public BillDTO(UUID id, Date date, Client client, String status, int roomNumber, BigDecimal totalPrice, List<PurchaseForBillDTO> purchasesForBillDTO) {
       this.id = id;
       this.date = date;
       this.client = client;

@@ -5,6 +5,8 @@ import com.luxiergerie.Domain.Entity.Client;
 import com.luxiergerie.Domain.Entity.Purchase;
 import com.luxiergerie.Domain.Entity.Room;
 import com.luxiergerie.Domain.Repository.PurchaseRepository;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -57,7 +59,7 @@ public class PurchaseControllerTest {
   @Test
   public void testGetPurchaseById() {
     UUID purchaseId = UUID.randomUUID();
-    PurchaseDTO expectedDTO = new PurchaseDTO(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>(), 217, 1000.0f);
+    PurchaseDTO expectedDTO = new PurchaseDTO(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>(), 217, BigDecimal.valueOf(1000.00));
     Purchase purchase = new Purchase(purchaseId, expectedDTO.getDate(), expectedDTO.getClient(), expectedDTO.getStatus());
     if (purchase != null) {
       purchase.setAccommodations(expectedDTO.getAccommodations());
@@ -89,7 +91,7 @@ public class PurchaseControllerTest {
   @Test
   public void testCreatePurchase() {
     UUID purchaseId = UUID.randomUUID();
-    PurchaseDTO purchaseDTO = new PurchaseDTO(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>(), 217, 1000.0f);
+    PurchaseDTO purchaseDTO = new PurchaseDTO(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>(), 217, BigDecimal.valueOf(1000.00));
     Purchase expectedPurchase = new Purchase(purchaseId, purchaseDTO.getDate(), purchaseDTO.getClient(), purchaseDTO.getStatus());
     if (expectedPurchase != null) {
       expectedPurchase.setAccommodations(purchaseDTO.getAccommodations());
@@ -115,14 +117,14 @@ public class PurchaseControllerTest {
     when(purchaseRepository.findById(purchaseId)).thenReturn(Optional.empty());
 
     assertThrows(RuntimeException.class, () -> {
-      purchaseController.createPurchase(new PurchaseDTO(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>(), 217, 1000.0f));
+      purchaseController.createPurchase(new PurchaseDTO(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>(), 217, BigDecimal.valueOf(1000.00)));
     });
   }
 
   @Test
   public void testUpdatePurchase() {
     UUID purchaseId = UUID.randomUUID();
-    PurchaseDTO purchaseDTO = new PurchaseDTO(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>(), 217, 1000.0f);
+    PurchaseDTO purchaseDTO = new PurchaseDTO(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>(), 217, BigDecimal.valueOf(1000.00));
     Purchase existingPurchase = new Purchase(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>());
     Purchase updatedPurchase = new Purchase(purchaseId, purchaseDTO.getDate(), purchaseDTO.getClient(), purchaseDTO.getStatus());
     if (updatedPurchase != null) {

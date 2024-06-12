@@ -16,8 +16,6 @@ public class AccommodationMapper {
         accommodationDTO.setImage(accommodation.getImage());
         accommodationDTO.setPrice(accommodation.getPrice());
         accommodationDTO.setReservable(accommodation.isReservable());
-        String setDisplayPrice = convertPriceToDisplay(accommodation.getPrice());
-        accommodationDTO.setPriceToDisplay(setDisplayPrice);
         accommodationDTO.setCategory(accommodation.getCategory().getId());
 
         return accommodationDTO;
@@ -34,10 +32,5 @@ public class AccommodationMapper {
         accommodation.setReservable(accommodationDTO.isReservable());
 
         return accommodation;
-    }
-
-    private static String convertPriceToDisplay(Float price) {
-        String convertedPrice = format("%.2f", price);
-        return convertedPrice + " euros";
     }
 }

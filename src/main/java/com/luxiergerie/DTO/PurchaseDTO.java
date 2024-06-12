@@ -4,6 +4,8 @@
   import com.luxiergerie.Domain.Entity.Client;
   import com.luxiergerie.Domain.Entity.Purchase;
   import com.luxiergerie.Domain.Entity.Room;
+
+  import java.math.BigDecimal;
   import java.util.ArrayList;
   import java.util.Date;
   import java.util.List;
@@ -17,30 +19,17 @@
     private String status;
     private List<Accommodation> accommodations = new ArrayList<>();
     private int roomNumber;
-    private Float totalPrice;
-    //private List<Purchase> purchases = new ArrayList<>();
+    private BigDecimal totalPrice;
 
-    public void setTotalPrice(Float totalPrice) {
-      this.totalPrice = totalPrice;
-    }
-
-//    public List<Purchase> getPurchases() {
-//      return purchases;
-//    }
-//
-//    public void setPurchases(List<Purchase> purchases) {
-//      this.purchases = purchases;
-//    }
-
-    public Float getTotalPrice() {
+    public BigDecimal getTotalPrice() {
       return totalPrice;
     }
 
-    public void setTotalPrice(float totalPrice) {
+    public void setTotalPrice(BigDecimal totalPrice) {
       this.totalPrice = totalPrice;
     }
 
-    public PurchaseDTO(UUID id, Date date, Client client, String status, List<Accommodation> accommodations, int roomNumber, float totalPrice) {
+    public PurchaseDTO(UUID id, Date date, Client client, String status, List<Accommodation> accommodations, int roomNumber, BigDecimal totalPrice) {
       this.id = id;
       this.date = date;
       this.client = client;
@@ -48,7 +37,6 @@
       this.accommodations = accommodations;
       this.roomNumber = roomNumber;
       this.totalPrice = totalPrice;
-      //  this.purchases = purchases;
     }
 
     public UUID getId() {
