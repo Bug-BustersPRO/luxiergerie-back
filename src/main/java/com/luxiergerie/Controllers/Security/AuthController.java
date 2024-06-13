@@ -87,7 +87,7 @@ public class AuthController {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")) {
+                if (cookie.getName().equals("jwt-token")) {
                     return true;
                 }
             }
@@ -128,9 +128,9 @@ public class AuthController {
     @PostMapping("/login")
     ResponseEntity<String> authenticateUser(@RequestBody LoginDTO loginDto, HttpServletResponse response,
                                             HttpServletRequest request) {
-        if (checkCookieToken(request)) {
-            throw new ResponseStatusException(UNAUTHORIZED, "User must logout before registering");
-        }
+        /*if (checkCookieToken(request)) {
+            tokenService.isTokenValidAndNotExpired(request.getCookies()[0].getValue());
+        }*/
         Authentication authentication = this.authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDto.getSerialNumber(), loginDto.getPassword()));
         var jwt = tokenService.generateToken(authentication);

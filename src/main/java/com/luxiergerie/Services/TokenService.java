@@ -19,9 +19,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
-
-
-
 /**
  * This class is responsible for generating JWT tokens for authentication.
  */
@@ -61,7 +58,7 @@ public class TokenService {
 
     BlackListedToken blackListedToken = blackListedTokenRepository.findByUserIdAndIsBlackListed(userId, false);
     if (blackListedToken != null) {
-      if (!blackListTokenService.isBlacklistTokenExpired(blackListedToken.getExpiryDate(), blackListedToken)) {
+      if (blackListTokenService.isBlacklistTokenExpired(blackListedToken.getExpiryDate(), blackListedToken)) {
         String newToken = createAndEncodeJwt(auth);
         saveToken(newToken, userId);
       }
@@ -99,7 +96,7 @@ public class TokenService {
     JwtClaimsSet claims = JwtClaimsSet.builder()
             .issuer("self")
             .issuedAt(now)
-            .expiresAt(now.plus(24, ChronoUnit.HOURS))
+            .expiresAt(now.plus(10, ChronoUnit.SECONDS))
             .subject(auth.getName())
             .claim("employeeSerialNumber", String.valueOf((auth.getPrincipal())))
             .claim("scope", scope)
@@ -109,29 +106,26 @@ public class TokenService {
   }
 
   private void saveToken(String token, UUID userId) {
-    blackListTokenService.saveToken(token, Instant.now().plus(24, ChronoUnit.HOURS), userId);
+    blackListTokenService.saveToken(token, Instant.now().plus(10, ChronoUnit.SECONDS), userId);
   }
 
   private boolean validateToken(String token) {
     BlackListedToken blackListedToken = blackListedTokenRepository.findByToken(token);
-    if (blackListedToken != null) {
-      if (blackListedToken.isBlackListed()) {
-        return blackListTokenService.isBlacklistTokenExpired(blackListedToken.getExpiryDate(), blackListedToken);
-      } else {
-        return true;
+    if (Objects.nonNull(blackListedToken) && !blackListedToken.isBlackListed()) {
+      Date expirationDate = this.getTokenExpirationDate(String.valueOf(token));
+      if (Instant.now().isAfter(expirationDate.toInstant()) && Instant.now().isAfter(blackListedToken.getExpiryDate())){
+        System.out.println("ici");
+        blackListedToken.setBlackListed(true);
+        blackListedTokenRepository.save(blackListedToken);
+        return false;
       }
+      return true;
     }
     return false;
   }
 
   public boolean isTokenValidAndNotExpired(String token) {
-    boolean isValid = this.validateToken(token);
-    if (!isValid) {
-      return false;
-    }
-
-    Date expirationDate = this.getTokenExpirationDate(String.valueOf(token));
-    return expirationDate.after(new Date());
+      return this.validateToken(token);
   }
 
   private Date getTokenExpirationDate(String token) {

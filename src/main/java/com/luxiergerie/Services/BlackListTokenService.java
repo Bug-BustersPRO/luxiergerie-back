@@ -9,10 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-
-
-
-
 /**
  * This class represents a service for managing blacklisted tokens.
  */
@@ -29,7 +25,7 @@ public class BlackListTokenService {
       if (Instant.now().isAfter(expiryDate)) {
         blacklistedToken.setBlackListed(true);
       }
-      return !blacklistedToken.isBlackListed();
+      return blacklistedToken.isBlackListed();
     }
 
     public void deleteToken(String token) {
