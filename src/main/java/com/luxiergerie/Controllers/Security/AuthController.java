@@ -195,9 +195,9 @@ public class AuthController {
     }
 
     @GetMapping("/validate-token")
-    public ResponseEntity<String> validateToken(HttpServletRequest request, @RequestHeader("Token") String test){
-        if (!Objects.equals(test, "")) {
-            if (tokenService.isTokenValidAndNotExpired(test)) {
+    public ResponseEntity<String> validateToken(HttpServletRequest request, @RequestHeader("Token") String token){
+        if (!Objects.equals(token, "")) {
+            if (tokenService.isTokenValidAndNotExpired(token)) {
                 return ResponseEntity.ok("Token is valid");
             }
         }
