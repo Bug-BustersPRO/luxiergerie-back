@@ -96,7 +96,7 @@ public class TokenService {
     JwtClaimsSet claims = JwtClaimsSet.builder()
             .issuer("self")
             .issuedAt(now)
-            .expiresAt(now.plus(10, ChronoUnit.SECONDS))
+            .expiresAt(now.plus(24, ChronoUnit.HOURS))
             .subject(auth.getName())
             .claim("employeeSerialNumber", String.valueOf((auth.getPrincipal())))
             .claim("scope", scope)
@@ -106,7 +106,7 @@ public class TokenService {
   }
 
   private void saveToken(String token, UUID userId) {
-    blackListTokenService.saveToken(token, Instant.now().plus(10, ChronoUnit.SECONDS), userId);
+    blackListTokenService.saveToken(token, Instant.now().plus(24, ChronoUnit.HOURS), userId);
   }
 
   private boolean validateToken(String token) {
