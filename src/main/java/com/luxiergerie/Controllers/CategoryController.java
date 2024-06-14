@@ -20,6 +20,9 @@ import static java.util.stream.Collectors.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/categories")
@@ -97,5 +100,12 @@ public class CategoryController {
     public void deleteCategory(@PathVariable UUID id) {
         categoryRepository.deleteById(id);
     }
+
+    @GetMapping("/accommodations/{id}/category")
+    public String getCategoryName(@PathVariable UUID id) {
+      String categoryName = categoryRepository.getCategoryByAccommodation(id);
+      return categoryName;
+    }
+
 
 }

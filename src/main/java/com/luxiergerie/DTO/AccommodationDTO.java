@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
+
 public class AccommodationDTO {
 
     private UUID id;
@@ -16,6 +18,8 @@ public class AccommodationDTO {
     private BigDecimal price;
     private String priceToDisplay;
     private boolean isReservable;
+    @Value("0")
+    private Integer quantity;
 
     @JsonIgnore
     private UUID categoryId;
@@ -72,6 +76,15 @@ public class AccommodationDTO {
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
+
+    public Integer getQuantity() {
+      return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+      this.quantity = quantity;
+    }
+
 
     public UUID getCategory() {
         return categoryId;

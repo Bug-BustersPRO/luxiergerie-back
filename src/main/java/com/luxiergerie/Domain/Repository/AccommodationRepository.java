@@ -8,4 +8,5 @@ import com.luxiergerie.Domain.Entity.Accommodation;
 
 public interface AccommodationRepository extends JpaRepository<Accommodation, UUID>{
 
+
 }
