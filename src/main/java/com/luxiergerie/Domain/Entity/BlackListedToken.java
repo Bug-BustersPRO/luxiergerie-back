@@ -27,7 +27,7 @@ public class BlackListedToken {
   @Column(nullable = false, name = "user_id")
   private UUID userId;
 
-  @Column(nullable = false, name = "boolean")
+  @Column(nullable = false, name = "isBlackListed")
   private boolean isBlackListed;
 
   /**
