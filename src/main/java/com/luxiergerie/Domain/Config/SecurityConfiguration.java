@@ -45,7 +45,7 @@ public class SecurityConfiguration {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .cors(withDefaults())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("POST", "/api/auth/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/hotel/infos").permitAll();
+                    auth.requestMatchers("POST", "/api/auth/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/hotel/infos", "api/hotel/image").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .httpBasic(withDefaults())
