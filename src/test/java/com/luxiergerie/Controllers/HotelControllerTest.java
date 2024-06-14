@@ -50,7 +50,7 @@ public class HotelControllerTest {
 
         when(hotelRepository.findAll()).thenReturn(Collections.singletonList(hotel));
 
-        mockMvc.perform(get("/api/hotel"))
+        mockMvc.perform(get("/api/hotel/infos"))
                 .andExpect(status().isOk());
 
         verify(hotelRepository, times(1)).findAll();
