@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.luxiergerie.Domain.Mapper.AccommodationMapper.MappedAccommodationFrom;
+import static java.util.Objects.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -60,7 +61,7 @@ public class AccommodationController {
 
     @PutMapping("/accommodations/{id}")
     public AccommodationDTO updateAccommodation(@PathVariable("id") UUID id, @RequestBody AccommodationDTO accommodationDTO) {
-        UUID nonNullId = Objects.requireNonNull(id, "Accommodation ID must not be null");
+        UUID nonNullId = requireNonNull(id, "Accommodation ID must not be null");
         Optional<Accommodation> accommodationOptional = accommodationRepository.findById(nonNullId);
         if (accommodationOptional.isPresent()) {
             Accommodation accommodationToUpdate = accommodationOptional.get();
