@@ -29,7 +29,7 @@ public class HotelController {
         this.hotelRepository = hotelRepository;
     }
 
-    @GetMapping
+    @GetMapping("/infos")
     public List<HotelDTO> getHotel() {
         List<Hotel> hotels = hotelRepository.findAll();
         return hotels.stream()
