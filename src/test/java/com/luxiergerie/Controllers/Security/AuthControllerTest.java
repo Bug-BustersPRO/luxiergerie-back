@@ -47,12 +47,10 @@ class AuthControllerTest {
 
     @Test
     public void shouldCheckCookieTokenWithToken() {
-
-        Cookie[] expectedCookies = new Cookie[]{new Cookie("token", "teste-moi!!!")};
+        Cookie[] expectedCookies = new Cookie[]{new Cookie("jwt-token", "teste-moi!!!")};
         when(request.getCookies()).thenReturn(expectedCookies);
 
         boolean resultCookie = authController.checkCookieToken(request);
-
 
         assertTrue(resultCookie);
     }

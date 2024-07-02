@@ -1,8 +1,8 @@
 -- CREATE DATABASE IF NOT EXISTS luxiergerie;
 
-INSERT INTO employee (id, serial_number, first_name, last_name, password) VALUES (UUID_TO_BIN('30ecf9b7-5816-42aa-a93f-818e264fc20c'), '12345678', 'John', 'Doe', '{bcrypt}$2y$10$Bu60rq.7TQqRputduY7ji./v1sQzD1X4mRsG/LlC2wdZ81xeDku1i');
-INSERT INTO employee (id, serial_number, first_name, last_name, password) VALUES (UUID_TO_BIN('30ecf9b7-5816-42aa-a93f-818e264fc20d'), '12345679', 'Dédé', 'Le Dé', '{bcrypt}$2y$10$Bu60rq.7TQqRputduY7ji./v1sQzD1X4mRsG/LlC2wdZ81xeDku1i');
-INSERT INTO employee (id, serial_number, first_name, last_name, password) VALUES (UUID_TO_BIN('30ecf9b7-5816-42aa-a93f-818e264fc20f'), '12345670', 'Max', 'Ime', '{bcrypt}$2y$10$Bu60rq.7TQqRputduY7ji./v1sQzD1X4mRsG/LlC2wdZ81xeDku1i');
+INSERT INTO employee (id, serial_number, first_name, last_name, password) VALUES (UUID_TO_BIN('b947b56e-e411-4212-9165-e4ec544260c7'), '12345678', 'John', 'Doe', '{bcrypt}$2y$10$Bu60rq.7TQqRputduY7ji./v1sQzD1X4mRsG/LlC2wdZ81xeDku1i');
+INSERT INTO employee (id, serial_number, first_name, last_name, password) VALUES (UUID_TO_BIN('5d13beb5-e46b-42d7-a0e8-85cfd8ba42bd'), '12345679', 'Dédé', 'Le Dé', '{bcrypt}$2y$10$Bu60rq.7TQqRputduY7ji./v1sQzD1X4mRsG/LlC2wdZ81xeDku1i');
+INSERT INTO employee (id, serial_number, first_name, last_name, password) VALUES (UUID_TO_BIN('a3855957-c6d3-40ac-acf7-d44cbd3108c0'), '12345670', 'Max', 'Ime', '{bcrypt}$2y$10$Bu60rq.7TQqRputduY7ji./v1sQzD1X4mRsG/LlC2wdZ81xeDku1i');
 INSERT INTO employee (id, serial_number, first_name, last_name, password) VALUES (UUID_TO_BIN('0a3414cf-88d0-4db7-afbf-44af0cf19fc5'), '12345671', 'Emma', 'Ammo', '{bcrypt}$2y$10$Bu60rq.7TQqRputduY7ji./v1sQzD1X4mRsG/LlC2wdZ81xeDku1i');
 
 INSERT INTO role (id, name) VALUES (UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55443'), 'ROLE_ADMIN');
@@ -10,9 +10,9 @@ INSERT INTO role (id, name) VALUES (UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c
 INSERT INTO role (id, name) VALUES (UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55445'), 'ROLE_GOLD');
 INSERT INTO role (id, name) VALUES (UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55446'), 'ROLE_DIAMOND');
 
-INSERT INTO employee_role (role_id, employee_id) VALUES (UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55443'), UUID_TO_BIN('30ecf9b7-5816-42aa-a93f-818e264fc20e'));
-INSERT INTO employee_role (role_id, employee_id) VALUES (UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55444'), UUID_TO_BIN('30ecf9b7-5816-42aa-a93f-818e264fc20d'));
-INSERT INTO employee_role (role_id, employee_id) VALUES (UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55444'), UUID_TO_BIN('30ecf9b7-5816-42aa-a93f-818e264fc20f'));
+INSERT INTO employee_role (role_id, employee_id) VALUES (UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55443'), UUID_TO_BIN('b947b56e-e411-4212-9165-e4ec544260c7'));
+INSERT INTO employee_role (role_id, employee_id) VALUES (UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55444'), UUID_TO_BIN('5d13beb5-e46b-42d7-a0e8-85cfd8ba42bd'));
+INSERT INTO employee_role (role_id, employee_id) VALUES (UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55444'), UUID_TO_BIN('a3855957-c6d3-40ac-acf7-d44cbd3108c0'));
 INSERT INTO employee_role (role_id, employee_id) VALUES (UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55444'), UUID_TO_BIN('0a3414cf-88d0-4db7-afbf-44af0cf19fc5'));
 
 INSERT INTO client (id, first_name, last_name, pin, email, phone_number) VALUES (UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910755'), 'Jocelyn', 'De ChNord', '1234', 'jocelyn@jocelyn.fr', '06 01 02 03 04');
