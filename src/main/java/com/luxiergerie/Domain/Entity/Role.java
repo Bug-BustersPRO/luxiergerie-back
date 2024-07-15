@@ -19,7 +19,7 @@ public class Role implements GrantedAuthority {
 
   private String name;
 
-  @ManyToMany
+  @ManyToMany(cascade = CascadeType.ALL)
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   @JoinTable(
       name = "employee_role",

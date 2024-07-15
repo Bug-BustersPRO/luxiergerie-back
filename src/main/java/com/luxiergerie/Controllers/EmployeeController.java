@@ -5,6 +5,8 @@ import com.luxiergerie.Domain.Entity.Employee;
 import com.luxiergerie.Domain.Entity.Role;
 import com.luxiergerie.Domain.Mapper.EmployeeMapper;
 import com.luxiergerie.Domain.Repository.EmployeeRepository;
+import com.luxiergerie.Domain.Repository.RoleRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,8 +14,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.luxiergerie.Domain.Mapper.EmployeeMapper.MappedEmployeeFrom;
+import static java.lang.Math.random;
+import static java.lang.String.valueOf;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.security.crypto.factory.PasswordEncoderFactories.createDelegatingPasswordEncoder;
 
 
 /**
@@ -23,9 +28,11 @@ import static java.util.stream.Collectors.toList;
 @RequestMapping("/api/employee")
 public class EmployeeController {
     private final EmployeeRepository employeeRepository;
+    private final RoleRepository roleRepository;
 
-    public EmployeeController(EmployeeRepository employeeRepository) {
+    public EmployeeController(EmployeeRepository employeeRepository, RoleRepository roleRepository) {
         this.employeeRepository = employeeRepository;
+        this.roleRepository = roleRepository;
     }
 
     @GetMapping
@@ -60,15 +67,28 @@ public class EmployeeController {
      */
     @GetMapping("/{id}")
     public EmployeeDTO getEmployeeById(@PathVariable("id") UUID id) {
-      UUID nonNullId = requireNonNull(id,"Employee ID must not be null");
-      Employee employee = employeeRepository.findById(nonNullId)
-              .orElseThrow(() -> new RuntimeException("employee not found with id : " + nonNullId));
-      return MappedEmployeeFrom(employee);
+        UUID nonNullId = requireNonNull(id, "Employee ID must not be null");
+        Employee employee = employeeRepository.findById(nonNullId)
+                .orElseThrow(() -> new RuntimeException("employee not found with id : " + nonNullId));
+        return MappedEmployeeFrom(employee);
     }
 
-    @PostMapping("")
+    @PostMapping
     public EmployeeDTO createEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        String randomInt = valueOf((int) (random() * 10000000));
+        employeeDTO.setSerialNumber(randomInt);
         Employee employee = MappedEmployeeFrom(employeeDTO);
+        Role role;
+        Role employeeRole = employeeDTO.getRoles().getFirst();
+        if (employeeRole == this.roleRepository.findByName("ROLE_ADMIN")) {
+            role = this.roleRepository.findByName("ROLE_ADMIN");
+            role.getEmployees().add(MappedEmployeeFrom(employeeDTO));
+        }
+        role = this.roleRepository.findByName("ROLE_EMPLOYEE");
+        role.getEmployees().add(MappedEmployeeFrom(employeeDTO));
+
+        PasswordEncoder passwordEncoder = createDelegatingPasswordEncoder();
+        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
         Employee savedEmployee = employeeRepository.save(employee);
         return MappedEmployeeFrom(savedEmployee);
     }
@@ -77,11 +97,11 @@ public class EmployeeController {
     public EmployeeDTO updateEmployee(@PathVariable("id") UUID id, EmployeeDTO employeeDTO) {
         UUID nonNullId = requireNonNull(id, "Employee id must not be null");
         Optional<Employee> employeeOptional = employeeRepository.findById(nonNullId);
-        if(employeeOptional.isPresent()) {
+        if (employeeOptional.isPresent()) {
             Employee employeeToUpdate = employeeOptional.get();
             employeeToUpdate.setLastName(employeeDTO.getLastName());
-            employeeToUpdate.setFirstName(employeeDTO.getFirstname());
-            employeeToUpdate.setRoles((List<Role>) employeeDTO.getRole());
+            employeeToUpdate.setFirstName(employeeDTO.getFirstName());
+            employeeToUpdate.setRoles(employeeDTO.getRoles());
             employeeToUpdate.setPassword(employeeDTO.getPassword());
             return MappedEmployeeFrom(employeeToUpdate);
         } else {

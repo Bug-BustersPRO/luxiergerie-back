@@ -9,8 +9,9 @@ public class EmployeeMapper {
         EmployeeDTO employeeDTO = new EmployeeDTO();
         employeeDTO.setId(employee.getId());
         employeeDTO.setLastName(employee.getLastName());
-        employeeDTO.setFirstname(employee.getFirstName());
+        employeeDTO.setFirstName(employee.getFirstName());
         employeeDTO.setSerialNumber(employee.getSerialNumber());
+//        employeeDTO.setRole(employee.getRoles());
         employeeDTO.setPassword(employee.getPassword());
         return employeeDTO;
     }
@@ -19,8 +20,9 @@ public class EmployeeMapper {
         Employee employee = new Employee();
         employee.setId(employeeDTO.getId());
         employee.setLastName(employeeDTO.getLastName());
-        employee.setFirstName(employeeDTO.getFirstname());
+        employee.setFirstName(employeeDTO.getFirstName());
         employee.setSerialNumber(employeeDTO.getSerialNumber());
+//        employee.setRoles(employeeDTO.getRoles());
         employee.setPassword(employeeDTO.getPassword());
         return employee;
     }

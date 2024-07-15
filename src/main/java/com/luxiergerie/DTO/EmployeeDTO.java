@@ -2,6 +2,7 @@ package com.luxiergerie.DTO;
 
 import com.luxiergerie.Domain.Entity.Role;
 
+import java.util.List;
 import java.util.UUID;
 
 public class EmployeeDTO {
@@ -9,21 +10,21 @@ public class EmployeeDTO {
     private UUID id;
     private String lastName;
 
-    private String firstname;
+    private String firstName;
 
     private String serialNumber;
 
     private String password;
 
-    private Role role;
+    private List<Role> roles;
 
-    public EmployeeDTO(UUID id, String lastName, String firstname, String serialNumber, String password, Role role) {
+    public EmployeeDTO(UUID id, String lastName, String firstName, String serialNumber, String password, List<Role> roles) {
         this.id = id;
         this.lastName = lastName;
-        this.firstname = firstname;
+        this.firstName = firstName;
         this.serialNumber = serialNumber;
         this.password = password;
-        this.role = role;
+        this.roles = roles;
     }
 
     public EmployeeDTO() {
@@ -46,12 +47,12 @@ public class EmployeeDTO {
         this.lastName = lastName;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getSerialNumber() {
@@ -70,11 +71,11 @@ public class EmployeeDTO {
         this.password = password;
     }
 
-    public Role getRole() {
-        return role;
+    public List<Role> getRoles() {
+        return roles;
     }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
+//
+//    public void setRole(List<Role> roles) {
+//        this.roles = roles;
+//    }
 }
