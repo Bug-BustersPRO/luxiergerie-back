@@ -78,14 +78,11 @@ public class EmployeeController {
         String randomInt = valueOf((int) (random() * 10000000));
         employeeDTO.setSerialNumber(randomInt);
         Employee employee = MappedEmployeeFrom(employeeDTO);
-        Role role;
-        Role employeeRole = employeeDTO.getRoles().getFirst();
-        if (employeeRole == this.roleRepository.findByName("ROLE_ADMIN")) {
-            role = this.roleRepository.findByName("ROLE_ADMIN");
-            role.getEmployees().add(MappedEmployeeFrom(employeeDTO));
-        }
-        role = this.roleRepository.findByName("ROLE_EMPLOYEE");
-        role.getEmployees().add(MappedEmployeeFrom(employeeDTO));
+
+        List<Role> roles = employeeDTO.getRoles().stream()
+                .map(role -> this.roleRepository.findByName(role.getName()))
+                .collect(toList());
+        employee.setRoles(roles);
 
         PasswordEncoder passwordEncoder = createDelegatingPasswordEncoder();
         employee.setPassword(passwordEncoder.encode(employee.getPassword()));

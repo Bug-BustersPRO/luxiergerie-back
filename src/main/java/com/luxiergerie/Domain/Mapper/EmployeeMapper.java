@@ -11,7 +11,7 @@ public class EmployeeMapper {
         employeeDTO.setLastName(employee.getLastName());
         employeeDTO.setFirstName(employee.getFirstName());
         employeeDTO.setSerialNumber(employee.getSerialNumber());
-//        employeeDTO.setRole(employee.getRoles());
+        employeeDTO.setRole(employee.getRoles());
         employeeDTO.setPassword(employee.getPassword());
         return employeeDTO;
     }
@@ -22,7 +22,7 @@ public class EmployeeMapper {
         employee.setLastName(employeeDTO.getLastName());
         employee.setFirstName(employeeDTO.getFirstName());
         employee.setSerialNumber(employeeDTO.getSerialNumber());
-//        employee.setRoles(employeeDTO.getRoles());
+        employee.setRoles(employeeDTO.getRoles());
         employee.setPassword(employeeDTO.getPassword());
         return employee;
     }

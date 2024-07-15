@@ -74,8 +74,8 @@ public class EmployeeDTO {
     public List<Role> getRoles() {
         return roles;
     }
-//
-//    public void setRole(List<Role> roles) {
-//        this.roles = roles;
-//    }
+
+    public void setRole(List<Role> roles) {
+        this.roles = roles;
+    }
 }
