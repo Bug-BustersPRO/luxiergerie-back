@@ -11,6 +11,7 @@ import com.luxiergerie.Domain.Repository.SojournRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -41,6 +42,11 @@ public class SojournService {
         Client client = this.getClient(sojournDTO.getClientId());
         Room room = this.getRoom(sojournDTO.getRoomId());
 
+        List<Sojourn> existingSojourns = this.sojournRepository.findByRoomAndEntryDateLessThanEqualAndExitDateGreaterThanEqual(room, sojournDTO.getExitDate(), sojournDTO.getEntryDate());
+        if (!existingSojourns.isEmpty()) {
+            throw new RuntimeException("Room is already booked for the given date");
+        }
+
         sojourn.setClient(client);
         sojourn.setRoom(room);
 
@@ -48,8 +54,8 @@ public class SojournService {
         room.getSojourns().add(sojourn);
 
         this.sojournRepository.save(sojourn);
-        this.clientRepository.save(client); // save the client entity
-        this.roomRepository.save(room); // save the room entity
+        this.clientRepository.save(client);
+        this.roomRepository.save(room);
 
         return sojourn;
     }
