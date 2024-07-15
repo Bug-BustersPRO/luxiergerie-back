@@ -3,6 +3,7 @@ package com.luxiergerie.DTO;
 import com.luxiergerie.Domain.Entity.Client;
 import com.luxiergerie.Domain.Entity.Role;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -12,6 +13,7 @@ public class RoomDTO {
     private int floor;
     private Role role;
     private Client client;
+    private List<SojournDTO> sojourns;
 
     public RoomDTO() {
     }
@@ -49,6 +51,14 @@ public class RoomDTO {
     public void setClient(Client client) { this.client = client; }
 
     public void setRole(Role role) { this.role = role;
+    }
+
+    public List<SojournDTO> getSojourns() {
+        return sojourns;
+    }
+
+    public void setSojourns(List<SojournDTO> sojourns) {
+        this.sojourns = sojourns;
     }
 
     @Override
