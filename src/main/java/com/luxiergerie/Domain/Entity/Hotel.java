@@ -20,6 +20,10 @@ public class Hotel {
     @Lob
     private byte[] image;
 
+    @Column(nullable = false, name = "background_image", columnDefinition = "LONGBLOB")
+    @Lob
+    private byte[] backgroundImage;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "hotel_colors", joinColumns = @JoinColumn(name = "hotel_id"))
     @Column(nullable = false, name = "colors", length = 50)
@@ -28,11 +32,12 @@ public class Hotel {
     public Hotel() {
     }
 
-    public Hotel(UUID id, String name, byte[] image, List<String> colors) {
+    public Hotel(UUID id, String name, byte[] image, List<String> colors, byte[] backgroundImage) {
         this.id = id;
         this.name = name;
         this.image = image;
         this.colors = colors;
+        this.backgroundImage = backgroundImage;
     }
 
     public UUID getId() {
@@ -65,6 +70,14 @@ public class Hotel {
 
     public void setColors(List<String> colors) {
         this.colors = colors;
+    }
+
+    public byte[] getBackgroundImage() {
+        return backgroundImage;
+    }
+
+    public void setBackgroundImage(byte[] backgroundImage) {
+        this.backgroundImage = backgroundImage;
     }
 
 }

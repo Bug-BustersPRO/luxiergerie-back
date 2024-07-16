@@ -9,16 +9,18 @@ public class HotelDTO {
     private String name;
     private byte[] image;
     private List<String> colors;
+    private byte[] backgroundImage;
 
     public HotelDTO(){
 
     }
 
-    public HotelDTO(UUID id, String name, byte[] image, List<String> colors) {
+    public HotelDTO(UUID id, String name, byte[] image, List<String> colors, byte[] backgroundImage) {
         this.id = id;
         this.name = name;
         this.image = image;
         this.colors = colors;
+        this.backgroundImage = backgroundImage;
     }
 
     public UUID getId() {
@@ -51,6 +53,14 @@ public class HotelDTO {
 
     public void setColors(List<String> colors) {
         this.colors = colors;
+    }
+
+    public byte[] getBackgroundImage() {
+        return backgroundImage;
+    }
+
+    public void setBackgroundImage(byte[] backgroundImage) {
+        this.backgroundImage = backgroundImage;
     }
 
 }

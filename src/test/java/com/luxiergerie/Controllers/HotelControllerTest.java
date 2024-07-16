@@ -59,11 +59,12 @@ public class HotelControllerTest {
     @Test
     public void testUpdateHotel() throws Exception {
         MockMultipartFile image = new MockMultipartFile("image", "image.jpg", MediaType.IMAGE_JPEG_VALUE, "image".getBytes());
+        MockMultipartFile backgroundImage = new MockMultipartFile("backgroundImage", "backgroundImage.jpg", MediaType.IMAGE_JPEG_VALUE, "backgroundImage".getBytes());
 
         UUID hotelId = UUID.randomUUID();
-        Hotel existingHotel = new Hotel(hotelId, "Hotel Name", image.getBytes(), List.of("Red", "Blue", "Green"));
-        Hotel updatedHotel = new Hotel(hotelId, "Updated Hotel Name", image.getBytes(), List.of("White", "Yellow", "Green"));
-        HotelDTO updatedHotelDto = new HotelDTO(hotelId, "Updated Hotel Name", image.getBytes(), List.of("White", "Yellow", "Green"));
+        Hotel existingHotel = new Hotel(hotelId, "Hotel Name", image.getBytes(), List.of("Red", "Blue", "Green"), backgroundImage.getBytes());
+        Hotel updatedHotel = new Hotel(hotelId, "Updated Hotel Name", image.getBytes(), List.of("White", "Yellow", "Green"), backgroundImage.getBytes());
+        HotelDTO updatedHotelDto = new HotelDTO(hotelId, "Updated Hotel Name", image.getBytes(), List.of("White", "Yellow", "Green"), backgroundImage.getBytes());
 
         when(hotelRepository.findById(hotelId)).thenReturn(Optional.of(existingHotel));
         when(hotelRepository.save(any(Hotel.class))).thenReturn(updatedHotel);
