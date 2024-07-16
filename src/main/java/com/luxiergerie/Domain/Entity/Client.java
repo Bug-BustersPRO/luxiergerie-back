@@ -47,6 +47,9 @@ public class Client {
     @Column(name = "authority")
     private List<String> authorities;
 
+    @OneToMany(mappedBy = "client")
+    private List<Sojourn> sojourns;
+
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.authorities.stream()
                 .map(SimpleGrantedAuthority::new)
@@ -122,6 +125,14 @@ public class Client {
 
     public void setPurchases(List<Purchase> purchases) {
         this.purchases = purchases;
+    }
+
+    public List<Sojourn> getSojourns() {
+        return sojourns;
+    }
+
+    public void setSojourns(List<Sojourn> sojourns) {
+        this.sojourns = sojourns;
     }
 
     public Client(UUID id, String firstName, String lastName, String email, String phoneNumber, int pin, Room room, List<Purchase> purchases) {
