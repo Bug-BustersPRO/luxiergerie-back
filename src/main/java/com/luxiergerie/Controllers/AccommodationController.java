@@ -9,12 +9,10 @@ import com.luxiergerie.Domain.Repository.CategoryRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
 import static com.luxiergerie.Domain.Mapper.AccommodationMapper.MappedAccommodationFrom;
-import static java.util.Objects.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
