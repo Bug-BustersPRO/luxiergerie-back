@@ -48,10 +48,22 @@ public class HotelController {
         }
     }
 
+    @GetMapping("/background-image")
+    public ResponseEntity<byte[]> getHotelBackgroundImage() {
+        Optional<Hotel> hotelOptional = hotelRepository.findAll().stream().findFirst();
+        if (hotelOptional.isPresent()) {
+            byte[] backgroundImage = hotelOptional.get().getBackgroundImage();
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(backgroundImage);
+        } else {
+            return new ResponseEntity<>(NOT_FOUND);
+        }
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<HotelDTO> updateHotel(@PathVariable UUID id,
                                                 @RequestParam(value = "name", required = false) String name,
                                                 @RequestParam(value = "image", required = false) MultipartFile image,
+                                                @RequestParam(value = "backgroundImage", required = false) MultipartFile backgroundImage,
                                                 @RequestParam(value = "colors", required = false) List<String> colors) throws IOException {
         Optional<Hotel> hotelOptional = hotelRepository.findById(id);
         if (hotelOptional.isPresent()) {
@@ -69,6 +81,9 @@ public class HotelController {
             if (nonNull(image) && !image.isEmpty()) {
                 hotelToUpdate.setImage(image.getBytes());
             }
+            if (nonNull(backgroundImage) && !backgroundImage.isEmpty()) {
+                hotelToUpdate.setBackgroundImage(backgroundImage.getBytes());
+            }
 
             Hotel updatedHotel = hotelRepository.save(hotelToUpdate);
             return new ResponseEntity<>(MappedHotelFrom(updatedHotel), OK);
@@ -80,6 +95,7 @@ public class HotelController {
     @PostMapping
     public ResponseEntity<HotelDTO> createHotel(@RequestParam("name") String name,
                                                 @RequestParam("image") MultipartFile image,
+                                                @RequestParam("backgroundImage") MultipartFile backgroundImage,
                                                 @RequestParam("colors") List<String> colors) throws IOException {
 
         List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
@@ -95,11 +111,15 @@ public class HotelController {
         if (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType())) {
             return new ResponseEntity<>(BAD_REQUEST);
         }
+        if (backgroundImage.getSize() > 1_000_000 || !imageExtension.contains(backgroundImage.getContentType())) {
+            return new ResponseEntity<>(BAD_REQUEST);
+        }
 
         Hotel hotel = new Hotel();
         hotel.setName(name);
         hotel.setColors(colors);
         hotel.setImage(image.getBytes());
+        hotel.setBackgroundImage(backgroundImage.getBytes());
         Hotel savedHotel = hotelRepository.save(hotel);
         return new ResponseEntity<>(MappedHotelFrom(savedHotel), CREATED);
     }

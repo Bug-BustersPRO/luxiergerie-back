@@ -69,7 +69,7 @@ public class HotelControllerTest {
         when(hotelRepository.findById(hotelId)).thenReturn(Optional.of(existingHotel));
         when(hotelRepository.save(any(Hotel.class))).thenReturn(updatedHotel);
 
-        ResponseEntity<HotelDTO> result = hotelController.updateHotel(hotelId, "Updated Hotel Name", image, List.of("White", "Yellow", "Green"));
+        ResponseEntity<HotelDTO> result = hotelController.updateHotel(hotelId, "Updated Hotel Name", image, backgroundImage, List.of("White", "Yellow", "Green"));
 
         assertAll(
                 () -> assertEquals(updatedHotelDto.getId(), result.getBody().getId()),
