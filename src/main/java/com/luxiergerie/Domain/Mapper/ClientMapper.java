@@ -10,8 +10,8 @@ public class ClientMapper {
     public static ClientDTO toDTO(Client client) {
         ClientDTO dto = new ClientDTO();
         dto.setId(client.getId());
-        dto.setFirstname(client.getFirstName());
-        dto.setLastname(client.getLastName());
+        dto.setfirstName(client.getFirstName());
+        dto.setlastName(client.getLastName());
         dto.setEmail(client.getEmail());
         dto.setPhoneNumber(client.getPhoneNumber());
         if (Objects.nonNull(client.getRoom())) {
@@ -28,8 +28,8 @@ public class ClientMapper {
 
     public static Client toEntity(ClientDTO dto) {
         Client client = new Client();
-        client.setFirstName(dto.getFirstname());
-        client.setLastName(dto.getLastname());
+        client.setFirstName(dto.getfirstName());
+        client.setLastName(dto.getlastName());
         client.setEmail(dto.getEmail());
         client.setPhoneNumber(dto.getPhoneNumber());
         if (dto.getSojourns() != null) {
