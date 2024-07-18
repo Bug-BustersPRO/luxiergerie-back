@@ -11,6 +11,7 @@ public class HotelMapper {
         hotelDTO.setName(hotel.getName());
         hotelDTO.setImage(hotel.getImage());
         hotelDTO.setColors(hotel.getColors());
+        hotelDTO.setBackgroundImage(hotel.getBackgroundImage());
 
         return hotelDTO;
     }
@@ -21,6 +22,7 @@ public class HotelMapper {
         hotel.setName(hotelDTO.getName());
         hotel.setImage(hotelDTO.getImage());
         hotel.setColors(hotelDTO.getColors());
+        hotel.setBackgroundImage(hotelDTO.getBackgroundImage());
 
         return hotel;
     }
