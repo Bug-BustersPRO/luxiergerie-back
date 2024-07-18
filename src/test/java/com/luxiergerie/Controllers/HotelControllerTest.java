@@ -85,11 +85,12 @@ public class HotelControllerTest {
     @Test
     public void testCreateHotel() throws Exception {
         MockMultipartFile image = new MockMultipartFile("image", "image.jpg", MediaType.IMAGE_JPEG_VALUE, "image".getBytes());
-
+        MockMultipartFile backgroundImage = new MockMultipartFile("backgroundImage", "backgroundImage.jpg", MediaType.IMAGE_JPEG_VALUE, "backgroundImage".getBytes());
         when(hotelRepository.save(any(Hotel.class))).thenReturn(new Hotel());
 
         mockMvc.perform(multipart("/api/hotel")
                         .file(image)
+                        .file(backgroundImage)
                         .param("name", "New Hotel")
                         .param("colors", "Red", "Blue", "Green"))
                 .andExpect(status().isCreated());
