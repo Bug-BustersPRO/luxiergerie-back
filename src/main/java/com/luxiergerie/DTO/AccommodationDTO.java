@@ -14,7 +14,7 @@ public class AccommodationDTO {
     private UUID id;
     private String name;
     private String description;
-    private String image;
+    private byte[] image;
     private BigDecimal price;
     private String priceToDisplay;
     private boolean isReservable;
@@ -61,11 +61,11 @@ public class AccommodationDTO {
         this.description = description;
     }
 
-    public String getImage() {
+    public byte[] getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 

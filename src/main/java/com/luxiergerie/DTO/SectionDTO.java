@@ -8,7 +8,7 @@ public class SectionDTO {
 
   private UUID id;
   private String name;
-  private String image;
+  private byte[] image;
   private String description;
   private String title;
   private List<Category> categories;
@@ -32,11 +32,11 @@ public class SectionDTO {
     this.name = name;
   }
 
-  public String getImage() {
+  public byte[] getImage() {
     return image;
   }
 
-  public void setImage(String image) {
+  public void setImage(byte[] image) {
     this.image = image;
   }
 

@@ -3,11 +3,17 @@ package com.luxiergerie.Controllers;
 import com.luxiergerie.DTO.AccommodationDTO;
 import com.luxiergerie.Domain.Entity.Accommodation;
 import com.luxiergerie.Domain.Entity.Category;
+import com.luxiergerie.Domain.Entity.Section;
 import com.luxiergerie.Domain.Mapper.AccommodationMapper;
 import com.luxiergerie.Domain.Repository.AccommodationRepository;
 import com.luxiergerie.Domain.Repository.CategoryRepository;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -16,6 +22,8 @@ import java.util.UUID;
 import static com.luxiergerie.Domain.Mapper.AccommodationMapper.MappedAccommodationFrom;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 @RequestMapping("/api")
@@ -45,15 +53,41 @@ public class AccommodationController {
         return MappedAccommodationFrom(accommodation);
     }
 
+
+    @GetMapping("/accommodations/image/{accommodation_id}")
+    public ResponseEntity<byte[]> getAccommodationImage(@PathVariable UUID accommodation_id) {
+        Optional<Accommodation> accommodationOptional = accommodationRepository.findById(accommodation_id).stream().findFirst();
+        if (accommodationOptional.isPresent()) {
+            byte[] image = accommodationOptional.get().getImage();
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
+        } else {
+            return new ResponseEntity<>(NOT_FOUND);
+        }
+    }
+
     @PostMapping("/categories/{category_id}/accommodations")
-    public AccommodationDTO createAccommodation(@RequestBody AccommodationDTO accommodationDTO, @PathVariable UUID category_id) {
+    public ResponseEntity<AccommodationDTO> createAccommodation(@RequestParam("name") String name,
+                                                                @PathVariable UUID category_id,
+                                                                @RequestParam("description") String description,
+                                                                @RequestParam("price") BigDecimal price,
+                                                                @RequestParam("isReservable") boolean isReservable,
+                                                                @RequestParam("image") MultipartFile image) throws IOException {
         Optional<Category> categoryOptional = categoryRepository.findById(category_id);
+        //List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
+        List<Accommodation> accommodations = accommodationRepository.findAll();
         if (categoryOptional.isPresent()) {
             Category category = categoryOptional.get();
-            Accommodation accommodation = MappedAccommodationFrom(accommodationDTO);
+
+            Accommodation accommodation = new Accommodation();
+            accommodation.setName(name);
+            accommodation.setDescription(description);
+            accommodation.setPrice(price);
+            accommodation.setReservable(isReservable);
+            accommodation.setImage(image.getBytes());
+
             accommodation.setCategory(category);
             Accommodation savedAccomodation = accommodationRepository.save(accommodation);
-            return MappedAccommodationFrom(savedAccomodation);
+            return new ResponseEntity<>(MappedAccommodationFrom(savedAccomodation), CREATED);
         }
         throw new RuntimeException("Section not found with id: " + category_id);
     }

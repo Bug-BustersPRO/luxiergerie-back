@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
@@ -37,17 +39,21 @@ public class CategoryControllerTest {
 
     @Test
     public void getAllCategories() {
+        MockMultipartFile imageTest = new MockMultipartFile("image", "image.jpg", MediaType.IMAGE_JPEG_VALUE, "image".getBytes());
+       byte[] imageTestBytes = "image".getBytes();
         when(categoryRepository.findAll()).thenReturn
-                (Arrays.asList(new Category( UUID.randomUUID(), "name", "description", "image", new ArrayList<>(), new Section()),
-                        new Category( UUID.randomUUID(), "name", "description", "image", new ArrayList<>(), new Section())));
+                (Arrays.asList(new Category( UUID.randomUUID(), "name", "description", imageTestBytes, new ArrayList<>(), new Section()),
+                        new Category( UUID.randomUUID(), "name", "description", imageTestBytes, new ArrayList<>(), new Section())));
         assertEquals(2, categoryController.getAllCategories().size());
     }
 
     @Test
     public void getCategoryById() {
+        MockMultipartFile imageTest = new MockMultipartFile("image", "image.jpg", MediaType.IMAGE_JPEG_VALUE, "image".getBytes());
+        byte[] imageTestBytes = "image".getBytes();
         UUID id = UUID.randomUUID();
         when(categoryRepository.findById(id))
-                .thenReturn(Optional.of(new Category(id, "name", "description", "image", new ArrayList<>(), new Section())));
+                .thenReturn(Optional.of(new Category(id, "name", "description", imageTestBytes, new ArrayList<>(), new Section())));
         assertNotNull(categoryController.getCategoryById(id));
     }
 
@@ -60,12 +66,14 @@ public class CategoryControllerTest {
 
     @Test
     public void getAccommodationsByCategories() {
+        MockMultipartFile imageTest = new MockMultipartFile("image", "image.jpg", MediaType.IMAGE_JPEG_VALUE, "image".getBytes());
+        byte[] imageTestBytes = "image".getBytes();
         UUID id = UUID.randomUUID();
-        Category category = new Category( UUID.randomUUID(), "name", "description", "image", new ArrayList<>(), new Section());
+        Category category = new Category( UUID.randomUUID(), "name", "description", imageTestBytes, new ArrayList<>(), new Section());
         category.setId(id);
-        Accommodation accommodation1 = new Accommodation(UUID.randomUUID(), "name", "description", "image", BigDecimal.valueOf(10.00), category, new ArrayList<>());
+        Accommodation accommodation1 = new Accommodation(UUID.randomUUID(), "name", "description", imageTestBytes, BigDecimal.valueOf(10.00), category, new ArrayList<>());
         accommodation1.setCategory(category);
-        Accommodation accommodation2 = new Accommodation( UUID.randomUUID(), "name", "description", "image", BigDecimal.valueOf(10.00), category, new ArrayList<>());
+        Accommodation accommodation2 = new Accommodation( UUID.randomUUID(), "name", "description", imageTestBytes, BigDecimal.valueOf(10.00), category, new ArrayList<>());
         accommodation2.setCategory(category);
         category.setAccommodations(Arrays.asList(accommodation1, accommodation2));
         when(categoryRepository.findById(id)).thenReturn(Optional.of(category));
@@ -81,10 +89,12 @@ public class CategoryControllerTest {
 
     @Test
     public void createCategory() {
+        MockMultipartFile imageTest = new MockMultipartFile("image", "image.jpg", MediaType.IMAGE_JPEG_VALUE, "image".getBytes());
+        byte[] imageTestBytes = "image".getBytes();
         UUID id = UUID.randomUUID();
-        Section section = new Section(id, "name", "description", "image", "title", new ArrayList<>());
+        Section section = new Section(id, "name", imageTestBytes, "image", "title", new ArrayList<>());
         when(sectionRepository.findById(id)).thenReturn(Optional.of(section));
-        Category category = new Category(UUID.randomUUID(), "name", "description", "image", new ArrayList<>(), section);
+        Category category = new Category(UUID.randomUUID(), "name", "description", imageTestBytes, new ArrayList<>(), section);
         when(categoryRepository.save(any(Category.class))).thenReturn(category);
 
         CategoryDTO result = categoryController.createCategory(new CategoryDTO(), id);
@@ -100,10 +110,12 @@ public class CategoryControllerTest {
 
     @Test
     public void updateCategory() {
+        MockMultipartFile imageTest = new MockMultipartFile("image", "image.jpg", MediaType.IMAGE_JPEG_VALUE, "image".getBytes());
+        byte[] imageTestBytes = "image".getBytes();
         UUID id = UUID.randomUUID();
-        Accommodation accommodation = new Accommodation(UUID.randomUUID(), "name", "description", "image", BigDecimal.valueOf(10.00), new Category(), new ArrayList<>());
-        Category existingCategory = new Category(id, "name", "description", "image", Collections.singletonList(accommodation), new Section());
-        Category updatedCategory = new Category(id, "new name", "new description", "new image", Collections.singletonList(accommodation), new Section());
+        Accommodation accommodation = new Accommodation(UUID.randomUUID(), "name", "description", imageTestBytes, BigDecimal.valueOf(10.00), new Category(), new ArrayList<>());
+        Category existingCategory = new Category(id, "name", "description", imageTestBytes, Collections.singletonList(accommodation), new Section());
+        Category updatedCategory = new Category(id, "new name", "new description", imageTestBytes, Collections.singletonList(accommodation), new Section());
 
         when(categoryRepository.findById(id)).thenReturn(Optional.of(existingCategory));
         when(categoryRepository.save(any(Category.class))).thenReturn(updatedCategory);
