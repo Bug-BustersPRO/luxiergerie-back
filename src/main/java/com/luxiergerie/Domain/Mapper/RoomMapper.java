@@ -4,6 +4,8 @@ import com.luxiergerie.DTO.RoomDTO;
 import com.luxiergerie.Domain.Entity.Role;
 import com.luxiergerie.Domain.Entity.Room;
 
+import java.util.stream.Collectors;
+
 public class RoomMapper {
     public static RoomDTO toDTO(Room room) {
         RoomDTO dto = new RoomDTO();
@@ -15,6 +17,11 @@ public class RoomMapper {
         {
             dto.setClient(room.getClient());
         }
+        if (room.getSojourns() != null) {
+            dto.setSojourns(room.getSojourns().stream()
+                    .map(SojournMapper::toDTO)
+                    .collect(Collectors.toList()));
+        }
         return dto;
     }
 
@@ -23,6 +30,11 @@ public class RoomMapper {
         room.setRoomNumber(dto.getRoomNumber());
         room.setFloor(dto.getFloor());
         room.setRole(role);
+        if (dto.getSojourns() != null) {
+            room.setSojourns(dto.getSojourns().stream()
+                    .map(SojournMapper::toEntity)
+                    .collect(Collectors.toList()));
+        }
         return room;
     }
 }

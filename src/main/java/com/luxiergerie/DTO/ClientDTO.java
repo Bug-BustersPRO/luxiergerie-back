@@ -3,17 +3,19 @@ package com.luxiergerie.DTO;
 import com.luxiergerie.Domain.Entity.Purchase;
 import com.luxiergerie.Domain.Entity.Role;
 
+import java.util.List;
 import java.util.UUID;
 
 public class ClientDTO {
     private UUID id;
-    private String firstname;
-    private String lastname;
+    private String firstName;
+    private String lastName;
     private String email;
     private String phoneNumber;
     private UUID room;
     private Role role;
     private Purchase purchase;
+    private List<SojournDTO> sojourns;
 
     public Purchase getPurchase() {
         return purchase;
@@ -34,20 +36,20 @@ public class ClientDTO {
         this.id = id;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {
@@ -80,5 +82,13 @@ public class ClientDTO {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public List<SojournDTO> getSojourns() {
+        return sojourns;
+    }
+
+    public void setSojourns(List<SojournDTO> sojourns) {
+        this.sojourns = sojourns;
     }
 }

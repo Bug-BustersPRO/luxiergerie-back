@@ -1,5 +1,6 @@
 package com.luxiergerie.Controllers.Security;
 
+import com.luxiergerie.DTO.EmployeeDTO;
 import com.luxiergerie.DTO.LoginClientDTO;
 import com.luxiergerie.DTO.LoginDTO;
 import com.luxiergerie.Domain.Entity.Client;
@@ -7,6 +8,7 @@ import com.luxiergerie.Domain.Entity.Employee;
 import com.luxiergerie.Domain.Entity.Role;
 import com.luxiergerie.Domain.Entity.Room;
 import com.luxiergerie.Domain.Mapper.ClientMapper;
+import com.luxiergerie.Domain.Mapper.EmployeeMapper;
 import com.luxiergerie.Domain.Repository.ClientRepository;
 import com.luxiergerie.Domain.Repository.EmployeeRepository;
 import com.luxiergerie.Domain.Repository.RoleRepository;
@@ -126,7 +128,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    ResponseEntity<String> authenticateUser(@RequestBody LoginDTO loginDto, HttpServletResponse response,
+    ResponseEntity<?> authenticateUser(@RequestBody LoginDTO loginDto, HttpServletResponse response,
                                             HttpServletRequest request) {
         /*if (checkCookieToken(request)) {
             tokenService.isTokenValidAndNotExpired(request.getCookies()[0].getValue());
@@ -140,8 +142,13 @@ public class AuthController {
         generateCookie(jwt, response);
         getContext().setAuthentication(authentication);
 
-        return new ResponseEntity<>("User login successfully!...", OK);
+        Employee employee = this.employeeRepository.findBySerialNumber(loginDto.getSerialNumber());
 
+        if (isNull(employee)) {
+            return new ResponseEntity<>("User not found", NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(EmployeeMapper.MappedEmployeeFrom(employee), OK);
     }
 
     @GetMapping("/logout")
@@ -157,7 +164,6 @@ public class AuthController {
             }
         }
         return new ResponseEntity<>("You were not logged!", OK);
-
     }
 
     @PostMapping("/room/login")
