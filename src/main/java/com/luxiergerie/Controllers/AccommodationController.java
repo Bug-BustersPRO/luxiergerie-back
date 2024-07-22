@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -94,7 +93,7 @@ public class AccommodationController {
 
     @PutMapping("/accommodations/{id}")
     public AccommodationDTO updateAccommodation(@PathVariable("id") UUID id, @RequestBody AccommodationDTO accommodationDTO) {
-        UUID nonNullId = Objects.requireNonNull(id, "Accommodation ID must not be null");
+        UUID nonNullId = requireNonNull(id, "Accommodation ID must not be null");
         Optional<Accommodation> accommodationOptional = accommodationRepository.findById(nonNullId);
         if (accommodationOptional.isPresent()) {
             Accommodation accommodationToUpdate = accommodationOptional.get();

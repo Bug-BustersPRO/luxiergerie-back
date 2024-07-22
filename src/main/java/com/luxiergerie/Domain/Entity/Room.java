@@ -32,6 +32,9 @@ public class Room {
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Client client;
 
+    @OneToMany(mappedBy = "room")
+    private List<Sojourn> sojourns;
+
     public Room() {
     }
 
@@ -73,6 +76,14 @@ public class Room {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    public List<Sojourn> getSojourns() {
+        return sojourns;
+    }
+
+    public void setSojourns(List<Sojourn> sojourns) {
+        this.sojourns = sojourns;
     }
 
     @Override
