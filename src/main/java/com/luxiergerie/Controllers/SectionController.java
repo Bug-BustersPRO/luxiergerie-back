@@ -95,7 +95,7 @@ public class SectionController {
                                   @RequestParam(value = "title", required = false) String title) throws IOException {
       List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
       List<Section> sections = sectionRepository.findAll();
-      if (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType())) {
+      if (image != null && (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType()))) {
           return new ResponseEntity<>(BAD_REQUEST);
       }
     UUID nonNullId = Objects.requireNonNull(id, "Section ID must not be null");
@@ -107,8 +107,6 @@ public class SectionController {
         sectionToUpdate.setTitle(title);
         if(image != null ) {
             sectionToUpdate.setImage(image.getBytes());
-        } else {
-            sectionToUpdate.setImage(sectionToUpdate.getImage());
         }
         Section updatedSection = sectionRepository.save(sectionToUpdate);
         return new ResponseEntity<>(MappedSectionFrom(updatedSection), OK);
