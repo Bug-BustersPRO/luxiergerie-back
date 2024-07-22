@@ -88,7 +88,7 @@ public class EmployeeController {
 
         Optional<Role> roleById = this.roleRepository.findById(roles.getFirst().getId());
         if(roleById.isPresent()) {
-            roleById.get().getEmployees().add(MappedEmployeeFrom(employeeDTO));z
+            roleById.get().getEmployees().add(MappedEmployeeFrom(employeeDTO));
         }
 
         PasswordEncoder passwordEncoder = createDelegatingPasswordEncoder();
@@ -97,8 +97,6 @@ public class EmployeeController {
 
         return MappedEmployeeFrom(savedEmployee);
     }
-
-
 
     @PutMapping("/{id}")
     public EmployeeDTO updateEmployee(@PathVariable("id") UUID id, EmployeeDTO employeeDTO) {
