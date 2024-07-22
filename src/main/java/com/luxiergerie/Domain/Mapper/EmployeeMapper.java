@@ -11,7 +11,7 @@ public class EmployeeMapper {
         employeeDTO.setLastName(employee.getLastName());
         employeeDTO.setFirstName(employee.getFirstName());
         employeeDTO.setSerialNumber(employee.getSerialNumber());
-        employeeDTO.setRole(employee.getRoles());
+        employeeDTO.setRoles(employee.getRoles());
         employeeDTO.setPassword(employee.getPassword());
         return employeeDTO;
     }

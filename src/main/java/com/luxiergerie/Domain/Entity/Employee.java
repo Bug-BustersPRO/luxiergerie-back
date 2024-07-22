@@ -1,5 +1,6 @@
 package com.luxiergerie.Domain.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -31,7 +32,12 @@ public class Employee {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @ManyToMany(mappedBy = "employees")
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "employee_role",
+            joinColumns = @JoinColumn(name = "employee_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Role> roles = new ArrayList<>();
 
@@ -94,4 +100,5 @@ public class Employee {
 
     public Employee() {
     }
+
 }

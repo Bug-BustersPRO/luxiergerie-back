@@ -19,4 +19,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
    * @return The Employee with the specified serial number, or null if not found.
    */
   Employee findBySerialNumber(String serialNumber);
+
+    boolean existsBySerialNumber(String serialNumber);
 }
