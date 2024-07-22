@@ -81,8 +81,6 @@ public class EmployeeController {
         String randomInt = valueOf((int) (random() * 10000000));
         employeeDTO.setSerialNumber(randomInt);
 
-//        List<Role> roles = Collections.singletonList( employeeDTO.getRoles().getFirst());
-//        employeeDTO.setRoles(roles);
         List<Role> roles = employeeDTO.getRoles().stream()
                 .map(role -> this.roleRepository.findByName(role.getName()))
                 .collect(toList());
@@ -90,11 +88,8 @@ public class EmployeeController {
 
         Optional<Role> roleById = this.roleRepository.findById(roles.getFirst().getId());
         if(roleById.isPresent()) {
-            roleById.get().getEmployees().add(MappedEmployeeFrom(employeeDTO));
-
+            roleById.get().getEmployees().add(MappedEmployeeFrom(employeeDTO));z
         }
-
-
 
         PasswordEncoder passwordEncoder = createDelegatingPasswordEncoder();
         employeeDTO.setPassword(passwordEncoder.encode(employeeDTO.getPassword()));
