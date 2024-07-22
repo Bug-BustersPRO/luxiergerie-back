@@ -113,7 +113,7 @@ public class PurchaseController {
 
   @PostMapping("")
   public PurchaseDTO createPurchase(@RequestBody PurchaseDTO purchaseDTO) {
-    if(purchaseDTO.getId() != null) {
+    if(Objects.nonNull(purchaseDTO.getId())) {
       Optional<Purchase> purchaseOptional = purchaseRepository.findById(purchaseDTO.getId());
       if(purchaseOptional.isPresent()){
         throw new ResponseStatusException(HttpStatus.CONFLICT, "Purchase already exists with ID: " + purchaseDTO.getId());

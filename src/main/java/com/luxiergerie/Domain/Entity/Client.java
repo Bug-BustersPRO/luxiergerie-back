@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -51,7 +52,7 @@ public class Client {
     private List<Sojourn> sojourns = new ArrayList<>();
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
-      if (this.authorities == null) {
+      if (Objects.isNull(this.authorities)) {
         return new ArrayList<>();
       }
         return this.authorities.stream()
