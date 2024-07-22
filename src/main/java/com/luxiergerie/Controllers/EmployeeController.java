@@ -9,14 +9,17 @@ import com.luxiergerie.Domain.Repository.RoleRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.luxiergerie.Domain.Mapper.EmployeeMapper.MappedEmployeeFrom;
 import static java.lang.Math.random;
 import static java.lang.String.valueOf;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.*;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.security.crypto.factory.PasswordEncoderFactories.createDelegatingPasswordEncoder;
 
@@ -77,16 +80,21 @@ public class EmployeeController {
     public EmployeeDTO createEmployee(@RequestBody EmployeeDTO employeeDTO) {
         String randomInt = valueOf((int) (random() * 10000000));
         employeeDTO.setSerialNumber(randomInt);
-        Employee employee = MappedEmployeeFrom(employeeDTO);
 
         List<Role> roles = employeeDTO.getRoles().stream()
                 .map(role -> this.roleRepository.findByName(role.getName()))
                 .collect(toList());
-        employee.setRoles(roles);
+        employeeDTO.setRoles(roles);
+
+        Optional<Role> roleById = this.roleRepository.findById(roles.getFirst().getId());
+        if(roleById.isPresent()) {
+            roleById.get().getEmployees().add(MappedEmployeeFrom(employeeDTO));
+        }
 
         PasswordEncoder passwordEncoder = createDelegatingPasswordEncoder();
-        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
-        Employee savedEmployee = employeeRepository.save(employee);
+        employeeDTO.setPassword(passwordEncoder.encode(employeeDTO.getPassword()));
+        Employee savedEmployee = employeeRepository.save(MappedEmployeeFrom(employeeDTO));
+
         return MappedEmployeeFrom(savedEmployee);
     }
 
