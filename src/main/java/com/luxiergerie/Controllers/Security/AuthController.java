@@ -37,6 +37,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static io.micrometer.common.util.StringUtils.isEmpty;
+import static java.lang.Math.*;
 import static java.lang.String.valueOf;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -110,7 +111,7 @@ public class AuthController {
         role = this.roleRepository.findByName("ROLE_EMPLOYEE");
         role.getEmployees().add(employee);
 
-        String randomInt = valueOf((int) (Math.random() * 10000000));
+        String randomInt = valueOf((int) (random() * 10000000));
         employee.setSerialNumber(randomInt);
 
         if ((isNull(employee.getFirstName()) || isEmpty(employee.getFirstName()))
@@ -136,7 +137,7 @@ public class AuthController {
         Authentication authentication = this.authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDto.getSerialNumber(), loginDto.getPassword()));
         var jwt = tokenService.generateToken(authentication);
-        if (jwt == null) {
+        if (isNull(jwt)) {
             throw new ResponseStatusException(UNAUTHORIZED, "Invalid username/password supplied");
         }
         generateCookie(jwt, response);
