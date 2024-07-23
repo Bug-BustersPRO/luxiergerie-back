@@ -6,6 +6,7 @@ import com.luxiergerie.Domain.Entity.Role;
 import com.luxiergerie.Domain.Mapper.EmployeeMapper;
 import com.luxiergerie.Domain.Repository.EmployeeRepository;
 import com.luxiergerie.Domain.Repository.RoleRepository;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -99,16 +100,29 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
-    public EmployeeDTO updateEmployee(@PathVariable("id") UUID id, EmployeeDTO employeeDTO) {
+    public EmployeeDTO updateEmployee(@PathVariable("id") UUID id, @RequestBody EmployeeDTO employeeDTO) {
         UUID nonNullId = requireNonNull(id, "Employee id must not be null");
         Optional<Employee> employeeOptional = employeeRepository.findById(nonNullId);
         if (employeeOptional.isPresent()) {
             Employee employeeToUpdate = employeeOptional.get();
             employeeToUpdate.setLastName(employeeDTO.getLastName());
             employeeToUpdate.setFirstName(employeeDTO.getFirstName());
-            employeeToUpdate.setRoles(employeeDTO.getRoles());
-            employeeToUpdate.setPassword(employeeDTO.getPassword());
-            return MappedEmployeeFrom(employeeToUpdate);
+
+            // Mise à jour des rôles
+            List<Role> roles = employeeDTO.getRoles().stream()
+                    .map(role -> this.roleRepository.findById(role.getId())
+                            .orElseThrow(() -> new RuntimeException("Role not found with id: " + role.getId())))
+                    .collect(toList());
+            employeeToUpdate.setRoles(roles);
+
+            // Encodage du mot de passe
+            PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+            employeeToUpdate.setPassword(passwordEncoder.encode(employeeDTO.getPassword()));
+
+            // Sauvegarde de l'employé mis à jour
+            Employee savedEmployee = employeeRepository.save(employeeToUpdate);
+
+            return MappedEmployeeFrom(savedEmployee);
         } else {
             throw new RuntimeException("Employee not found with id: " + nonNullId);
         }
