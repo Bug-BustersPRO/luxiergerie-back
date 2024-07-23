@@ -113,10 +113,12 @@ public class PurchaseController {
 
   @PostMapping("")
   public PurchaseDTO createPurchase(@RequestBody PurchaseDTO purchaseDTO) {
-    Optional<Purchase> purchaseOptional = purchaseRepository.findById(purchaseDTO.getId());
-    if(purchaseOptional.isPresent()){
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "Purchase already exists with ID: " + purchaseDTO.getId());
-    }
+    if(Objects.nonNull(purchaseDTO.getId())) {
+      Optional<Purchase> purchaseOptional = purchaseRepository.findById(purchaseDTO.getId());
+      if(purchaseOptional.isPresent()){
+        throw new ResponseStatusException(HttpStatus.CONFLICT, "Purchase already exists with ID: " + purchaseDTO.getId());
+      }
+  }
     Purchase purchase = MappedPurchaseFrom(purchaseDTO);
     Purchase savedPurchase = purchaseRepository.save(purchase);
     return MappedPurchaseFrom(savedPurchase);
@@ -131,6 +133,7 @@ public class PurchaseController {
         purchase.setClient(purchaseDTO.getClient());
         purchase.setStatus(purchaseDTO.getStatus());
         purchase.setAccommodations(purchaseDTO.getAccommodations());
+        purchase.setTotalPrice(purchaseDTO.getTotalPrice());
         Purchase updatedPurchase = purchaseRepository.save(purchase);
         return MappedPurchaseFrom(updatedPurchase);
         } else {
@@ -145,4 +148,5 @@ public class PurchaseController {
     }
     purchaseRepository.deleteById(id);
   }
+
 }

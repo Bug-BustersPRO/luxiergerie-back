@@ -80,6 +80,7 @@ public class EmployeeController {
     public EmployeeDTO createEmployee(@RequestBody EmployeeDTO employeeDTO) {
         String randomInt = valueOf((int) (random() * 10000000));
         employeeDTO.setSerialNumber(randomInt);
+        Employee employee = MappedEmployeeFrom(employeeDTO);
 
         List<Role> roles = employeeDTO.getRoles().stream()
                 .map(role -> this.roleRepository.findByName(role.getName()))
