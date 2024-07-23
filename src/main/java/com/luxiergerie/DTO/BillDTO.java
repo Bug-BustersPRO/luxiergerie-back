@@ -15,7 +15,7 @@
     private Client client;
     private String status;
     private int roomNumber;
-    private BigDecimal totalPrice;
+    private BigDecimal totalPrice = BigDecimal.ZERO;
     private List<PurchaseForBillDTO> purchasesForBillDTO = new ArrayList<>();
 
     public UUID getId() {

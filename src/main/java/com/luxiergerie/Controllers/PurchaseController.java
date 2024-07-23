@@ -84,13 +84,20 @@ public class PurchaseController {
 
             // Set the total price for the bill from the purchases
             BigDecimal totalPrice = purchaseForBillDTO.getTotalPrice();
+            if (totalPrice == null) {
+              totalPrice = BigDecimal.ZERO;
+            }
             billDTO.setTotalPrice(totalPrice);
 
             // Add the purchase to the list of purchases for the room number
             int roomNumber = billDTO.getRoomNumber();
             if (purchasesByRoom.containsKey(roomNumber)) {
                 BillDTO existingBill = purchasesByRoom.get(roomNumber);
-                existingBill.setTotalPrice(existingBill.getTotalPrice().add(totalPrice));
+                BigDecimal existingTotalPrice = existingBill.getTotalPrice();
+                if (existingTotalPrice == null) {
+                    existingTotalPrice = BigDecimal.ZERO;
+                }
+                existingBill.setTotalPrice(existingTotalPrice.add(totalPrice));
                 existingBill.getPurchasesForBillDTO().add(purchaseForBillDTO);
             } else {
                 billDTO.getPurchasesForBillDTO().add(purchaseForBillDTO);
