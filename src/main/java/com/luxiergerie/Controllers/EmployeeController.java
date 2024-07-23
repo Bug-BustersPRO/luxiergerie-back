@@ -6,6 +6,8 @@ import com.luxiergerie.Domain.Entity.Role;
 import com.luxiergerie.Domain.Mapper.EmployeeMapper;
 import com.luxiergerie.Domain.Repository.EmployeeRepository;
 import com.luxiergerie.Domain.Repository.RoleRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -108,24 +110,38 @@ public class EmployeeController {
             employeeToUpdate.setLastName(employeeDTO.getLastName());
             employeeToUpdate.setFirstName(employeeDTO.getFirstName());
 
-            // Mise à jour des rôles
             List<Role> roles = employeeDTO.getRoles().stream()
                     .map(role -> this.roleRepository.findById(role.getId())
                             .orElseThrow(() -> new RuntimeException("Role not found with id: " + role.getId())))
                     .collect(toList());
             employeeToUpdate.setRoles(roles);
 
-            // Encodage du mot de passe
             PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
             employeeToUpdate.setPassword(passwordEncoder.encode(employeeDTO.getPassword()));
 
-            // Sauvegarde de l'employé mis à jour
             Employee savedEmployee = employeeRepository.save(employeeToUpdate);
 
             return MappedEmployeeFrom(savedEmployee);
         } else {
             throw new RuntimeException("Employee not found with id: " + nonNullId);
         }
+    }
+
+    @Transactional
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteEmployee(@PathVariable("id") UUID id) {
+        if (!employeeRepository.existsById(id)) {
+            throw new RuntimeException("Employee not found with id: " + id);
+        }
+
+        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("Employee not found"));
+
+        employee.getRoles().forEach(role -> role.getEmployees().remove(employee));
+        employee.setRoles(null);
+
+        employeeRepository.deleteById(id);
+
+        return ResponseEntity.ok().build();
     }
 
 }
