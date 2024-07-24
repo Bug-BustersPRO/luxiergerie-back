@@ -42,14 +42,6 @@ public class Purchase {
     @Column(name = "totalPrice")
     private BigDecimal totalPrice;
 
-    public BigDecimal getTotalPrice() {
-      return totalPrice;
-    }
-
-    public void setTotalPrice(BigDecimal totalPrice) {
-      this.totalPrice = totalPrice;
-    }
-
     public Purchase() {
     }
 
@@ -91,7 +83,23 @@ public class Purchase {
 
     public void setAccommodations(List<Accommodation> accommodations) {
         this.accommodations = accommodations;
+        calculateTotalPrice();
     }
+
+    public BigDecimal getTotalPrice() {
+      return totalPrice;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+      this.totalPrice = totalPrice;
+    }
+
+    private void calculateTotalPrice() {
+      this.totalPrice = accommodations.stream()
+          .map(Accommodation::getPrice)
+          .reduce(BigDecimal::add)
+          .orElse(BigDecimal.ZERO);
+  }
 
     public Purchase(UUID id, Date date, Client client, String status, List<Accommodation> accommodations) {
       this.id = id;

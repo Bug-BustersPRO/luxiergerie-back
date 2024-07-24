@@ -84,7 +84,7 @@ public class PurchaseController {
 
             // Set the total price for the bill from the purchases
             BigDecimal totalPrice = purchaseForBillDTO.getTotalPrice();
-            if (totalPrice == null) {
+            if (Objects.isNull(totalPrice) ) {
               totalPrice = BigDecimal.ZERO;
             }
             billDTO.setTotalPrice(totalPrice);
