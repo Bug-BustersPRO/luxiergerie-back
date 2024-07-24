@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
+import static java.lang.Math.random;
+import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping("/api/client")
@@ -38,7 +41,7 @@ public class ClientController {
 
     @GetMapping
     public List<ClientDTO> getClients() {
-        return this.clientRepository.findAll().stream().map(ClientMapper::toDTO).collect(Collectors.toList());
+        return this.clientRepository.findAll().stream().map(ClientMapper::toDTO).collect(toList());
     }
 
 
@@ -52,12 +55,12 @@ public class ClientController {
     @PostMapping("/add-room/{clientId}/with-role/{roleName}")
     public ResponseEntity<?> addRoomToClient(@PathVariable UUID clientId, @PathVariable String roleName) {
         Role role = this.roleRepository.findByName(roleName);
-        if (role == null) {
+        if (isNull(role)) {
             return new ResponseEntity<>("Role not found with name: " + roleName, HttpStatus.NOT_FOUND);
         }
 
         Client client = this.clientRepository.findById(clientId).orElse(null);
-        if (client == null) {
+        if (isNull(client)) {
             return new ResponseEntity<>("Client not found with id: " + clientId, HttpStatus.NOT_FOUND);
         }
 
@@ -70,7 +73,7 @@ public class ClientController {
             return new ResponseEntity<>("No available room found with role: " + roleName, HttpStatus.NOT_FOUND);
         }
 
-        int pin = (int) (Math.random() * 10000);
+        int pin = (int) (random() * 10000);
 
         room.setClient(client);
         client.setPin(pin);

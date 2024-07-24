@@ -3,6 +3,8 @@ package com.luxiergerie.Domain.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +38,17 @@ public class Purchase {
         inverseJoinColumns = @JoinColumn(name = "accommodation_id")
     )
     private List<Accommodation> accommodations = new ArrayList<>();
+
+    @Column(name = "totalPrice")
+    private BigDecimal totalPrice;
+
+    public BigDecimal getTotalPrice() {
+      return totalPrice;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+      this.totalPrice = totalPrice;
+    }
 
     public Purchase() {
     }

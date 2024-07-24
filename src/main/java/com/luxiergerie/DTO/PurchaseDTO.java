@@ -2,8 +2,6 @@
 
   import com.luxiergerie.Domain.Entity.Accommodation;
   import com.luxiergerie.Domain.Entity.Client;
-  import com.luxiergerie.Domain.Entity.Purchase;
-  import com.luxiergerie.Domain.Entity.Room;
 
   import java.math.BigDecimal;
   import java.util.ArrayList;
@@ -20,14 +18,6 @@
     private List<Accommodation> accommodations = new ArrayList<>();
     private int roomNumber;
     private BigDecimal totalPrice;
-
-    public BigDecimal getTotalPrice() {
-      return totalPrice;
-    }
-
-    public void setTotalPrice(BigDecimal totalPrice) {
-      this.totalPrice = totalPrice;
-    }
 
     public PurchaseDTO(UUID id, Date date, Client client, String status, List<Accommodation> accommodations, int roomNumber, BigDecimal totalPrice) {
       this.id = id;
@@ -77,6 +67,14 @@
 
     public void setAccommodations(List<Accommodation> accommodations) {
       this.accommodations = accommodations;
+    }
+
+    public BigDecimal getTotalPrice() {
+      return totalPrice;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+      this.totalPrice = totalPrice;
     }
 
     public int getRoomNumber() {

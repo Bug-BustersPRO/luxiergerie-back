@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -45,12 +46,15 @@ public class Client {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "client_authorities", joinColumns = @JoinColumn(name = "client_id"))
     @Column(name = "authority")
-    private List<String> authorities;
+    private List<String> authorities = new ArrayList<>();
 
     @OneToMany(mappedBy = "client")
-    private List<Sojourn> sojourns;
+    private List<Sojourn> sojourns = new ArrayList<>();
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
+      if (Objects.isNull(this.authorities)) {
+        return new ArrayList<>();
+      }
         return this.authorities.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
@@ -144,5 +148,7 @@ public class Client {
         this.pin = pin;
         this.room = room;
         this.purchases = purchases;
+        this.authorities = new ArrayList<>();
+        this.sojourns = new ArrayList<>();
     }
 }

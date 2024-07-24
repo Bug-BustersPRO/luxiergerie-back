@@ -6,6 +6,9 @@ import com.luxiergerie.Domain.Entity.Role;
 import com.luxiergerie.Domain.Mapper.EmployeeMapper;
 import com.luxiergerie.Domain.Repository.EmployeeRepository;
 import com.luxiergerie.Domain.Repository.RoleRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -82,28 +85,69 @@ public class EmployeeController {
         List<Role> roles = employeeDTO.getRoles().stream()
                 .map(role -> this.roleRepository.findByName(role.getName()))
                 .collect(toList());
-        employee.setRoles(roles);
+        employeeDTO.setRoles(roles);
+
+        Optional<Role> roleById = this.roleRepository.findById(roles.getFirst().getId());
+        if (roleById.isPresent()) {
+            roleById.get().getEmployees().add(MappedEmployeeFrom(employeeDTO));
+        }
 
         PasswordEncoder passwordEncoder = createDelegatingPasswordEncoder();
-        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
-        Employee savedEmployee = employeeRepository.save(employee);
+        employeeDTO.setPassword(passwordEncoder.encode(employeeDTO.getPassword()));
+        Employee savedEmployee = employeeRepository.save(MappedEmployeeFrom(employeeDTO));
+
         return MappedEmployeeFrom(savedEmployee);
     }
 
     @PutMapping("/{id}")
-    public EmployeeDTO updateEmployee(@PathVariable("id") UUID id, EmployeeDTO employeeDTO) {
+    public EmployeeDTO updateEmployee(@PathVariable("id") UUID id, @RequestBody EmployeeDTO employeeDTO) {
         UUID nonNullId = requireNonNull(id, "Employee id must not be null");
         Optional<Employee> employeeOptional = employeeRepository.findById(nonNullId);
-        if (employeeOptional.isPresent()) {
-            Employee employeeToUpdate = employeeOptional.get();
-            employeeToUpdate.setLastName(employeeDTO.getLastName());
-            employeeToUpdate.setFirstName(employeeDTO.getFirstName());
-            employeeToUpdate.setRoles(employeeDTO.getRoles());
-            employeeToUpdate.setPassword(employeeDTO.getPassword());
-            return MappedEmployeeFrom(employeeToUpdate);
+        if (employeeDTO.getRoles().getFirst().getName().equals("ROLE_ADMIN")) {
+
+            if (employeeOptional.isPresent()) {
+                Employee employeeToUpdate = employeeOptional.get();
+                employeeToUpdate.setLastName(employeeDTO.getLastName());
+                employeeToUpdate.setFirstName(employeeDTO.getFirstName());
+
+                List<Role> roles = employeeDTO.getRoles().stream()
+                        .map(role -> this.roleRepository.findById(role.getId())
+                                .orElseThrow(() -> new RuntimeException("Role not found with id: " + role.getId())))
+                        .collect(toList());
+                employeeToUpdate.setRoles(roles);
+
+                PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+                employeeToUpdate.setPassword(passwordEncoder.encode(employeeDTO.getPassword()));
+
+                Employee savedEmployee = employeeRepository.save(employeeToUpdate);
+
+                return MappedEmployeeFrom(savedEmployee);
+            } else {
+                throw new RuntimeException("Employee not found with id: " + nonNullId);
+            }
         } else {
-            throw new RuntimeException("Employee not found with id: " + nonNullId);
+            throw new RuntimeException("You don't have the role admin for this action");
         }
+    }
+
+    @Transactional
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteEmployee(@PathVariable("id") UUID id) {
+        if (!employeeRepository.existsById(id)) {
+            throw new RuntimeException("Employee not found with id: " + id);
+        }
+
+        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("Employee not found"));
+
+        if (employee.getRoles().getFirst().getName().equals("ROLE_ADMIN")) {
+            employee.getRoles().forEach(role -> role.getEmployees().remove(employee));
+            employee.setRoles(null);
+
+            employeeRepository.deleteById(id);
+
+            return ResponseEntity.ok().build();
+        }
+        throw new RuntimeException("You don't have the permission for this action");
     }
 
 }

@@ -19,18 +19,12 @@ public class Role implements GrantedAuthority {
 
   private String name;
 
-  @ManyToMany(cascade = CascadeType.ALL)
+  @ManyToMany(mappedBy = "roles")
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-  @JoinTable(
-      name = "employee_role",
-      joinColumns = @JoinColumn(name = "role_id"),
-      inverseJoinColumns = @JoinColumn(name = "employee_id")
-  )
   private List<Employee> employees = new ArrayList<>();
 
   @OneToMany(mappedBy = "role")
   @JsonIgnore
-  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private List<Room> rooms = new ArrayList<>();
 
   /**
@@ -129,5 +123,6 @@ public class Role implements GrantedAuthority {
   public String getAuthority() {
     return this.name;
   }
+
 
 }

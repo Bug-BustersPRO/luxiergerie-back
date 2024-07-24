@@ -2,10 +2,8 @@ package com.luxiergerie.Domain.Mapper;
 
 import com.luxiergerie.DTO.PurchaseDTO;
 import com.luxiergerie.DTO.PurchaseForBillDTO;
-import com.luxiergerie.Domain.Entity.Accommodation;
 import com.luxiergerie.Domain.Entity.Purchase;
 
-import java.math.BigDecimal;
 
 public class PurchaseMapper {
   public static PurchaseDTO MappedPurchaseFrom(Purchase purchase) {
@@ -15,8 +13,7 @@ public class PurchaseMapper {
     purchaseDto.setClient(purchase.getClient());
     purchaseDto.setStatus(purchase.getStatus());
     purchaseDto.setAccommodations(purchase.getAccommodations());
-    BigDecimal totalPrice = purchase.getAccommodations().stream().map(Accommodation::getPrice).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
-    purchaseDto.setTotalPrice(totalPrice);
+    purchaseDto.setTotalPrice(purchase.getTotalPrice());
 
     return purchaseDto;
   }
@@ -28,6 +25,7 @@ public class PurchaseMapper {
     purchase.setClient(purchaseDto.getClient());
     purchase.setStatus(purchaseDto.getStatus());
     purchase.setAccommodations(purchaseDto.getAccommodations());
+    purchase.setTotalPrice(purchaseDto.getTotalPrice());
 
     return purchase;
   }
