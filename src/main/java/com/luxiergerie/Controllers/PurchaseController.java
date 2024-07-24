@@ -94,7 +94,7 @@ public class PurchaseController {
             if (purchasesByRoom.containsKey(roomNumber)) {
                 BillDTO existingBill = purchasesByRoom.get(roomNumber);
                 BigDecimal existingTotalPrice = existingBill.getTotalPrice();
-                if (existingTotalPrice == null) {
+                if (Objects.isNull(existingTotalPrice)) {
                     existingTotalPrice = BigDecimal.ZERO;
                 }
                 existingBill.setTotalPrice(existingTotalPrice.add(totalPrice));
