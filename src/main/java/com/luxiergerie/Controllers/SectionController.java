@@ -94,7 +94,7 @@ public class SectionController {
                                   @RequestParam(value = "image", required = false) MultipartFile image,
                                   @RequestParam(value = "title", required = false) String title) throws IOException {
       List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
-      List<Section> sections = sectionRepository.findAll();
+     // List<Section> sections = sectionRepository.findAll();
       if (image != null && (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType()))) {
           return new ResponseEntity<>(BAD_REQUEST);
       }

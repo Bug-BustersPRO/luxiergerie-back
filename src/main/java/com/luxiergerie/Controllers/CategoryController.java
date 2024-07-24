@@ -74,25 +74,6 @@ public class CategoryController {
         throw new RuntimeException("Category not found with id: " + id);
     }
 
-//    @PostMapping("/sections/{section_id}/categories")
-//    public CategoryDTO createCategory(@RequestBody CategoryDTO categoryDTO, @PathVariable UUID section_id, @RequestParam("image") MultipartFile image) throws IOException{
-//      Optional<Section> sectionOptional = sectionRepository.findById(section_id);
-//        List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
-//      if (sectionOptional.isPresent()) {
-//          Section section = sectionOptional.get();
-//
-//
-//          Category category = MappedCategoryFrom(categoryDTO);
-//          category.setSection(section);
-//          category.setImage(image.getBytes());
-//         // category.setImageContentType(image.getContentType());
-//          category.setImage(image.getBytes());
-//          Category savedCategory = categoryRepository.save(category);
-//          return MappedCategoryFrom(savedCategory);
-//      }
-//      throw new RuntimeException("Section not found with id: " + section_id);
-//  }
-
     @GetMapping("/image/{category_id}")
     public ResponseEntity<byte[]> getCategoryImage(@PathVariable UUID category_id) {
         Optional<Category> categoryOptional = categoryRepository.findById(category_id).stream().findFirst();
@@ -130,18 +111,32 @@ public class CategoryController {
         throw new RuntimeException("Category not found with id");
     }
 
-    @PutMapping("/categories/{id}")
-    public CategoryDTO updateCategory(@PathVariable UUID id, @RequestBody CategoryDTO categoryDTO) {
-      UUID nonNullId = requireNonNull(id, "Category ID must not be null");
+    @PutMapping("/sections/{section_id}/categories/{category_id}")
+    public ResponseEntity<CategoryDTO> updateCategory(@RequestParam(value = "name", required = false) String name,
+                                      @RequestParam(value = "description", required = false) String description,
+                                      @PathVariable UUID section_id,
+                                      @PathVariable UUID category_id,
+                                      @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
+        List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
+
+        if (image != null && (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType()))) {
+            return new ResponseEntity<>(BAD_REQUEST);
+        }
+        UUID nonNullId = requireNonNull(category_id, "Category ID must not be null");
+        UUID nonNullSectionId = requireNonNull(section_id, "Section ID must not be null");
+
       Optional<Category> categoryOptional = categoryRepository.findById(nonNullId);
+      Optional<Section> sectionOptional = sectionRepository.findById(nonNullSectionId);
       if (categoryOptional.isPresent()) {
           Category categoryToUpdate = categoryOptional.get();
-          categoryToUpdate.setName(categoryDTO.getName());
-          categoryToUpdate.setImage(categoryDTO.getImage());
-          categoryToUpdate.setDescription(categoryDTO.getDescription());
-          categoryToUpdate.setAccommodations(categoryDTO.getAccommodations());
+          categoryToUpdate.setName(name);
+          if(image != null ) {
+              categoryToUpdate.setImage(image.getBytes());
+          }
+          categoryToUpdate.setDescription(description);
+          categoryToUpdate.setSection(sectionRepository.getReferenceById(section_id));
           Category updatedCategory = categoryRepository.save(categoryToUpdate);
-          return MappedCategoryFrom(updatedCategory);
+          return new ResponseEntity<>(MappedCategoryFrom(updatedCategory), OK);
       }
       throw new RuntimeException("Category not found with id: " + nonNullId);
   }

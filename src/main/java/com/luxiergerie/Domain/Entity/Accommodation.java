@@ -2,6 +2,7 @@ package com.luxiergerie.Domain.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class Accommodation {
     @Column(name = "price")
     private BigDecimal price;
 
+    @Value("false")
     @Column(name="is_reservable")
     private boolean isReservable;
 
