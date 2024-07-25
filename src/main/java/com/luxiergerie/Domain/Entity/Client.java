@@ -49,9 +49,6 @@ public class Client {
     private List<String> authorities = new ArrayList<>();
 
     @OneToMany(mappedBy = "client")
-    private List<Sojourn> sojourns = new ArrayList<>();
-
-    @OneToMany(mappedBy = "client")
     private List<Sojourn> sojourns;
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
