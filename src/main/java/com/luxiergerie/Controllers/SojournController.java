@@ -1,15 +1,10 @@
 package com.luxiergerie.Controllers;
 
 import com.luxiergerie.DTO.SojournDTO;
-import com.luxiergerie.Domain.Entity.Client;
-import com.luxiergerie.Domain.Entity.Room;
 import com.luxiergerie.Domain.Entity.Sojourn;
 import com.luxiergerie.Domain.Mapper.SojournMapper;
-import com.luxiergerie.Domain.Repository.ClientRepository;
-import com.luxiergerie.Domain.Repository.RoomRepository;
 import com.luxiergerie.Domain.Repository.SojournRepository;
 import com.luxiergerie.Services.SojournService;
-import jakarta.persistence.EntityManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,21 +41,25 @@ public class SojournController {
 
     @PutMapping("/{sojournId}")
     public SojournDTO updateSojourn(@PathVariable UUID sojournId, @RequestBody SojournDTO sojournDTO) {
-        Sojourn sojourn = this.sojournRepository.findById(sojournId).orElseThrow(() -> new RuntimeException("Sojourn not found with id: " + sojournId));
-        sojourn.setEntryDate(sojournDTO.getEntryDate());
-        sojourn.setExitDate(sojournDTO.getExitDate());
-        sojourn.setStatus(sojournDTO.getStatus());
-        sojourn.setClient(this.sojournService.getClient(sojournDTO.getClientId()));
-        sojourn.setRoom(this.sojournService.getRoom(sojournDTO.getRoomId()));
-        this.sojournRepository.save(sojourn);
+        Sojourn sojourn = this.sojournService.updateSojourn(sojournId, sojournDTO);
         return SojournMapper.toDTO(sojourn);
     }
 
     @DeleteMapping("/{sojournId}")
-    public void deleteSojourn(@PathVariable UUID sojournId) {
-        if (!this.sojournRepository.existsById(sojournId)) {
-            throw new RuntimeException("Sojourn not found with id: " + sojournId);
-        }
-        this.sojournRepository.deleteById(sojournId);
+    public HttpStatus deleteSojourn(@PathVariable UUID sojournId) {
+        this.sojournService.deleteSojourn(sojournId);
+        return HttpStatus.NO_CONTENT;
+    }
+
+    @GetMapping("/{sojournId}/recover")
+    public HttpStatus recoverPasswordAndIdentifier(@PathVariable UUID sojournId) {
+        this.sojournService.recoverPasswordAndIdentifier(sojournId);
+        return HttpStatus.OK;
+    }
+
+    @PutMapping("/{sojournId}/cancel")
+    public SojournDTO cancelSojourn(@PathVariable UUID sojournId) {
+        Sojourn sojourn = this.sojournService.cancelSojourn(sojournId);
+        return SojournMapper.toDTO(sojourn);
     }
 }

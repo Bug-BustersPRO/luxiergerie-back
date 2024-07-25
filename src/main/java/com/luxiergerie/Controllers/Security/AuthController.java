@@ -3,10 +3,7 @@ package com.luxiergerie.Controllers.Security;
 import com.luxiergerie.DTO.EmployeeDTO;
 import com.luxiergerie.DTO.LoginClientDTO;
 import com.luxiergerie.DTO.LoginDTO;
-import com.luxiergerie.Domain.Entity.Client;
-import com.luxiergerie.Domain.Entity.Employee;
-import com.luxiergerie.Domain.Entity.Role;
-import com.luxiergerie.Domain.Entity.Room;
+import com.luxiergerie.Domain.Entity.*;
 import com.luxiergerie.Domain.Mapper.ClientMapper;
 import com.luxiergerie.Domain.Mapper.EmployeeMapper;
 import com.luxiergerie.Domain.Repository.ClientRepository;
@@ -32,6 +29,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
@@ -65,6 +65,7 @@ public class AuthController {
     private final RoleRepository roleRepository;
     private final ClientRepository clientRepository;
     private final RoomRepository roomRepository;
+    private final SojournRepository sojournRepository;
     private final TokenService tokenService;
     private final BlackListTokenService blackListTokenService;
 
@@ -73,7 +74,7 @@ public class AuthController {
                           AuthenticationManagerBuilder authBuilder,
                           RoleRepository roleRepository,
                           AuthenticationManager authenticationManager,
-                          ClientRepository clientRepository, RoomRepository roomRepository, TokenService tokenService,
+                          ClientRepository clientRepository, RoomRepository roomRepository, SojournRepository sojournRepository, TokenService tokenService,
                           BlackListTokenService blackListTokenService) {
         this.employeeRepository = employeeRepository;
         this.authBuilder = authBuilder;
@@ -81,6 +82,7 @@ public class AuthController {
         this.roleRepository = roleRepository;
         this.clientRepository = clientRepository;
         this.roomRepository = roomRepository;
+        this.sojournRepository = sojournRepository;
         this.tokenService = tokenService;
         this.blackListTokenService = blackListTokenService;
 
@@ -140,7 +142,7 @@ public class AuthController {
         if (isNull(jwt)) {
             throw new ResponseStatusException(UNAUTHORIZED, "Invalid username/password supplied");
         }
-        generateCookie(jwt, response);
+        generateCookie(jwt, response, 24*60*60);
         getContext().setAuthentication(authentication);
 
         Employee employee = this.employeeRepository.findBySerialNumber(loginDto.getSerialNumber());
@@ -170,28 +172,32 @@ public class AuthController {
     @PostMapping("/room/login")
     public ResponseEntity<?> clientLogin(@RequestBody LoginClientDTO loginClientDTO, HttpServletResponse response) {
         try {
-            Room room = this.roomRepository.findByRoomNumber(loginClientDTO.getRoomNumber());
+            Sojourn sojourn = this.sojournRepository.findBySojournIdentifier(loginClientDTO.getSojournIdentifier());
 
-            if (isNull(room)) {
-                return new ResponseEntity<>("Room not found with number: " + loginClientDTO.getRoomNumber(), NOT_FOUND);
+            if (isNull(sojourn)) {
+                return new ResponseEntity<>("Sojourn not found with identifier: " + loginClientDTO.getSojournIdentifier(), NOT_FOUND);
             }
 
-            Client client = room.getClient();
+            Client client = sojourn.getClient();
 
             if (isNull(client)) {
-                return new ResponseEntity<>("No client found in room with number: " + loginClientDTO.getRoomNumber(), NOT_FOUND);
+                return new ResponseEntity<>("No client found in sojourn with identifier: " + loginClientDTO.getSojournIdentifier(), NOT_FOUND);
             }
 
-            if (client.getPin() != loginClientDTO.getPassword()) {
+            if (sojourn.getPin() != loginClientDTO.getPassword()) {
                 return new ResponseEntity<>("Invalid pin code", UNAUTHORIZED);
             }
 
-            this.authBuilder.authenticationProvider(new RoomPinAuthenticationProvider(roomRepository));
+            this.authBuilder.authenticationProvider(new RoomPinAuthenticationProvider(sojournRepository));
             Authentication authentication = authenticationManager.authenticate(
-                    new RoomPinAuthenticationToken(loginClientDTO.getRoomNumber(), loginClientDTO.getPassword()));
+                    new RoomPinAuthenticationToken(loginClientDTO.getSojournIdentifier(), loginClientDTO.getPassword()));
             String jwt = tokenService.generateToken(authentication);
 
-            generateCookie(jwt, response);
+            Instant now = Instant.now();
+            Instant exitDate = sojourn.getExitDate().atZone(ZoneId.systemDefault()).toInstant();
+            long expirationTime = ChronoUnit.SECONDS.between(now, exitDate);
+
+            generateCookie(jwt, response, (int) expirationTime);
 
             getContext().setAuthentication(authentication);
 
@@ -212,13 +218,13 @@ public class AuthController {
         return ResponseEntity.status(NOT_ACCEPTABLE).body("Token is not valid or expired");
     }
 
-    private void generateCookie(String jwt, HttpServletResponse response) {
+    private void generateCookie(String jwt, HttpServletResponse response, int expirationTime) {
         Cookie cookie = new Cookie("jwt-token", jwt);
         cookie.setSecure(true);
         cookie.setHttpOnly(false);
         cookie.getValue();
         cookie.setPath("/");
-        cookie.setMaxAge(24 * 60 * 60);
+        cookie.setMaxAge(expirationTime);
         response.addCookie(cookie);
     }
 

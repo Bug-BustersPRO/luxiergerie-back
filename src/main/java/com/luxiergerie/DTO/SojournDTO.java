@@ -1,5 +1,6 @@
 package com.luxiergerie.DTO;
 
+import com.luxiergerie.Domain.Entity.Role;
 import com.luxiergerie.Domain.Enums.SojournStatus;
 
 import java.time.LocalDate;
@@ -10,7 +11,10 @@ public class SojournDTO {
     private LocalDate entryDate;
     private LocalDate exitDate;
     private SojournStatus status;
+    private String sojournIdentifier;
+    private int pin;
     private UUID clientId;
+    private Role roleRoom;
     private UUID roomId;
 
     // getters and setters
@@ -47,12 +51,36 @@ public class SojournDTO {
         this.status = status;
     }
 
+    public String getSojournIdentifier() {
+        return sojournIdentifier;
+    }
+
+    public void setSojournIdentifier(String sojournIdentifier) {
+        this.sojournIdentifier = sojournIdentifier;
+    }
+
+    public int getPin() {
+        return pin;
+    }
+
+    public void setPin(int pin) {
+        this.pin = pin;
+    }
+
     public UUID getClientId() {
         return clientId;
     }
 
     public void setClientId(UUID clientId) {
         this.clientId = clientId;
+    }
+
+    public Role getRoomRole() {
+        return roleRoom;
+    }
+
+    public void setRoomRole(Role roleRoom) {
+        this.roleRoom = roleRoom;
     }
 
     public UUID getRoomId() {

@@ -2,31 +2,38 @@ package com.luxiergerie.Services;
 
 import com.luxiergerie.Domain.Entity.Client;
 import com.luxiergerie.Domain.Entity.Room;
+import com.luxiergerie.Domain.Entity.Sojourn;
 import com.luxiergerie.Domain.Repository.RoomRepository;
+import com.luxiergerie.Domain.Repository.SojournRepository;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
+import java.util.Objects;
+
 public class RoomPinAuthenticationProvider implements AuthenticationProvider {
 
-    private final RoomRepository roomRepository;
+    private final SojournRepository sojournRepository;
 
-    public RoomPinAuthenticationProvider(RoomRepository roomRepository) {
-        this.roomRepository = roomRepository;
+    public RoomPinAuthenticationProvider(SojournRepository sojournRepository) {
+        this.sojournRepository = sojournRepository;
     }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        int roomNumber = (int) authentication.getPrincipal();
+        String sojournIdentifier = (String) authentication.getPrincipal();
         int pin = (int) authentication.getCredentials();
 
-        Room room = roomRepository.findByRoomNumber(roomNumber);
-        if (room == null || room.getClient() == null || room.getClient().getPin() != pin) {
-            return null;
+        Sojourn sojourn = sojournRepository.findBySojournIdentifier(sojournIdentifier);
+        if (sojourn == null) {
+            throw new AuthenticationException("Sojourn not found") {};
         }
-        Client client = room.getClient();
 
-        return new RoomPinAuthenticationToken(roomNumber, pin);
+        if (sojourn.getPin() != pin) {
+            throw new AuthenticationException("Invalid pin") {};
+        }
+
+        return new RoomPinAuthenticationToken(sojournIdentifier, pin);
     }
 
     @Override

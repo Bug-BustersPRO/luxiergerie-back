@@ -51,6 +51,9 @@ public class Client {
     @OneToMany(mappedBy = "client")
     private List<Sojourn> sojourns = new ArrayList<>();
 
+    @OneToMany(mappedBy = "client")
+    private List<Sojourn> sojourns;
+
     public Collection<? extends GrantedAuthority> getAuthorities() {
       if (Objects.isNull(this.authorities)) {
         return new ArrayList<>();
