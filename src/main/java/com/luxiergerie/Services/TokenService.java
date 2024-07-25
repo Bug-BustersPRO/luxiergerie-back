@@ -2,22 +2,29 @@ package com.luxiergerie.Services;
 
 import com.luxiergerie.Domain.Entity.BlackListedToken;
 import com.luxiergerie.Domain.Entity.Employee;
-import com.luxiergerie.Domain.Entity.Room;
+import com.luxiergerie.Domain.Entity.Sojourn;
 import com.luxiergerie.Domain.Repository.BlackListedTokenRepository;
 import com.luxiergerie.Domain.Repository.EmployeeRepository;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
+import java.util.Date;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.luxiergerie.Domain.Repository.SojournRepository;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 
-import com.luxiergerie.Domain.Repository.RoomRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
+
+import static java.time.temporal.ChronoUnit.*;
+import static java.util.Objects.*;
 
 /**
  * This class is responsible for generating JWT tokens for authentication.
@@ -29,22 +36,23 @@ public class TokenService {
   private final BlackListTokenService blackListTokenService;
   private final BlackListedTokenRepository blackListedTokenRepository;
   private final EmployeeRepository  employeeRepository;
-  private final RoomRepository roomRepository;
+  private final SojournRepository sojournRepository;
   private final JwtDecoder jwtDecoder;
+  private boolean isEmployee = true;
+  private Sojourn sojourn;
 
   /**
    * Constructs a TokenService object with the specified JwtEncoder.
    *
    * @param encoder        the JwtEncoder used to encode the JWT tokens.
-   * @param roomRepository
    */
   public TokenService(JwtEncoder encoder, BlackListTokenService blackListTokenService,
-                      BlackListedTokenRepository blackListedTokenRepository, EmployeeRepository employeeRepository, RoomRepository roomRepository, JwtDecoder jwtDecoder) {
+                      BlackListedTokenRepository blackListedTokenRepository, EmployeeRepository employeeRepository, SojournRepository sojournRepository, JwtDecoder jwtDecoder) {
     this.encoder = encoder;
     this.blackListTokenService = blackListTokenService;
     this.blackListedTokenRepository = blackListedTokenRepository;
     this.employeeRepository = employeeRepository;
-    this.roomRepository = roomRepository;
+    this.sojournRepository = sojournRepository;
     this.jwtDecoder = jwtDecoder;
   }
 
@@ -72,12 +80,14 @@ public class TokenService {
 
   private UUID findUserId(Authentication auth) {
     Employee employee = employeeRepository.findBySerialNumber(auth.getName());
-    if (employee != null) {
+    if (nonNull(employee)) {
       return employee.getId();
     } else {
-      Room room = roomRepository.findByRoomNumber(Integer.parseInt(auth.getName()));
-      if (room != null && room.getClient() != null && room.getClient().getPin() ==  Integer.parseInt(auth.getCredentials().toString())) {
-        return room.getClient().getId();
+      Sojourn sojourn = sojournRepository.findBySojournIdentifier(auth.getName());
+      if (nonNull(sojourn) && nonNull(sojourn.getClient())  && sojourn.getPin() ==  Integer.parseInt(auth.getCredentials().toString())) {
+        isEmployee = false;
+        this.sojourn = sojourn;
+        return sojourn.getClient().getId();
       } else {
         throw new RuntimeException("User not found with provided credentials");
       }
@@ -87,34 +97,55 @@ public class TokenService {
   private String createAndEncodeJwt(Authentication auth) {
     JwsHeader jwsHeader = JwsHeader.with(() -> "HS256").build();
 
+    JwtClaimsSet claims = createJwtClaimsSet(auth, isEmployee, sojourn);
+
+    return this.encoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
+  }
+
+  private JwtClaimsSet createJwtClaimsSet(Authentication auth, boolean isEmployee, Sojourn sojourn) {
     Instant now = Instant.now();
+    Instant expirationDate;
+
+    if (isEmployee) {
+      expirationDate = now.plus(24, HOURS);
+    } else {
+      LocalDateTime exitDateLocalDateTime = sojourn.getExitDate();
+      Instant exitDate = exitDateLocalDateTime.atZone(ZoneId.systemDefault()).toInstant();
+      if (now.isBefore(exitDate)) {
+        long durationSeconds = SECONDS.between(now, exitDate);
+        expirationDate = now.plusSeconds(durationSeconds);
+      } else {
+            throw new RuntimeException("Sojourn has already ended");
+        }
+    }
 
     String scope = auth.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.joining(" "));
 
-    JwtClaimsSet claims = JwtClaimsSet.builder()
+    return JwtClaimsSet.builder()
             .issuer("self")
             .issuedAt(now)
-            .expiresAt(now.plus(24, ChronoUnit.HOURS))
+            .expiresAt(expirationDate)
             .subject(auth.getName())
             .claim("employeeSerialNumber", String.valueOf((auth.getPrincipal())))
             .claim("scope", scope)
             .build();
-
-    return this.encoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
   }
 
   private void saveToken(String token, UUID userId) {
-    blackListTokenService.saveToken(token, Instant.now().plus(24, ChronoUnit.HOURS), userId);
+    if (isEmployee) {
+      blackListTokenService.saveToken(token, Instant.now().plus(24, HOURS), userId);
+    } else {
+        blackListTokenService.saveToken(token, this.sojourn.getExitDate().atZone(ZoneId.systemDefault()).toInstant(), userId);
+    }
   }
 
   private boolean validateToken(String token) {
     BlackListedToken blackListedToken = blackListedTokenRepository.findByToken(token);
-    if (Objects.nonNull(blackListedToken) && !blackListedToken.isBlackListed()) {
+    if (nonNull(blackListedToken) && !blackListedToken.isBlackListed()) {
       Date expirationDate = this.getTokenExpirationDate(String.valueOf(token));
-      if (Instant.now().isAfter(expirationDate.toInstant()) && Instant.now().isAfter(blackListedToken.getExpiryDate())){
-        System.out.println("ici");
+      if (Instant.now().isAfter(expirationDate.toInstant()) || Instant.now().isAfter(blackListedToken.getExpiryDate())){
         blackListedToken.setBlackListed(true);
         blackListedTokenRepository.save(blackListedToken);
         return false;

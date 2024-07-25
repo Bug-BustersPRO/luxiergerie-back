@@ -7,12 +7,12 @@ import java.util.Collection;
 
 public class RoomPinAuthenticationToken extends AbstractAuthenticationToken {
 
-    private final int roomNumber;
+    private final String sojournIdentifier;
     private final int pin;
 
-    public RoomPinAuthenticationToken(int roomNumber, int pin) {
+    public RoomPinAuthenticationToken(String sojournIdentifier, int pin) {
         super(null);
-        this.roomNumber = roomNumber;
+        this.sojournIdentifier = sojournIdentifier;
         this.pin = pin;
         setAuthenticated(false);
     }
@@ -24,6 +24,6 @@ public class RoomPinAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        return roomNumber;
+        return sojournIdentifier;
     }
 }

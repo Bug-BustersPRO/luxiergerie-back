@@ -29,7 +29,7 @@ public class RoomController {
     public List<RoomDTO> getRooms() {
         List<Room> rooms = this.roomRepository.findAll();
         return rooms.stream()
-                .map(RoomMapper::toDTO)
+                .map(RoomMapper::MappedRoomFrom)
                 .collect(toList());
     }
 
@@ -37,7 +37,7 @@ public class RoomController {
     public List<RoomDTO> getAvailableRooms() {
         List<Room> rooms = this.roomRepository.findAllRoomByClientIsNull();
         return rooms.stream()
-                .map(RoomMapper::toDTO)
+                .map(RoomMapper::MappedRoomFrom)
                 .collect(toList());
     }
 
@@ -74,12 +74,12 @@ public class RoomController {
             roomDto.setRoomNumber(roomNumber);
             roomDto.setFloor(roomDTO.getFloor());
             roomDto.setRole(roomDto.getRole());
-            Room room = RoomMapper.toEntity(roomDto, existingRole);
+            Room room = RoomMapper.MappedRoomFrom(roomDto, existingRole);
             rooms.add(room);
         }
 
         List<Room> savedRooms = this.roomRepository.saveAll(rooms);
-        return savedRooms.stream().map(RoomMapper::toDTO).collect(toList());
+        return savedRooms.stream().map(RoomMapper::MappedRoomFrom).collect(toList());
     }
 
     @PostMapping
@@ -92,7 +92,7 @@ public class RoomController {
         if (roomOptional.isPresent() && roomOptional.get().getRoomNumber() == roomDTO.getRoomNumber()) {
             throw new RuntimeException("Room already exists with number: " + roomDTO.getRoomNumber());
         }
-        Room room = RoomMapper.toEntity(roomDTO, role);
+        Room room = RoomMapper.MappedRoomFrom(roomDTO, role);
         this.roomRepository.save(room);
 
         return HttpStatus.CREATED;
@@ -112,7 +112,7 @@ public class RoomController {
             room.setRole(role);
             room.setClient(roomDTO.getClient());
             this.roomRepository.save(room);
-            return RoomMapper.toDTO(room);
+            return RoomMapper.MappedRoomFrom(room);
         } else {
             throw new RuntimeException("Room not found with id: " + roomId);
         }

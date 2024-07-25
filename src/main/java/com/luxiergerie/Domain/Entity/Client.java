@@ -49,7 +49,7 @@ public class Client {
     private List<String> authorities = new ArrayList<>();
 
     @OneToMany(mappedBy = "client")
-    private List<Sojourn> sojourns = new ArrayList<>();
+    private List<Sojourn> sojourns;
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
       if (Objects.isNull(this.authorities)) {

@@ -2,15 +2,15 @@ package com.luxiergerie.DTO;
 
 public class LoginClientDTO {
 
-    private int roomNumber;
+    private String sojournIdentifier;
     private int password;
 
-    public int getRoomNumber() {
-        return roomNumber;
+    public String getSojournIdentifier() {
+        return sojournIdentifier;
     }
 
-    public void setRoomNumber(int roomNumber) {
-        this.roomNumber = roomNumber;
+    public void setSojournIdentifier(String sojournIdentifier) {
+        this.sojournIdentifier = sojournIdentifier;
     }
 
     public int getPassword() {
