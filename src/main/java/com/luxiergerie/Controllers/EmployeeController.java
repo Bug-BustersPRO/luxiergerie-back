@@ -139,7 +139,7 @@ public class EmployeeController {
 
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("Employee not found"));
 
-        if (employee.getRoles().getFirst().getName().equals("ROLE_ADMIN")) {
+        if (employee.getRoles().getFirst().getName().equals("ROLE_EMPLOYEE")) {
             employee.getRoles().forEach(role -> role.getEmployees().remove(employee));
             employee.setRoles(null);
 

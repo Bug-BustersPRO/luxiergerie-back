@@ -20,7 +20,7 @@ public class ClientMapper {
         }
         if (client.getSojourns() != null) {
             dto.setSojourns(client.getSojourns().stream()
-                    .map(SojournMapper::toDTO)
+                    .map(SojournMapper::MappedSojournFrom)
                     .collect(Collectors.toList()));
         }
         return dto;
@@ -34,7 +34,7 @@ public class ClientMapper {
         client.setPhoneNumber(dto.getPhoneNumber());
         if (dto.getSojourns() != null) {
             client.setSojourns(dto.getSojourns().stream()
-                    .map(SojournMapper::toEntity)
+                    .map(SojournMapper::MappedSojournFrom)
                     .collect(Collectors.toList()));
         }
         return client;
