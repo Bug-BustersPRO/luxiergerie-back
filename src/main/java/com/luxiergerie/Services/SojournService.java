@@ -100,6 +100,10 @@ public class SojournService {
         this.clientRepository.save(client);
         this.roomRepository.save(room);
 
+        // Send email
+        //String emailSubject = "Your Sojourn Credentials";
+        //String emailBody = "Your new PIN is: " + sojourn.getPin() + " and your identifier is: " + sojourn.getSojournIdentifier();
+        //emailService.sendEmail(sojourn.getClient().getEmail(), emailSubject, emailBody);
     }
 
 
@@ -140,9 +144,9 @@ public class SojournService {
         sojournDTO.setSojournIdentifier(sojourn.getSojournIdentifier());
 
         // Send email
-        String emailSubject = "Your Sojourn Credentials";
-        String emailBody = "Your new PIN is: " + sojourn.getPin() + " and your identifier is: " + sojourn.getSojournIdentifier();
-        emailService.sendEmail(sojourn.getClient().getEmail(), emailSubject, emailBody);
+        //String emailSubject = "Your Sojourn Credentials";
+        //String emailBody = "Your new PIN is: " + sojourn.getPin() + " and your identifier is: " + sojourn.getSojournIdentifier();
+        //emailService.sendEmail(sojourn.getClient().getEmail(), emailSubject, emailBody);
 
         // Send SMS it cost me money
         /*String smsBody = "Your new PIN is: " + sojourn.getPin() + " and your identifier is: " + sojourn.getSojournIdentifier();
