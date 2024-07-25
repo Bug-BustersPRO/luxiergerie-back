@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import static com.luxiergerie.Domain.Mapper.SectionMapper.MappedSectionFrom;
+import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
@@ -77,6 +78,9 @@ public class SectionController {
           @RequestParam("image") MultipartFile image,
           @RequestParam("title") String title) throws IOException{
       List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
+      if (nonNull(image) && (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType()))) {
+          return new ResponseEntity<>(BAD_REQUEST);
+      }
       List<Section> sections = sectionRepository.findAll();
       Section section = new Section();
       section.setName(name);
@@ -94,8 +98,8 @@ public class SectionController {
                                   @RequestParam(value = "image", required = false) MultipartFile image,
                                   @RequestParam(value = "title", required = false) String title) throws IOException {
       List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
-     // List<Section> sections = sectionRepository.findAll();
-      if (image != null && (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType()))) {
+      List<Section> sections = sectionRepository.findAll();
+      if (nonNull(image) && (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType()))) {
           return new ResponseEntity<>(BAD_REQUEST);
       }
     UUID nonNullId = Objects.requireNonNull(id, "Section ID must not be null");
@@ -105,7 +109,7 @@ public class SectionController {
         sectionToUpdate.setName(name);
         sectionToUpdate.setDescription(description);
         sectionToUpdate.setTitle(title);
-        if(image != null ) {
+        if(nonNull(image)) {
             sectionToUpdate.setImage(image.getBytes());
         }
         Section updatedSection = sectionRepository.save(sectionToUpdate);

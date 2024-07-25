@@ -3,7 +3,6 @@ package com.luxiergerie.Controllers;
 import com.luxiergerie.DTO.AccommodationDTO;
 import com.luxiergerie.Domain.Entity.Accommodation;
 import com.luxiergerie.Domain.Entity.Category;
-import com.luxiergerie.Domain.Entity.Section;
 import com.luxiergerie.Domain.Mapper.AccommodationMapper;
 import com.luxiergerie.Domain.Repository.AccommodationRepository;
 import com.luxiergerie.Domain.Repository.CategoryRepository;
@@ -19,6 +18,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.luxiergerie.Domain.Mapper.AccommodationMapper.MappedAccommodationFrom;
+import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.*;
@@ -71,7 +71,10 @@ public class AccommodationController {
                                                                 @RequestParam("isReservable") boolean isReservable,
                                                                 @RequestParam("image") MultipartFile image) throws IOException {
         Optional<Category> categoryOptional = categoryRepository.findById(category_id);
-        //List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
+        List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
+        if (nonNull(image) && (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType()))) {
+            return new ResponseEntity<>(BAD_REQUEST);
+        }
         List<Accommodation> accommodations = accommodationRepository.findAll();
         if (categoryOptional.isPresent()) {
             Category category = categoryOptional.get();
@@ -84,23 +87,23 @@ public class AccommodationController {
             accommodation.setImage(image.getBytes());
 
             accommodation.setCategory(category);
-            Accommodation savedAccomodation = accommodationRepository.save(accommodation);
-            return new ResponseEntity<>(MappedAccommodationFrom(savedAccomodation), CREATED);
+            Accommodation savedAccommodation = accommodationRepository.save(accommodation);
+            return new ResponseEntity<>(MappedAccommodationFrom(savedAccommodation), CREATED);
         }
         throw new RuntimeException("Section not found with id: " + category_id);
     }
 
     @PutMapping("/accommodations/{accommodation_id}/{category_id}")
-    public ResponseEntity< AccommodationDTO> updateAccommodation(@RequestParam("name") String name,
-                                                @PathVariable UUID accommodation_id,
-                                                @PathVariable UUID category_id,
-                                                @RequestParam(value = "description", required = false) String description,
-                                                @RequestParam(value = "price") BigDecimal price,
-                                                @RequestParam(value = "isReservable", required = false) boolean isReservable,
-                                                @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
+    public ResponseEntity<AccommodationDTO> updateAccommodation(@RequestParam("name") String name,
+                                                                @PathVariable UUID accommodation_id,
+                                                                @PathVariable UUID category_id,
+                                                                @RequestParam(value = "description", required = false) String description,
+                                                                @RequestParam(value = "price") BigDecimal price,
+                                                                @RequestParam(value = "isReservable", required = false) boolean isReservable,
+                                                                @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
         List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
 
-        if (image != null && (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType()))) {
+        if (nonNull(image) && (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType()))) {
             return new ResponseEntity<>(BAD_REQUEST);
         }
         UUID nonNullId = requireNonNull(accommodation_id, "Accommodation ID must not be null");
@@ -113,7 +116,7 @@ public class AccommodationController {
             accommodationToUpdate.setName(name);
             accommodationToUpdate.setDescription(description);
             accommodationToUpdate.setPrice(price);
-            if(image != null ) {
+            if (nonNull(image)) {
                 accommodationToUpdate.setImage(image.getBytes());
             }
             accommodationToUpdate.setReservable(isReservable);

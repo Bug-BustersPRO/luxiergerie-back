@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import static com.luxiergerie.Domain.Mapper.HotelMapper.MappedHotelFrom;
+import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static com.luxiergerie.Domain.Mapper.CategoryMapper.MappedCategoryFrom;
 import static java.util.stream.Collectors.*;
@@ -26,6 +27,7 @@ import static org.springframework.http.HttpStatus.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -119,7 +121,7 @@ public class CategoryController {
                                       @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
         List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
 
-        if (image != null && (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType()))) {
+        if (Objects.nonNull(image) && (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType()))) {
             return new ResponseEntity<>(BAD_REQUEST);
         }
         UUID nonNullId = requireNonNull(category_id, "Category ID must not be null");
@@ -130,7 +132,7 @@ public class CategoryController {
       if (categoryOptional.isPresent()) {
           Category categoryToUpdate = categoryOptional.get();
           categoryToUpdate.setName(name);
-          if(image != null ) {
+          if(nonNull(image) ) {
               categoryToUpdate.setImage(image.getBytes());
           }
           categoryToUpdate.setDescription(description);
