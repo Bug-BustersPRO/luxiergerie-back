@@ -1,15 +1,14 @@
 package com.luxiergerie.Services;
 
-import com.luxiergerie.Domain.Entity.Client;
-import com.luxiergerie.Domain.Entity.Room;
 import com.luxiergerie.Domain.Entity.Sojourn;
-import com.luxiergerie.Domain.Repository.RoomRepository;
 import com.luxiergerie.Domain.Repository.SojournRepository;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
 import java.util.Objects;
+
+import static java.util.Objects.*;
 
 public class RoomPinAuthenticationProvider implements AuthenticationProvider {
 
@@ -25,7 +24,7 @@ public class RoomPinAuthenticationProvider implements AuthenticationProvider {
         int pin = (int) authentication.getCredentials();
 
         Sojourn sojourn = sojournRepository.findBySojournIdentifier(sojournIdentifier);
-        if (sojourn == null) {
+        if (isNull(sojourn)) {
             throw new AuthenticationException("Sojourn not found") {};
         }
 

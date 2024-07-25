@@ -22,6 +22,9 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
+import static com.luxiergerie.Domain.Enums.SojournStatus.*;
+import static java.util.Objects.*;
+
 @Service
 public class SojournService {
     private final ClientRepository clientRepository;
@@ -64,19 +67,19 @@ public class SojournService {
         LocalDateTime adjustedEntryDate = sojournDTO.getEntryDate().atTime(LocalTime.of(14, 0));
         LocalDateTime adjustedExitDate = sojournDTO.getExitDate().atTime(LocalTime.of(11, 0));
 
-        Sojourn sojourn = SojournMapper.toEntity(sojournDTO);
+        Sojourn sojourn = SojournMapper.MappedSojournFrom(sojournDTO);
 
         Client client = this.getClient(sojournDTO.getClientId());
         Room room = this.getRoom(sojournDTO.getRoomRole().getName(), adjustedEntryDate, adjustedExitDate);
 
-        if (Objects.isNull(room)) {
+        if (isNull(room)) {
             throw new RuntimeException("There are no rooms available for the selected dates.");
         }
 
         int pin = new Random().nextInt(9000) + 1000;
         sojourn.setPin(pin);
 
-        sojourn.setStatus(SojournStatus.RESERVED);
+        sojourn.setStatus(RESERVED);
 
         int identifiedUnique = new Random().nextInt(9000) + 1000;
 
@@ -150,7 +153,7 @@ public class SojournService {
     public Sojourn cancelSojourn(UUID sojournId) {
         Sojourn sojourn = this.sojournRepository.findById(sojournId)
                 .orElseThrow(() -> new RuntimeException("Sojourn not found with id: " + sojournId));
-        sojourn.setStatus(SojournStatus.CANCELLED);
+        sojourn.setStatus(CANCELLED);
         this.sojournRepository.save(sojourn);
         return sojourn;
     }
@@ -163,7 +166,7 @@ public class SojournService {
             if (sojourn.getEntryDate().getDayOfMonth() == LocalDateTime.now().getDayOfMonth() &&
                 sojourn.getEntryDate().getMonthValue() == LocalDateTime.now().getMonthValue() &&
                 sojourn.getEntryDate().getYear() == LocalDateTime.now().getYear()) {
-                sojourn.setStatus(SojournStatus.IN_PROGRESS);
+                sojourn.setStatus(IN_PROGRESS);
                 this.sojournRepository.save(sojourn);
             }
         }
@@ -176,7 +179,7 @@ public class SojournService {
             if (sojourn.getExitDate().getDayOfMonth() == LocalDateTime.now().getDayOfMonth() &&
                 sojourn.getExitDate().getMonthValue() == LocalDateTime.now().getMonthValue() &&
                 sojourn.getExitDate().getYear() == LocalDateTime.now().getYear()) {
-                sojourn.setStatus(SojournStatus.FINISHED);
+                sojourn.setStatus(FINISHED);
                 this.sojournRepository.save(sojourn);
             }
         }

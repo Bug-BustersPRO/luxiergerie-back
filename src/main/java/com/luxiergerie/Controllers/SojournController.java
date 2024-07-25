@@ -29,7 +29,7 @@ public class SojournController {
     public List<SojournDTO> getSojourns() {
         List<Sojourn> sojourns = this.sojournRepository.findAll();
         return sojourns.stream()
-                .map(SojournMapper::toDTO)
+                .map(SojournMapper::MappedSojournFrom)
                 .collect(Collectors.toList());
     }
 
@@ -42,7 +42,7 @@ public class SojournController {
     @PutMapping("/{sojournId}")
     public SojournDTO updateSojourn(@PathVariable UUID sojournId, @RequestBody SojournDTO sojournDTO) {
         Sojourn sojourn = this.sojournService.updateSojourn(sojournId, sojournDTO);
-        return SojournMapper.toDTO(sojourn);
+        return SojournMapper.MappedSojournFrom(sojourn);
     }
 
     @DeleteMapping("/{sojournId}")
@@ -60,6 +60,6 @@ public class SojournController {
     @PutMapping("/{sojournId}/cancel")
     public SojournDTO cancelSojourn(@PathVariable UUID sojournId) {
         Sojourn sojourn = this.sojournService.cancelSojourn(sojournId);
-        return SojournMapper.toDTO(sojourn);
+        return SojournMapper.MappedSojournFrom(sojourn);
     }
 }

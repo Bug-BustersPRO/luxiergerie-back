@@ -8,11 +8,9 @@ import com.luxiergerie.Domain.Repository.EmployeeRepository;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 
 import java.util.Date;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -24,6 +22,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
+
+import static java.time.temporal.ChronoUnit.*;
+import static java.util.Objects.*;
 
 /**
  * This class is responsible for generating JWT tokens for authentication.
@@ -79,11 +80,11 @@ public class TokenService {
 
   private UUID findUserId(Authentication auth) {
     Employee employee = employeeRepository.findBySerialNumber(auth.getName());
-    if (employee != null) {
+    if (nonNull(employee)) {
       return employee.getId();
     } else {
       Sojourn sojourn = sojournRepository.findBySojournIdentifier(auth.getName());
-      if (sojourn != null && sojourn.getClient() != null && sojourn.getPin() ==  Integer.parseInt(auth.getCredentials().toString())) {
+      if (nonNull(sojourn) && nonNull(sojourn.getClient())  && sojourn.getPin() ==  Integer.parseInt(auth.getCredentials().toString())) {
         isEmployee = false;
         this.sojourn = sojourn;
         return sojourn.getClient().getId();
@@ -106,12 +107,12 @@ public class TokenService {
     Instant expirationDate;
 
     if (isEmployee) {
-      expirationDate = now.plus(24, ChronoUnit.HOURS);
+      expirationDate = now.plus(24, HOURS);
     } else {
       LocalDateTime exitDateLocalDateTime = sojourn.getExitDate();
       Instant exitDate = exitDateLocalDateTime.atZone(ZoneId.systemDefault()).toInstant();
       if (now.isBefore(exitDate)) {
-        long durationSeconds = ChronoUnit.SECONDS.between(now, exitDate);
+        long durationSeconds = SECONDS.between(now, exitDate);
         expirationDate = now.plusSeconds(durationSeconds);
       } else {
             throw new RuntimeException("Sojourn has already ended");
@@ -134,7 +135,7 @@ public class TokenService {
 
   private void saveToken(String token, UUID userId) {
     if (isEmployee) {
-      blackListTokenService.saveToken(token, Instant.now().plus(24, ChronoUnit.HOURS), userId);
+      blackListTokenService.saveToken(token, Instant.now().plus(24, HOURS), userId);
     } else {
         blackListTokenService.saveToken(token, this.sojourn.getExitDate().atZone(ZoneId.systemDefault()).toInstant(), userId);
     }
@@ -142,7 +143,7 @@ public class TokenService {
 
   private boolean validateToken(String token) {
     BlackListedToken blackListedToken = blackListedTokenRepository.findByToken(token);
-    if (Objects.nonNull(blackListedToken) && !blackListedToken.isBlackListed()) {
+    if (nonNull(blackListedToken) && !blackListedToken.isBlackListed()) {
       Date expirationDate = this.getTokenExpirationDate(String.valueOf(token));
       if (Instant.now().isAfter(expirationDate.toInstant()) || Instant.now().isAfter(blackListedToken.getExpiryDate())){
         blackListedToken.setBlackListed(true);

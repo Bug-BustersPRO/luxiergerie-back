@@ -24,6 +24,9 @@ INSERT INTO room (id, number, client_id, floor) VALUES (UUID_TO_BIN('e4f522cc-d0
 INSERT INTO room (id, number, client_id, floor) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd74'), '239', UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910757'), '2');
 INSERT INTO room (id, number, client_id, floor) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd74'), '40', UUID_TO_BIN(''), '2');
 
+INSERT INTO room (id, number, client_id, floor, role_id) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd76'), '235', null, '2', UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55445'));
+INSERT INTO room (id, number, client_id, floor, role_id) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd77'), '285', null, '2', UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55445'));
+
 
 INSERT INTO section (id, name, image, title, description) VALUES (UUID_TO_BIN('99f2a753-be71-49a8-b73a-9a10b330af2d'), 'Room service', 'hostesse.jpg', 'Le service de chambre', 'Bénéficiez de notre service de chambre 24h/24 et 7j/7 pour toutes vos envies');
 INSERT INTO section (id, name, image, title, description) VALUES (UUID_TO_BIN('99f2a753-be71-49a8-b73a-9a10b330af2e'), 'Concergierie', 'concergiere_a_moustache.jpg', 'Le service de concergierie', 'Notre concergierie est à votre service pour toutes vos demandes : pressing, nettoyage, garage, ...');

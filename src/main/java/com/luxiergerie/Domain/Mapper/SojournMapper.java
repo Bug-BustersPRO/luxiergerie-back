@@ -7,7 +7,7 @@ import java.time.LocalTime;
 
 public class SojournMapper {
 
-    public static SojournDTO toDTO(Sojourn sojourn) {
+    public static SojournDTO MappedSojournFrom(Sojourn sojourn) {
         SojournDTO dto = new SojournDTO();
         dto.setId(sojourn.getId());
         dto.setEntryDate(sojourn.getEntryDate().toLocalDate());
@@ -20,7 +20,7 @@ public class SojournMapper {
         return dto;
     }
 
-    public static Sojourn toEntity(SojournDTO dto) {
+    public static Sojourn MappedSojournFrom(SojournDTO dto) {
         Sojourn sojourn = new Sojourn();
         sojourn.setEntryDate(dto.getEntryDate().atTime(LocalTime.of(14, 0)));
         sojourn.setExitDate(dto.getExitDate().atTime(LocalTime.of(11, 0)));
