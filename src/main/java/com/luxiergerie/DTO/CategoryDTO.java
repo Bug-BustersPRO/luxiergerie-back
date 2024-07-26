@@ -11,7 +11,7 @@ public class CategoryDTO {
   private UUID id;
   private String name;
   private String description;
-  private String image;
+  private byte[] image;
   private List<Accommodation> accommodations;
   private Section section;
 
@@ -42,11 +42,11 @@ public class CategoryDTO {
     this.description = description;
   }
 
-  public String getImage() {
+  public byte[] getImage() {
     return image;
   }
 
-  public void setImage(String image) {
+  public void setImage(byte[] image) {
     this.image = image;
   }
 

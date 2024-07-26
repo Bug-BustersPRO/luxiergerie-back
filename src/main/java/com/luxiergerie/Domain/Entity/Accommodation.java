@@ -2,6 +2,7 @@ package com.luxiergerie.Domain.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -21,25 +22,26 @@ public class Accommodation {
     @Column(nullable = true, name = "description")
     private String description;
 
-    @Column(nullable = true, name = "image")
-    private String image;
+    @Column(nullable = false, name = "image", columnDefinition = "LONGBLOB")
+    @Lob
+    private byte[] image;
 
     @Column(name = "price")
     private BigDecimal price;
 
+    @Value("false")
     @Column(name="is_reservable")
     private boolean isReservable;
 
     @Column(name="quantity")
     private Integer quantity = 0;
 
-
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToMany(mappedBy = "accommodations")
+    @ManyToMany(mappedBy = "accommodations", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Purchase> purchases = new ArrayList<>();
 
@@ -59,7 +61,7 @@ public class Accommodation {
         this.category = category;
     }
 
-    public Accommodation(String name, String description, String image, BigDecimal price, Category category) {
+    public Accommodation(String name, String description, byte[] image, BigDecimal price, Category category) {
         this.name = name;
         this.description = description;
         this.image = image;
@@ -67,12 +69,24 @@ public class Accommodation {
         this.category = category;
     }
 
-    public Accommodation(UUID id, String name, String description, String image, BigDecimal price, Category category, List<Purchase> purchases) {
+    public Accommodation(UUID id, String name, String description, byte[] image, BigDecimal price, Category category, List<Purchase> purchases) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.image = image;
         this.price = price;
+        this.category = category;
+        this.purchases = purchases;
+    }
+
+    public Accommodation(UUID id, String name, String description, byte[] image, BigDecimal price, boolean isReservable, Integer quantity, Category category, List<Purchase> purchases) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.image = image;
+        this.price = price;
+        this.isReservable = isReservable;
+        this.quantity = quantity;
         this.category = category;
         this.purchases = purchases;
     }
@@ -109,11 +123,11 @@ public class Accommodation {
         this.description = description;
     }
 
-    public String getImage() {
+    public byte[] getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 

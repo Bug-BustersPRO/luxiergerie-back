@@ -30,7 +30,7 @@ public class Purchase {
     @Column(name = "status")
     private String status;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinTable(
         name = "purchase_accommodation",
