@@ -4,7 +4,6 @@ import com.luxiergerie.DTO.SojournDTO;
 import com.luxiergerie.Domain.Entity.Client;
 import com.luxiergerie.Domain.Entity.Room;
 import com.luxiergerie.Domain.Entity.Sojourn;
-import com.luxiergerie.Domain.Enums.SojournStatus;
 import com.luxiergerie.Domain.Mapper.SojournMapper;
 import com.luxiergerie.Domain.Repository.ClientRepository;
 import com.luxiergerie.Domain.Repository.RoleRepository;
@@ -18,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
@@ -95,6 +93,7 @@ public class SojournService {
 
         client.getSojourns().add(sojourn);
         room.getSojourns().add(sojourn);
+        room.setClient(client);
 
         this.sojournRepository.save(sojourn);
         this.clientRepository.save(client);
