@@ -1,6 +1,6 @@
 package com.luxiergerie.DTO;
 
-import com.luxiergerie.Domain.Entity.Category;
+import com.luxiergerie.Model.Entity.Category;
 import java.util.List;
 import java.util.UUID;
 

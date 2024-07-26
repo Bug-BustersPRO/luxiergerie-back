@@ -1,9 +1,9 @@
 package com.luxiergerie.Controllers;
 
 import com.luxiergerie.DTO.SojournDTO;
-import com.luxiergerie.Domain.Entity.Sojourn;
-import com.luxiergerie.Domain.Mapper.SojournMapper;
-import com.luxiergerie.Domain.Repository.SojournRepository;
+import com.luxiergerie.Model.Entity.Sojourn;
+import com.luxiergerie.Mapper.SojournMapper;
+import com.luxiergerie.Repository.SojournRepository;
 import com.luxiergerie.Services.SojournService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

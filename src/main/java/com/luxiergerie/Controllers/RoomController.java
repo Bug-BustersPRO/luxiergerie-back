@@ -1,28 +1,37 @@
 package com.luxiergerie.Controllers;
 
 import com.luxiergerie.DTO.RoomDTO;
-import com.luxiergerie.Domain.Entity.Role;
-import com.luxiergerie.Domain.Entity.Room;
-import com.luxiergerie.Domain.Mapper.RoomMapper;
-import com.luxiergerie.Domain.Repository.RoleRepository;
-import com.luxiergerie.Domain.Repository.RoomRepository;
+import com.luxiergerie.Mapper.RoomMapper;
+import com.luxiergerie.Model.Entity.Role;
+import com.luxiergerie.Model.Entity.Room;
+import com.luxiergerie.Repository.RoleRepository;
+import com.luxiergerie.Repository.RoomRepository;
+import com.luxiergerie.Services.RoomService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/api/rooms")
 public class RoomController {
 
+    //ATTENTION A TESTER QUAND FRONT DISPO !!!!!!!!
+
     private final RoomRepository roomRepository;
     private final RoleRepository roleRepository;
+    private final RoomService roomService;
 
-    public RoomController(RoomRepository roomRepository, RoleRepository roleRepository) {
+    public RoomController(RoomRepository roomRepository, RoleRepository roleRepository, RoomService roomService) {
         this.roomRepository = roomRepository;
         this.roleRepository = roleRepository;
+        this.roomService = roomService;
     }
 
     @GetMapping
@@ -42,88 +51,58 @@ public class RoomController {
     }
 
     @PostMapping("/create-multiple/{maxRooms}")
-    public List<RoomDTO> createRooms(@RequestBody RoomDTO roomDTO, @PathVariable int maxRooms, @RequestParam(defaultValue = "100") int startRoomNumber) {
-        List<Room> existingRooms = this.roomRepository.findAll();
-        int existingRoomCount = existingRooms.size();
-        Role existingRole;
-
-        if (Objects.equals("ROLE_DIAMOND", roomDTO.getRole().getName())) {
-            existingRole = roleRepository.findByName("ROLE_DIAMOND");
-        } else {
-            existingRole = roleRepository.findByName("ROLE_GOLD");
+    public ResponseEntity<List<RoomDTO>> createRooms(
+            @RequestBody RoomDTO roomDTO,
+            @PathVariable int maxRooms,
+            @RequestParam(defaultValue = "100") int startRoomNumber) {
+        try {
+            roomService.createRooms(roomDTO, maxRooms, startRoomNumber);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(BAD_REQUEST);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(NOT_FOUND);
         }
-        if (existingRole == null) {
-            throw new RuntimeException("Role not found with name: " + roomDTO.getRole().getName());
-        }
-
-        if (existingRoomCount >= maxRooms) {
-            throw new RuntimeException("Cannot create more rooms. Hotel is at maximum capacity.");
-        }
-
-        int maxRoomNumber = existingRooms.stream()
-                .mapToInt(Room::getRoomNumber)
-                .max()
-                .orElse(startRoomNumber - 1);
-        startRoomNumber = Math.max(startRoomNumber, maxRoomNumber + 1);
-
-        List<Room> rooms = new ArrayList<>();
-        int roomsToCreate = maxRooms - existingRoomCount;
-        for (int i = 0; i < roomsToCreate; i++) {
-            int roomNumber = startRoomNumber + i;
-            RoomDTO roomDto = new RoomDTO();
-            roomDto.setRoomNumber(roomNumber);
-            roomDto.setFloor(roomDTO.getFloor());
-            roomDto.setRole(roomDto.getRole());
-            Room room = RoomMapper.MappedRoomFrom(roomDto, existingRole);
-            rooms.add(room);
-        }
-
-        List<Room> savedRooms = this.roomRepository.saveAll(rooms);
-        return savedRooms.stream().map(RoomMapper::MappedRoomFrom).collect(toList());
     }
 
-    @PostMapping
-    public HttpStatus createSpecificRoom(@RequestBody RoomDTO roomDTO) {
-        Optional<Room> roomOptional = Optional.ofNullable(roomRepository.findByRoomNumber(roomDTO.getRoomNumber()));
-        Role role = this.roleRepository.findByName(roomDTO.getRole().getName());
-        if (role == null) {
-            throw new RuntimeException("Role not found with name: " + roomDTO.getRole().getName());
-        }
-        if (roomOptional.isPresent() && roomOptional.get().getRoomNumber() == roomDTO.getRoomNumber()) {
-            throw new RuntimeException("Room already exists with number: " + roomDTO.getRoomNumber());
-        }
-        Room room = RoomMapper.MappedRoomFrom(roomDTO, role);
-        this.roomRepository.save(room);
 
-        return HttpStatus.CREATED;
+    @PostMapping
+    public HttpStatus createRoom(@RequestBody RoomDTO roomDTO) {
+        try {
+            roomService.createRoom(roomDTO);
+            return CREATED;
+        } catch (Exception e) {
+            return BAD_REQUEST;
+        }
     }
 
     @PutMapping("/{roomId}")
-    public RoomDTO updateRoom(@PathVariable UUID roomId, @RequestBody RoomDTO roomDTO) {
-        Role role = this.roleRepository.findByName(roomDTO.getRole().getName());
-        if (role == null) {
-            throw new RuntimeException("Role not found with name: " + roomDTO.getRole().getName());
-        }
-        Optional<Room> roomToChange = this.roomRepository.findById(roomId);
-        if (roomToChange.isPresent()){
-            Room room = roomToChange.get();
-            room.setRoomNumber(roomDTO.getRoomNumber());
-            room.setFloor(roomDTO.getFloor());
-            room.setRole(role);
-            room.setClient(roomDTO.getClient());
-            this.roomRepository.save(room);
-            return RoomMapper.MappedRoomFrom(room);
-        } else {
-            throw new RuntimeException("Room not found with id: " + roomId);
+    public ResponseEntity<RoomDTO> updateRoom(@PathVariable UUID roomId, @RequestBody RoomDTO roomDTO) {
+        try {
+            RoomDTO updatedRoomDTO = roomService.updateRoom(roomId, roomDTO);
+            return ResponseEntity.ok(updatedRoomDTO);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(FORBIDDEN);
+        } catch (Exception e) {
+            return new ResponseEntity<>(BAD_REQUEST);
         }
     }
 
     @DeleteMapping("/{roomId}")
-    public void deleteRoom(@PathVariable UUID roomId) {
-        if (!this.roomRepository.existsById(roomId)) {
-            throw new RuntimeException("Room not found with id: " + roomId);
+    public ResponseEntity<Void> deleteRoom(@PathVariable UUID roomId) {
+        try {
+            roomService.deleteRoom(roomId);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+
+            if (e.getMessage().contains("not found")) {
+                return new ResponseEntity<>(NOT_FOUND);
+            } else if (e.getMessage().contains("permission")) {
+                return new ResponseEntity<>(FORBIDDEN);
+            } else {
+                return new ResponseEntity<>(BAD_REQUEST);
+            }
         }
-        this.roomRepository.deleteById(roomId);
     }
 
     @DeleteMapping("/delete-all")

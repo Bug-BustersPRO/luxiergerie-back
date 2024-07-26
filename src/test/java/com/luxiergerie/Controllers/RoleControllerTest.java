@@ -1,7 +1,7 @@
 package com.luxiergerie.Controllers;
 
-import com.luxiergerie.Domain.Entity.Role;
-import com.luxiergerie.Domain.Repository.RoleRepository;
+import com.luxiergerie.Model.Entity.Role;
+import com.luxiergerie.Repository.RoleRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

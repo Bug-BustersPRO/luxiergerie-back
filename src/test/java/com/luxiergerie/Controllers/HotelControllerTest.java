@@ -1,8 +1,8 @@
 package com.luxiergerie.Controllers;
 
 import com.luxiergerie.DTO.HotelDTO;
-import com.luxiergerie.Domain.Entity.Hotel;
-import com.luxiergerie.Domain.Repository.HotelRepository;
+import com.luxiergerie.Model.Entity.Hotel;
+import com.luxiergerie.Repository.HotelRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

@@ -1,6 +1,6 @@
   package com.luxiergerie.DTO;
 
-  import com.luxiergerie.Domain.Entity.Accommodation;
+  import com.luxiergerie.Model.Entity.Accommodation;
 
   import java.math.BigDecimal;
   import java.util.ArrayList;

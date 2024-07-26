@@ -3,8 +3,8 @@ package com.luxiergerie.DTO;
 import java.util.List;
 import java.util.UUID;
 
-import com.luxiergerie.Domain.Entity.Accommodation;
-import com.luxiergerie.Domain.Entity.Section;
+import com.luxiergerie.Model.Entity.Accommodation;
+import com.luxiergerie.Model.Entity.Section;
 
 public class CategoryDTO {
 

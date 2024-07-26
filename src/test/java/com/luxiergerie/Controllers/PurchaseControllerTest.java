@@ -1,11 +1,11 @@
 package com.luxiergerie.Controllers;
 
 import com.luxiergerie.DTO.PurchaseDTO;
-import com.luxiergerie.Domain.Entity.Client;
-import com.luxiergerie.Domain.Entity.Purchase;
-import com.luxiergerie.Domain.Entity.Room;
-import com.luxiergerie.Domain.Repository.PurchaseRepository;
-import com.luxiergerie.Domain.Repository.RoomRepository;
+import com.luxiergerie.Model.Entity.Client;
+import com.luxiergerie.Model.Entity.Purchase;
+import com.luxiergerie.Model.Entity.Room;
+import com.luxiergerie.Repository.PurchaseRepository;
+import com.luxiergerie.Repository.RoomRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
@@ -63,7 +63,7 @@ public class PurchaseControllerTest {
     }
     when(purchaseRepository.findById(purchaseId)).thenReturn(Optional.of(purchase));
 
-    PurchaseDTO result = purchaseController.getPurchase(purchaseId);
+    PurchaseDTO result = purchaseController.getPurchase(purchaseId).getBody();
 
     assertAll(
         () -> assertEquals(expectedDTO.getId(), result.getId()),
@@ -96,7 +96,7 @@ public class PurchaseControllerTest {
     when(purchaseRepository.findById(purchaseId)).thenReturn(Optional.empty());
     when(purchaseRepository.save(any(Purchase.class))).then(AdditionalAnswers.returnsFirstArg());
 
-    PurchaseDTO result = purchaseController.createPurchase(purchaseDTO);
+    PurchaseDTO result = purchaseController.createPurchase(purchaseDTO).getBody();
 
     assertNotNull(result.getId());
     assertEquals(purchaseDTO.getDate(), result.getDate());
@@ -129,7 +129,7 @@ public class PurchaseControllerTest {
     when(purchaseRepository.findById(purchaseId)).thenReturn(Optional.of(existingPurchase));
     when(purchaseRepository.save(any(Purchase.class))).then(AdditionalAnswers.returnsFirstArg());
 
-    PurchaseDTO result = purchaseController.updatePurchase(purchaseId, purchaseDTO);
+    PurchaseDTO result = purchaseController.updatePurchase(purchaseId, purchaseDTO).getBody();
 
     assertAll(
         () -> assertEquals(purchaseDTO.getId(), result.getId()),

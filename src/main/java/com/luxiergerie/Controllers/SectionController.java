@@ -1,9 +1,9 @@
 package com.luxiergerie.Controllers;
 
 import com.luxiergerie.DTO.SectionDTO;
-import com.luxiergerie.Domain.Entity.Category;
-import com.luxiergerie.Domain.Entity.Section;
-import com.luxiergerie.Domain.Repository.SectionRepository;
+import com.luxiergerie.Model.Entity.Category;
+import com.luxiergerie.Model.Entity.Section;
+import com.luxiergerie.Repository.SectionRepository;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.luxiergerie.Domain.Mapper.SectionMapper.MappedSectionFrom;
+import static com.luxiergerie.Mapper.SectionMapper.MappedSectionFrom;
 import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpStatus.*;
 

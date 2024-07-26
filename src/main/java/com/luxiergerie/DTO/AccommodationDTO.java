@@ -1,7 +1,7 @@
 package com.luxiergerie.DTO;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.luxiergerie.Domain.Entity.Purchase;
+import com.luxiergerie.Model.Entity.Purchase;
 
 import java.math.BigDecimal;
 import java.util.List;

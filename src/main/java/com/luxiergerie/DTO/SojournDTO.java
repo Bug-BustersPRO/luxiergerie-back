@@ -1,7 +1,7 @@
 package com.luxiergerie.DTO;
 
-import com.luxiergerie.Domain.Entity.Role;
-import com.luxiergerie.Domain.Enums.SojournStatus;
+import com.luxiergerie.Model.Entity.Role;
+import com.luxiergerie.Model.Enums.SojournStatus;
 
 import java.time.LocalDate;
 import java.util.UUID;
