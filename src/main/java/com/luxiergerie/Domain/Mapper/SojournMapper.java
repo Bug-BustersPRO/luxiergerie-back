@@ -8,25 +8,25 @@ import java.time.LocalTime;
 public class SojournMapper {
 
     public static SojournDTO MappedSojournFrom(Sojourn sojourn) {
-        SojournDTO dto = new SojournDTO();
-        dto.setId(sojourn.getId());
-        dto.setEntryDate(sojourn.getEntryDate().toLocalDate());
-        dto.setExitDate(sojourn.getExitDate().toLocalDate());
-        dto.setStatus(sojourn.getStatus());
-        dto.setSojournIdentifier(sojourn.getSojournIdentifier());
-        dto.setClientId(sojourn.getClient().getId());
-        dto.setRoomRole(sojourn.getRoom().getRole());
-        dto.setRoomId(sojourn.getRoom().getId());
-        return dto;
+        SojournDTO sojournDTO = new SojournDTO();
+        sojournDTO.setId(sojourn.getId());
+        sojournDTO.setEntryDate(sojourn.getEntryDate().toLocalDate());
+        sojournDTO.setExitDate(sojourn.getExitDate().toLocalDate());
+        sojournDTO.setStatus(sojourn.getStatus());
+        sojournDTO.setSojournIdentifier(sojourn.getSojournIdentifier());
+        sojournDTO.setClientId(sojourn.getClient().getId());
+        sojournDTO.setRoomRole(sojourn.getRoom().getRole());
+        sojournDTO.setRoomId(sojourn.getRoom().getId());
+        return sojournDTO;
     }
 
-    public static Sojourn MappedSojournFrom(SojournDTO dto) {
+    public static Sojourn MappedSojournFrom(SojournDTO sojournDTO) {
         Sojourn sojourn = new Sojourn();
-        sojourn.setEntryDate(dto.getEntryDate().atTime(LocalTime.of(14, 0)));
-        sojourn.setExitDate(dto.getExitDate().atTime(LocalTime.of(11, 0)));
-        sojourn.setStatus(dto.getStatus());
-        sojourn.setSojournIdentifier(dto.getSojournIdentifier());
-        sojourn.setPin(dto.getPin());
+        sojourn.setEntryDate(sojournDTO.getEntryDate().atTime(LocalTime.of(14, 0)));
+        sojourn.setExitDate(sojournDTO.getExitDate().atTime(LocalTime.of(11, 0)));
+        sojourn.setStatus(sojournDTO.getStatus());
+        sojourn.setSojournIdentifier(sojournDTO.getSojournIdentifier());
+        sojourn.setPin(sojournDTO.getPin());
         return sojourn;
     }
 }

@@ -1,5 +1,6 @@
 package com.luxiergerie.Domain.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.luxiergerie.Domain.Enums.SojournStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -42,10 +43,12 @@ public class Sojourn {
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
+    @JsonIgnore
     private Client client;
 
     @ManyToOne
     @JoinColumn(name = "room_id", nullable = false)
+    @JsonIgnore
     private Room room;
 
     // getters and setters
