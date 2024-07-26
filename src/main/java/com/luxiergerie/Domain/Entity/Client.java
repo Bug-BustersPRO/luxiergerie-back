@@ -49,6 +49,7 @@ public class Client {
     private List<String> authorities = new ArrayList<>();
 
     @OneToMany(mappedBy = "client")
+    @JsonIgnore
     private List<Sojourn> sojourns;
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
