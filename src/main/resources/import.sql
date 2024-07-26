@@ -17,7 +17,10 @@ INSERT INTO employee_role (role_id, employee_id) VALUES (UUID_TO_BIN('103111f6-d
 
 INSERT INTO client (id, first_name, last_name, pin, email, phone_number) VALUES (UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910755'), 'Jocelyn', 'De ChNord', '1234', 'jocelyn@jocelyn.fr', '06 01 02 03 04');
 INSERT INTO client (id, first_name, last_name, pin, email, phone_number) VALUES (UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910756'), 'Mohammed', 'Ali', '1235', 'ali@ali.fr' , '06 01 02 03 05');
-INSERT INTO client (id, first_name, last_name, pin, email, phone_number) VALUES (UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910757'), 'Jean', 'Bon', '1236', 'jambon@yummi.gloups', '06 01 02 03 06');
+INSERT INTO client (id, first_name, last_name, pin, email, phone_number) VALUES (UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910757'), 'Jean', 'Charles', '1236', 'jc@yahoo.com', '06 01 02 03 06');
+INSERT INTO client (id, first_name, last_name, pin, email, phone_number) VALUES (UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910758'), 'Harry', 'Potter', '1236', 'hp@yahoo.com', '06 01 02 03 06');
+INSERT INTO client (id, first_name, last_name, pin, email, phone_number) VALUES (UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910759'), 'Nicolas', 'Simpson', '1236', 'nicolas.simp@gmail.com', '06 01 02 03 06');
+INSERT INTO client (id, first_name, last_name, pin, email, phone_number) VALUES (UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910760'), 'Sophie', 'Casillas', '1236', 's.c@yahoo.com', '06 01 02 03 06');
 
 INSERT INTO room (id, number, client_id, floor, role_id) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd72'), '237', UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910755'), '2', UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55445'));
 INSERT INTO room (id, number, client_id, floor, role_id) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd73'), '238', UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910756'), '2', UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55445'));
