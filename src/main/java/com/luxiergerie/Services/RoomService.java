@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
 
+import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.http.HttpStatus.CREATED;
 
 @Service
 public class RoomService {
@@ -23,7 +25,7 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final RoleRepository roleRepository;
 
-    public RoomService (RoomRepository roomRepository, RoleRepository roleRepository) {
+    public RoomService(RoomRepository roomRepository, RoleRepository roleRepository) {
         this.roomRepository = roomRepository;
         this.roleRepository = roleRepository;
     }
@@ -39,7 +41,7 @@ public class RoomService {
         } else {
             existingRole = roleRepository.findByName("ROLE_GOLD");
         }
-        if (existingRole == null) {
+        if (isNull(existingRole)) {
             throw new RuntimeException("Role not found with name: " + roomDTO.getRole().getName());
         }
 
@@ -73,7 +75,7 @@ public class RoomService {
     public HttpStatus createRoom(@RequestBody RoomDTO roomDTO) {
         Optional<Room> roomOptional = Optional.ofNullable(roomRepository.findByRoomNumber(roomDTO.getRoomNumber()));
         Role role = this.roleRepository.findByName(roomDTO.getRole().getName());
-        if (role == null) {
+        if (isNull(role)) {
             throw new RuntimeException("Role not found with name: " + roomDTO.getRole().getName());
         }
         if (roomOptional.isPresent() && roomOptional.get().getRoomNumber() == roomDTO.getRoomNumber()) {
@@ -82,13 +84,13 @@ public class RoomService {
         Room room = RoomMapper.MappedRoomFrom(roomDTO, role);
         this.roomRepository.save(room);
 
-        return HttpStatus.CREATED;
+        return CREATED;
     }
 
     @Transactional
     public RoomDTO updateRoom(@PathVariable UUID roomId, @RequestBody RoomDTO roomDTO) {
         Role role = this.roleRepository.findByName(roomDTO.getRole().getName());
-        if (role == null) {
+        if (isNull(role)) {
             throw new RuntimeException("Role not found with name: " + roomDTO.getRole().getName());
         }
         Optional<Room> roomToChange = this.roomRepository.findById(roomId);
