@@ -109,6 +109,7 @@ public class SojournService {
     @Transactional
     public Sojourn updateSojourn(UUID sojournId, SojournDTO sojournDTO) {
         Sojourn sojourn = this.sojournRepository.findById(sojournId).orElseThrow(() -> new RuntimeException("Sojourn not found with id: " + sojournId));
+        //Room room = this.sojournRepository.findById(sojournId).get().getRoom();
         LocalDateTime adjustedEntryDate = sojournDTO.getEntryDate().atTime(LocalTime.of(14, 0));
         LocalDateTime adjustedExitDate = sojournDTO.getExitDate().atTime(LocalTime.of(11, 0));
         sojourn.setEntryDate(adjustedEntryDate);
@@ -116,6 +117,7 @@ public class SojournService {
         sojourn.setStatus(sojournDTO.getStatus());
         sojourn.setClient(this.getClient(sojournDTO.getClientId()));
         sojourn.setRoom(this.getRoom(sojournDTO.getRoomRole().getName(), adjustedEntryDate, adjustedExitDate));
+        //room.setClient(this.getClient(sojournDTO.getClientId()));
         this.sojournRepository.save(sojourn);
         return sojourn;
     }
@@ -125,6 +127,8 @@ public class SojournService {
         if (!this.sojournRepository.existsById(sojournId)) {
             throw new RuntimeException("Sojourn not found with id: " + sojournId);
         }
+        Room room = this.sojournRepository.findById(sojournId).get().getRoom();
+        room.setClient(null);
         this.sojournRepository.deleteById(sojournId);
     }
 
