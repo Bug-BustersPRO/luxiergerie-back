@@ -2,7 +2,6 @@ package com.luxiergerie.Controllers;
 
 import com.luxiergerie.DTO.RoomDTO;
 import com.luxiergerie.Mapper.RoomMapper;
-import com.luxiergerie.Model.Entity.Role;
 import com.luxiergerie.Model.Entity.Room;
 import com.luxiergerie.Repository.RoleRepository;
 import com.luxiergerie.Repository.RoomRepository;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
@@ -94,7 +92,6 @@ public class RoomController {
             roomService.deleteRoom(roomId);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
-
             if (e.getMessage().contains("not found")) {
                 return new ResponseEntity<>(NOT_FOUND);
             } else if (e.getMessage().contains("permission")) {

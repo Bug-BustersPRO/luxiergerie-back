@@ -13,18 +13,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.luxiergerie.Mapper.PurchaseMapper.MappedPurchaseFrom;
-import static java.util.Objects.*;
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static org.springframework.http.HttpStatus.*;
 
 @Service
 public class PurchaseService {
@@ -32,7 +32,7 @@ public class PurchaseService {
     private final PurchaseRepository purchaseRepository;
     private final RoomRepository roomRepository;
 
-    public PurchaseService (PurchaseRepository purchaseRepository, RoomRepository roomRepository) {
+    public PurchaseService(PurchaseRepository purchaseRepository, RoomRepository roomRepository) {
         this.purchaseRepository = purchaseRepository;
         this.roomRepository = roomRepository;
     }
@@ -51,7 +51,7 @@ public class PurchaseService {
                             .ifPresent(room -> purchaseDTO.setRoomNumber(room.getRoomNumber()));
                     return purchaseDTO;
                 })
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Transactional
@@ -67,7 +67,7 @@ public class PurchaseService {
 
         // Create a map of client IDs to room numbers for quick lookup
         Map<UUID, Integer> clientIdToRoomNumber = rooms.stream()
-                .collect(Collectors.toMap(room -> room.getClient().getId(), Room::getRoomNumber));
+                .collect(toMap(room -> room.getClient().getId(), Room::getRoomNumber));
 
         // Process the purchases
         Map<Integer, BillDTO> purchasesByRoom = new HashMap<>();
@@ -83,7 +83,7 @@ public class PurchaseService {
 
             // Set the total price for the bill from the purchases
             BigDecimal totalPrice = purchaseForBillDTO.getTotalPrice();
-            if (isNull(totalPrice) ) {
+            if (isNull(totalPrice)) {
                 totalPrice = BigDecimal.ZERO;
             }
             billDTO.setTotalPrice(totalPrice);
@@ -119,9 +119,12 @@ public class PurchaseService {
 
     @Transactional
     public PurchaseDTO createPurchase(@RequestBody PurchaseDTO purchaseDTO) {
-        if(nonNull(purchaseDTO.getId())) {
+        if (isNull(purchaseDTO.getId())) {
+            throw new ResponseStatusException(BAD_REQUEST, "Purchase ID cannot be null");
+        }
+        if (nonNull(purchaseDTO.getId())) {
             Optional<Purchase> purchaseOptional = purchaseRepository.findById(purchaseDTO.getId());
-            if(purchaseOptional.isPresent()){
+            if (purchaseOptional.isPresent()) {
                 throw new ResponseStatusException(CONFLICT, "Purchase already exists with ID: " + purchaseDTO.getId());
             }
         }

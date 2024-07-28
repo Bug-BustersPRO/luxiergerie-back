@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import static com.luxiergerie.Mapper.PurchaseMapper.MappedPurchaseFrom;
+import static java.util.Objects.isNull;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
@@ -60,6 +61,9 @@ public class PurchaseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PurchaseDTO> getPurchase(@PathVariable("id") UUID purchaseId) {
+        if(isNull(purchaseId)) {
+            throw new ResponseStatusException(BAD_REQUEST,"Purchase ID cannot be null");
+        }
         PurchaseDTO purchaseDTO = purchaseService.getPurchase(purchaseId);
         return ResponseEntity.ok(purchaseDTO);
     }
@@ -68,7 +72,7 @@ public class PurchaseController {
     public ResponseEntity<PurchaseDTO> createPurchase(@RequestBody PurchaseDTO purchaseDTO) {
         try {
             purchaseService.createPurchase(purchaseDTO);
-            return (ResponseEntity<PurchaseDTO>) ResponseEntity.status(CREATED);
+            return ResponseEntity.status(CREATED).build();
         } catch (Exception e) {
             return new ResponseEntity<>(BAD_REQUEST);
         }
