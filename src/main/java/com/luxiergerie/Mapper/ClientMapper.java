@@ -27,14 +27,14 @@ public class ClientMapper {
         return clientDTO;
     }
 
-    public static Client MappedClientFrom(ClientDTO dto) {
+    public static Client MappedClientFrom(ClientDTO clientDTO) {
         Client client = new Client();
-        client.setFirstName(dto.getFirstName());
-        client.setLastName(dto.getLastName());
-        client.setEmail(dto.getEmail());
-        client.setPhoneNumber(dto.getPhoneNumber());
-        if (dto.getSojourns() != null) {
-            client.setSojourns(dto.getSojourns().stream()
+        client.setFirstName(clientDTO.getFirstName());
+        client.setLastName(clientDTO.getLastName());
+        client.setEmail(clientDTO.getEmail());
+        client.setPhoneNumber(clientDTO.getPhoneNumber());
+        if (clientDTO.getSojourns() != null) {
+            client.setSojourns(clientDTO.getSojourns().stream()
                     .map(SojournMapper::MappedSojournFrom)
                     .collect(toList()));
         }
