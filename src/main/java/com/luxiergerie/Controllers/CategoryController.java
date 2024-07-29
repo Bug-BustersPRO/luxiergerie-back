@@ -20,7 +20,6 @@ import java.util.UUID;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.*;
 
-
 @RestController
 @RequestMapping("/api/categories")
 public class CategoryController {
