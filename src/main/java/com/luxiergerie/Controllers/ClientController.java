@@ -52,6 +52,22 @@ public class ClientController {
         return ClientMapper.toDTO(savedClient);
     }
 
+    @PutMapping("/{clientId}")
+    public ClientDTO updateClient(@PathVariable UUID clientId, @RequestBody ClientDTO clientDTO) {
+        Client client = this.clientRepository.findById(clientId).orElse(null);
+        if (isNull(client)) {
+            return null;
+        }
+
+        client.setFirstName(clientDTO.getFirstName());
+        client.setLastName(clientDTO.getLastName());
+        client.setPhoneNumber(clientDTO.getPhoneNumber());
+        client.setEmail(clientDTO.getEmail());
+
+        Client savedClient = this.clientRepository.save(client);
+        return ClientMapper.toDTO(savedClient);
+    }
+
     @PostMapping("/add-room/{clientId}/with-role/{roleName}")
     public ResponseEntity<?> addRoomToClient(@PathVariable UUID clientId, @PathVariable String roleName) {
         Role role = this.roleRepository.findByName(roleName);
@@ -89,6 +105,17 @@ public class ClientController {
         emailService.sendEmail(client.getEmail(), emailSubject, emailBody);
 
         return new ResponseEntity<>(ClientMapper.toDTO(client), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{clientId}")
+    public ResponseEntity<?> deleteClient(@PathVariable UUID clientId) {
+        Client client = this.clientRepository.findById(clientId).orElse(null);
+        if (isNull(client)) {
+            return new ResponseEntity<>("Client not found with id: " + clientId, HttpStatus.NOT_FOUND);
+        }
+
+        this.clientRepository.delete(client);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }
