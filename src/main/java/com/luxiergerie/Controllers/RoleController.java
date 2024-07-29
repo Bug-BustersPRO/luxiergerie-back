@@ -3,14 +3,10 @@ package com.luxiergerie.Controllers;
 import com.luxiergerie.Model.Entity.Role;
 import com.luxiergerie.Repository.RoleRepository;
 import com.luxiergerie.Services.RoleService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;

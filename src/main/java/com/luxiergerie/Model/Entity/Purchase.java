@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-
 @Entity
 @Table(name = "purchase")
 public class Purchase {
@@ -33,9 +32,9 @@ public class Purchase {
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinTable(
-        name = "purchase_accommodation",
-        joinColumns = @JoinColumn(name = "purchase_id"),
-        inverseJoinColumns = @JoinColumn(name = "accommodation_id")
+            name = "purchase_accommodation",
+            joinColumns = @JoinColumn(name = "purchase_id"),
+            inverseJoinColumns = @JoinColumn(name = "accommodation_id")
     )
     private List<Accommodation> accommodations = new ArrayList<>();
 
@@ -87,33 +86,33 @@ public class Purchase {
     }
 
     public BigDecimal getTotalPrice() {
-      return totalPrice;
+        return totalPrice;
     }
 
     public void setTotalPrice(BigDecimal totalPrice) {
-      this.totalPrice = totalPrice;
+        this.totalPrice = totalPrice;
     }
 
     private void calculateTotalPrice() {
-      this.totalPrice = accommodations.stream()
-          .map(Accommodation::getPrice)
-          .reduce(BigDecimal::add)
-          .orElse(BigDecimal.ZERO);
-  }
+        this.totalPrice = accommodations.stream()
+                .map(Accommodation::getPrice)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+    }
 
     public Purchase(UUID id, Date date, Client client, String status, List<Accommodation> accommodations) {
-      this.id = id;
-      this.date = date;
-      this.client = client;
-      this.status = status;
-      this.accommodations = accommodations;
+        this.id = id;
+        this.date = date;
+        this.client = client;
+        this.status = status;
+        this.accommodations = accommodations;
     }
 
     public Purchase(UUID id, Date date, Client client, String status) {
-      this.id = id;
-      this.date = date;
-      this.client = client;
-      this.status = status;
+        this.id = id;
+        this.date = date;
+        this.client = client;
+        this.status = status;
     }
 
 }

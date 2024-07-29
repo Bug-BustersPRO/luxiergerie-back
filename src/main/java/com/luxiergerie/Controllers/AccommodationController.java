@@ -52,7 +52,6 @@ public class AccommodationController {
         return MappedAccommodationFrom(accommodation);
     }
 
-
     @GetMapping("/accommodations/image/{accommodation_id}")
     public ResponseEntity<byte[]> getAccommodationImage(@PathVariable UUID accommodation_id) {
         try {
@@ -82,7 +81,6 @@ public class AccommodationController {
         }
 
     }
-
 
     @PutMapping("/accommodations/{accommodation_id}/{category_id}")
     public ResponseEntity<AccommodationDTO> updateAccommodation(@RequestParam("name") String name,

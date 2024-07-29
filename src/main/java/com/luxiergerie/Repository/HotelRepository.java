@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface HotelRepository extends JpaRepository<Hotel, UUID> {
+
 }

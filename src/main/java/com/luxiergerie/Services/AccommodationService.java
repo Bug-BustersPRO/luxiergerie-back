@@ -90,7 +90,6 @@ public class AccommodationService {
         } else {
             throw new RuntimeException("Accommodation not found with id: " + accommodation_id);
         }
-
     }
 
     @Transactional
@@ -108,4 +107,5 @@ public class AccommodationService {
             throw new IllegalArgumentException("Invalid image file");
         }
     }
+
 }

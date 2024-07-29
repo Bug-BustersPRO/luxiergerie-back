@@ -4,29 +4,30 @@ import com.luxiergerie.DTO.ClientDTO;
 import com.luxiergerie.Model.Entity.Client;
 
 import java.util.Objects;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class ClientMapper {
-    public static ClientDTO toDTO(Client client) {
-        ClientDTO dto = new ClientDTO();
-        dto.setId(client.getId());
-        dto.setFirstName(client.getFirstName());
-        dto.setLastName(client.getLastName());
-        dto.setEmail(client.getEmail());
-        dto.setPhoneNumber(client.getPhoneNumber());
+    public static ClientDTO MappedClientFrom(Client client) {
+        ClientDTO clientDTO = new ClientDTO();
+        clientDTO.setId(client.getId());
+        clientDTO.setFirstName(client.getFirstName());
+        clientDTO.setLastName(client.getLastName());
+        clientDTO.setEmail(client.getEmail());
+        clientDTO.setPhoneNumber(client.getPhoneNumber());
         if (Objects.nonNull(client.getRoom())) {
-            dto.setRoom(client.getRoom().getId());
-            dto.setRole(client.getRoom().getRole());
+            clientDTO.setRoom(client.getRoom().getId());
+            clientDTO.setRole(client.getRoom().getRole());
         }
         if (client.getSojourns() != null) {
-            dto.setSojourns(client.getSojourns().stream()
+            clientDTO.setSojourns(client.getSojourns().stream()
                     .map(SojournMapper::MappedSojournFrom)
-                    .collect(Collectors.toList()));
+                    .collect(toList()));
         }
-        return dto;
+        return clientDTO;
     }
 
-    public static Client toEntity(ClientDTO dto) {
+    public static Client MappedClientFrom(ClientDTO dto) {
         Client client = new Client();
         client.setFirstName(dto.getFirstName());
         client.setLastName(dto.getLastName());
@@ -35,8 +36,9 @@ public class ClientMapper {
         if (dto.getSojourns() != null) {
             client.setSojourns(dto.getSojourns().stream()
                     .map(SojournMapper::MappedSojournFrom)
-                    .collect(Collectors.toList()));
+                    .collect(toList()));
         }
         return client;
     }
+
 }

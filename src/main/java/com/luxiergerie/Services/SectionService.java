@@ -42,7 +42,7 @@ public class SectionService {
     @Transactional
     public List<Category> getCategoriesBySection(UUID sectionId) {
         Section section = sectionRepository.findById(sectionId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Section not found with id: " + sectionId));
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Section not found with id: " + sectionId));
         return section.getCategories();
     }
 

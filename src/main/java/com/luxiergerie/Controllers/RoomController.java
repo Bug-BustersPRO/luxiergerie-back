@@ -63,7 +63,6 @@ public class RoomController {
         }
     }
 
-
     @PostMapping
     public HttpStatus createRoom(@RequestBody RoomDTO roomDTO) {
         try {
@@ -106,4 +105,5 @@ public class RoomController {
     public void deleteAllRooms() {
         this.roomRepository.deleteAll();
     }
+
 }

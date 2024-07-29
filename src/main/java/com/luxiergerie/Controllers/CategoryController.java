@@ -51,7 +51,6 @@ public class CategoryController {
         }
     }
 
-
     @GetMapping("/{id}/accommodations")
     public List<AccommodationDTO> getAccommodationsByCategory(@PathVariable UUID id) {
         try {
@@ -116,6 +115,5 @@ public class CategoryController {
         String categoryName = categoryRepository.getCategoryByAccommodation(id);
         return categoryName;
     }
-
 
 }

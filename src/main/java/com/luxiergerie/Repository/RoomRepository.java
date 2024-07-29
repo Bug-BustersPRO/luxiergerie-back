@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface RoomRepository extends JpaRepository<Room, UUID> {
-
     public Room findFirstByRoleAndClientIsNull(Role role);
 
     public List<Room> findAllRoomByClientIsNull();
@@ -25,4 +24,5 @@ public interface RoomRepository extends JpaRepository<Room, UUID> {
             "(r.sojourns IS EMPTY OR " +
             "NOT EXISTS (SELECT s FROM Sojourn s WHERE s.room = r AND s.entryDate <= :exitDate AND s.exitDate >= :entryDate))")
     List<Room> findAvailableRoomsByRoleName(@Param("roleName") String roleName, @Param("entryDate") LocalDateTime entryDate, @Param("exitDate") LocalDateTime exitDate, Pageable pageable);
+
 }

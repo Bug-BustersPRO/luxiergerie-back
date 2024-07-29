@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
 
+import static com.luxiergerie.Mapper.RoomMapper.MappedRoomFrom;
 import static java.util.Objects.isNull;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -63,7 +65,7 @@ public class RoomService {
             roomDto.setRoomNumber(roomNumber);
             roomDto.setFloor(roomDTO.getFloor());
             roomDto.setRole(roomDto.getRole());
-            Room room = RoomMapper.MappedRoomFrom(roomDto, existingRole);
+            Room room = MappedRoomFrom(roomDto, existingRole);
             rooms.add(room);
         }
 
@@ -73,7 +75,7 @@ public class RoomService {
 
     @Transactional
     public HttpStatus createRoom(@RequestBody RoomDTO roomDTO) {
-        Optional<Room> roomOptional = Optional.ofNullable(roomRepository.findByRoomNumber(roomDTO.getRoomNumber()));
+        Optional<Room> roomOptional = ofNullable(roomRepository.findByRoomNumber(roomDTO.getRoomNumber()));
         Role role = this.roleRepository.findByName(roomDTO.getRole().getName());
         if (isNull(role)) {
             throw new RuntimeException("Role not found with name: " + roomDTO.getRole().getName());
@@ -81,7 +83,7 @@ public class RoomService {
         if (roomOptional.isPresent() && roomOptional.get().getRoomNumber() == roomDTO.getRoomNumber()) {
             throw new RuntimeException("Room already exists with number: " + roomDTO.getRoomNumber());
         }
-        Room room = RoomMapper.MappedRoomFrom(roomDTO, role);
+        Room room = MappedRoomFrom(roomDTO, role);
         this.roomRepository.save(room);
 
         return CREATED;
@@ -101,7 +103,7 @@ public class RoomService {
             room.setRole(role);
             room.setClient(roomDTO.getClient());
             this.roomRepository.save(room);
-            return RoomMapper.MappedRoomFrom(room);
+            return MappedRoomFrom(room);
         } else {
             throw new RuntimeException("Room not found with id: " + roomId);
         }

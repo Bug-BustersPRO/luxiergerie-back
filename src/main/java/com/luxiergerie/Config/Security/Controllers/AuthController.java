@@ -70,7 +70,10 @@ public class AuthController {
                           AuthenticationManagerBuilder authBuilder,
                           RoleRepository roleRepository,
                           AuthenticationManager authenticationManager,
-                          ClientRepository clientRepository, RoomRepository roomRepository, SojournRepository sojournRepository, TokenService tokenService,
+                          ClientRepository clientRepository,
+                          RoomRepository roomRepository,
+                          SojournRepository sojournRepository,
+                          TokenService tokenService,
                           BlackListTokenService blackListTokenService) {
         this.employeeRepository = employeeRepository;
         this.authBuilder = authBuilder;
@@ -86,7 +89,7 @@ public class AuthController {
 
     public boolean checkCookieToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
+        if (nonNull(cookies)) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("jwt-token")) {
                     return true;
@@ -197,7 +200,7 @@ public class AuthController {
 
             getContext().setAuthentication(authentication);
 
-            return new ResponseEntity<>(ClientMapper.toDTO(client), OK);
+            return new ResponseEntity<>(ClientMapper.MappedClientFrom(client), OK);
         } catch (AuthenticationException e) {
             return new ResponseEntity<>("Invalid room number or password", UNAUTHORIZED);
         }

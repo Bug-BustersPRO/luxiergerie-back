@@ -8,15 +8,16 @@ import java.util.Date;
 import java.util.UUID;
 
 public class BillMapper {
-  public static BillDTO MappedPurchaseFrom(PurchaseForBillDTO purchaseForBillDTO, PurchaseDTO purchaseDTO) {
-    BillDTO billDTO = new BillDTO();
-    billDTO.setId(UUID.randomUUID());
-    billDTO.setDate(new Date());
-    billDTO.setClient(purchaseDTO.getClient());
-    billDTO.setStatus(purchaseDTO.getStatus());
-    billDTO.setRoomNumber(purchaseDTO.getRoomNumber());
-    billDTO.getPurchasesForBillDTO().add(purchaseForBillDTO);
+    public static BillDTO MappedPurchaseFrom(PurchaseForBillDTO purchaseForBillDTO, PurchaseDTO purchaseDTO) {
+        BillDTO billDTO = new BillDTO();
+        billDTO.setId(UUID.randomUUID());
+        billDTO.setDate(new Date());
+        billDTO.setClient(purchaseDTO.getClient());
+        billDTO.setStatus(purchaseDTO.getStatus());
+        billDTO.setRoomNumber(purchaseDTO.getRoomNumber());
+        billDTO.getPurchasesForBillDTO().add(purchaseForBillDTO);
 
-    return billDTO;
-  }
+        return billDTO;
+    }
+
 }

@@ -5,23 +5,23 @@ import com.luxiergerie.Model.Entity.Section;
 
 public class SectionMapper {
     public static SectionDTO MappedSectionFrom(Section section) {
-        SectionDTO dto = new SectionDTO();
-        dto.setId(section.getId());
-        dto.setName(section.getName());
-        dto.setImage(section.getImage());
-        dto.setDescription(section.getDescription());
-        dto.setTitle(section.getTitle());
-        dto.setCategories(section.getCategories());
-        return dto;
+        SectionDTO sectionDTO = new SectionDTO();
+        sectionDTO.setId(section.getId());
+        sectionDTO.setName(section.getName());
+        sectionDTO.setImage(section.getImage());
+        sectionDTO.setDescription(section.getDescription());
+        sectionDTO.setTitle(section.getTitle());
+        sectionDTO.setCategories(section.getCategories());
+        return sectionDTO;
     }
 
-    public static Section MappedSectionFrom(SectionDTO dto) {
+    public static Section MappedSectionFrom(SectionDTO sectionDTO) {
         Section section = new Section();
-        section.setName(dto.getName());
-        section.setImage(dto.getImage());
-        section.setDescription(dto.getDescription());
-        section.setTitle(dto.getTitle());
-        section.setCategories(dto.getCategories());
+        section.setName(sectionDTO.getName());
+        section.setImage(sectionDTO.getImage());
+        section.setDescription(sectionDTO.getDescription());
+        section.setTitle(sectionDTO.getTitle());
+        section.setCategories(sectionDTO.getCategories());
         return section;
     }
 

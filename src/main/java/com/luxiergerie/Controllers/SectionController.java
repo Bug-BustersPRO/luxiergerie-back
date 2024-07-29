@@ -14,10 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import static com.luxiergerie.Mapper.SectionMapper.MappedSectionFrom;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.*;
 
@@ -43,7 +43,7 @@ public class SectionController {
 
     @GetMapping("/{id}")
     public SectionDTO getSection(@PathVariable UUID id) {
-        UUID nonNullId = Objects.requireNonNull(id, "Section ID must not be null");
+        UUID nonNullId = requireNonNull(id, "Section ID must not be null");
         Section section = sectionRepository.findById(nonNullId)
                 .orElseThrow(() -> new RuntimeException("Section not found with id: " + nonNullId));
         return MappedSectionFrom(section);

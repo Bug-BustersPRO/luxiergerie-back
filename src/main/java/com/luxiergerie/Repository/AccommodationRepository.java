@@ -1,12 +1,10 @@
 package com.luxiergerie.Repository;
 
-import java.util.UUID;
-
+import com.luxiergerie.Model.Entity.Accommodation;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.luxiergerie.Model.Entity.Accommodation;
+import java.util.UUID;
 
-public interface AccommodationRepository extends JpaRepository<Accommodation, UUID>{
-
+public interface AccommodationRepository extends JpaRepository<Accommodation, UUID> {
 
 }

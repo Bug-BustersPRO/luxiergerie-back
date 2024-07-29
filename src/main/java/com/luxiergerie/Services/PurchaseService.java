@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import static com.luxiergerie.Mapper.PurchaseMapper.MappedPurchaseFrom;
+import static java.math.BigDecimal.ZERO;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
@@ -84,7 +85,7 @@ public class PurchaseService {
             // Set the total price for the bill from the purchases
             BigDecimal totalPrice = purchaseForBillDTO.getTotalPrice();
             if (isNull(totalPrice)) {
-                totalPrice = BigDecimal.ZERO;
+                totalPrice = ZERO;
             }
             billDTO.setTotalPrice(totalPrice);
 
@@ -94,7 +95,7 @@ public class PurchaseService {
                 BillDTO existingBill = purchasesByRoom.get(roomNumber);
                 BigDecimal existingTotalPrice = existingBill.getTotalPrice();
                 if (isNull(existingTotalPrice)) {
-                    existingTotalPrice = BigDecimal.ZERO;
+                    existingTotalPrice = ZERO;
                 }
                 existingBill.setTotalPrice(existingTotalPrice.add(totalPrice));
                 existingBill.getPurchasesForBillDTO().add(purchaseForBillDTO);
@@ -103,8 +104,6 @@ public class PurchaseService {
                 purchasesByRoom.put(roomNumber, billDTO);
             }
         }
-
-        // Convert the map values to a list and return
         return new ArrayList<>(purchasesByRoom.values());
     }
 

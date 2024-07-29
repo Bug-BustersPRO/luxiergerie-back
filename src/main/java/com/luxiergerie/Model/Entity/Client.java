@@ -5,11 +5,7 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -52,9 +48,9 @@ public class Client {
     private List<Sojourn> sojourns;
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
-      if (Objects.isNull(this.authorities)) {
-        return new ArrayList<>();
-      }
+        if (Objects.isNull(this.authorities)) {
+            return new ArrayList<>();
+        }
         return this.authorities.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
@@ -151,4 +147,5 @@ public class Client {
         this.authorities = new ArrayList<>();
         this.sojourns = new ArrayList<>();
     }
+
 }

@@ -2,14 +2,11 @@ package com.luxiergerie.Model.Entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
-/**
- * Represents an employee in the system.
- */
 @Entity
 @Table(name = "employee")
 public class Employee {

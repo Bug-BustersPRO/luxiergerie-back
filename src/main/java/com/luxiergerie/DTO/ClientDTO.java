@@ -91,4 +91,5 @@ public class ClientDTO {
     public void setSojourns(List<SojournDTO> sojourns) {
         this.sojourns = sojourns;
     }
+
 }

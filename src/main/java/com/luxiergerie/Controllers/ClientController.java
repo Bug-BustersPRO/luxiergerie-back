@@ -1,27 +1,20 @@
 package com.luxiergerie.Controllers;
 
 import com.luxiergerie.DTO.ClientDTO;
-import com.luxiergerie.Model.Entity.Client;
-import com.luxiergerie.Model.Entity.Role;
-import com.luxiergerie.Model.Entity.Room;
 import com.luxiergerie.Mapper.ClientMapper;
+import com.luxiergerie.Model.Entity.Client;
 import com.luxiergerie.Repository.ClientRepository;
 import com.luxiergerie.Repository.RoleRepository;
 import com.luxiergerie.Repository.RoomRepository;
 import com.luxiergerie.Services.EmailService;
 import com.luxiergerie.Services.SMSService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
-import static com.luxiergerie.Mapper.ClientMapper.*;
-import static java.lang.Math.random;
-import static java.util.Objects.isNull;
+import static com.luxiergerie.Mapper.ClientMapper.MappedClientFrom;
+import static com.luxiergerie.Mapper.ClientMapper.MappedClientFrom;
 import static java.util.stream.Collectors.toList;
-import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/api/client")
@@ -43,14 +36,14 @@ public class ClientController {
 
     @GetMapping
     public List<ClientDTO> getClients() {
-        return this.clientRepository.findAll().stream().map(ClientMapper::toDTO).collect(toList());
+        return this.clientRepository.findAll().stream().map(ClientMapper::MappedClientFrom).collect(toList());
     }
 
     @PostMapping
     public ClientDTO createClient(@RequestBody ClientDTO clientDTO) {
-        Client client = toEntity(clientDTO);
+        Client client = ClientMapper.MappedClientFrom(clientDTO);
         Client savedClient = this.clientRepository.save(client);
-        return toDTO(savedClient);
+        return MappedClientFrom(savedClient);
     }
 
 }

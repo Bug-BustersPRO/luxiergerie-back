@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface SojournRepository extends JpaRepository<Sojourn, UUID> {
     Sojourn findBySojournIdentifier(String sojournIdentifier);
+
 }

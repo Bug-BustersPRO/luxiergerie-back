@@ -30,10 +30,10 @@ public class Accommodation {
     private BigDecimal price;
 
     @Value("false")
-    @Column(name="is_reservable")
+    @Column(name = "is_reservable")
     private boolean isReservable;
 
-    @Column(name="quantity")
+    @Column(name = "quantity")
     private Integer quantity = 0;
 
     @ManyToOne
@@ -140,11 +140,11 @@ public class Accommodation {
     }
 
     public Integer getQuantity() {
-      return quantity;
+        return quantity;
     }
 
     public void setQuantity(Integer quantity) {
-      this.quantity = quantity;
+        this.quantity = quantity;
     }
 
     public Category getCategory() {
@@ -156,11 +156,11 @@ public class Accommodation {
     }
 
     public boolean isReservable() {
-      return isReservable;
+        return isReservable;
     }
 
     public void setReservable(boolean isReservable) {
-      this.isReservable = isReservable;
+        this.isReservable = isReservable;
     }
 
 }

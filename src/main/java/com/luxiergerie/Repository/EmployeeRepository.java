@@ -1,24 +1,15 @@
 package com.luxiergerie.Repository;
 
 import com.luxiergerie.Model.Entity.Employee;
-import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
 
-/**
- * This interface represents a repository for managing Employee entities.
- * It extends the JpaRepository interface, providing CRUD operations for Employee entities.
- */
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
-  /**
-   * Finds an Employee by their serial number.
-   *
-   * @param serialNumber The serial number of the Employee.
-   * @return The Employee with the specified serial number, or null if not found.
-   */
-  Employee findBySerialNumber(String serialNumber);
+    Employee findBySerialNumber(String serialNumber);
 
     boolean existsBySerialNumber(String serialNumber);
+
 }

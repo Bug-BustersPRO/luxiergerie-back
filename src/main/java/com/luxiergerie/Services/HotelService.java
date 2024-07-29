@@ -7,9 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,7 +25,7 @@ public class HotelService {
 
     private final HotelRepository hotelRepository;
 
-    public HotelService (HotelRepository hotelRepository) {
+    public HotelService(HotelRepository hotelRepository) {
         this.hotelRepository = hotelRepository;
     }
 
@@ -88,6 +86,7 @@ public class HotelService {
             return new ResponseEntity<>(NOT_FOUND);
         }
     }
+
     @Transactional
     public ResponseEntity<HotelDTO> createHotel(@RequestParam("name") String name,
                                                 @RequestParam("image") MultipartFile image,
@@ -119,6 +118,5 @@ public class HotelService {
         Hotel savedHotel = hotelRepository.save(hotel);
         return new ResponseEntity<>(MappedHotelFrom(savedHotel), CREATED);
     }
-
 
 }

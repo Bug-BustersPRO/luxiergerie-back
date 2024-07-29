@@ -2,33 +2,16 @@ package com.luxiergerie.Controllers;
 
 import com.luxiergerie.DTO.BillDTO;
 import com.luxiergerie.DTO.PurchaseDTO;
-import com.luxiergerie.DTO.PurchaseForBillDTO;
-import com.luxiergerie.Model.Entity.Purchase;
-import com.luxiergerie.Model.Entity.Room;
-import com.luxiergerie.Mapper.BillMapper;
-import com.luxiergerie.Mapper.PurchaseMapper;
 import com.luxiergerie.Repository.PurchaseRepository;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.luxiergerie.Repository.RoomRepository;
 import com.luxiergerie.Services.PurchaseService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import static com.luxiergerie.Mapper.PurchaseMapper.MappedPurchaseFrom;
+import java.util.List;
+import java.util.UUID;
+
 import static java.util.Objects.isNull;
 import static org.springframework.http.HttpStatus.*;
 
@@ -61,8 +44,8 @@ public class PurchaseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PurchaseDTO> getPurchase(@PathVariable("id") UUID purchaseId) {
-        if(isNull(purchaseId)) {
-            throw new ResponseStatusException(BAD_REQUEST,"Purchase ID cannot be null");
+        if (isNull(purchaseId)) {
+            throw new ResponseStatusException(BAD_REQUEST, "Purchase ID cannot be null");
         }
         PurchaseDTO purchaseDTO = purchaseService.getPurchase(purchaseId);
         return ResponseEntity.ok(purchaseDTO);
@@ -90,12 +73,12 @@ public class PurchaseController {
         }
     }
 
-  @DeleteMapping("/{id}")
-  public void deletePurchase(@PathVariable("id") UUID id) {
-    if (!purchaseRepository.existsById(id)) {
-      throw new RuntimeException("Purchase not found with id:" + id);
+    @DeleteMapping("/{id}")
+    public void deletePurchase(@PathVariable("id") UUID id) {
+        if (!purchaseRepository.existsById(id)) {
+            throw new RuntimeException("Purchase not found with id:" + id);
+        }
+        purchaseRepository.deleteById(id);
     }
-    purchaseRepository.deleteById(id);
-  }
 
 }

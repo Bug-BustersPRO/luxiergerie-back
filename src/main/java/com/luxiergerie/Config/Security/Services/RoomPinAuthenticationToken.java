@@ -1,9 +1,6 @@
 package com.luxiergerie.Config.Security.Services;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-
-import java.util.Collection;
 
 public class RoomPinAuthenticationToken extends AbstractAuthenticationToken {
 
@@ -26,4 +23,5 @@ public class RoomPinAuthenticationToken extends AbstractAuthenticationToken {
     public Object getPrincipal() {
         return sojournIdentifier;
     }
+
 }

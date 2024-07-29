@@ -6,7 +6,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
-import static java.util.Objects.*;
+import static java.util.Objects.isNull;
 
 public class RoomPinAuthenticationProvider implements AuthenticationProvider {
 
@@ -23,11 +23,13 @@ public class RoomPinAuthenticationProvider implements AuthenticationProvider {
 
         Sojourn sojourn = sojournRepository.findBySojournIdentifier(sojournIdentifier);
         if (isNull(sojourn)) {
-            throw new AuthenticationException("Sojourn not found") {};
+            throw new AuthenticationException("Sojourn not found") {
+            };
         }
 
         if (sojourn.getPin() != pin) {
-            throw new AuthenticationException("Invalid pin") {};
+            throw new AuthenticationException("Invalid pin") {
+            };
         }
 
         return new RoomPinAuthenticationToken(sojournIdentifier, pin);
@@ -37,4 +39,5 @@ public class RoomPinAuthenticationProvider implements AuthenticationProvider {
     public boolean supports(Class<?> authentication) {
         return RoomPinAuthenticationToken.class.isAssignableFrom(authentication);
     }
+
 }

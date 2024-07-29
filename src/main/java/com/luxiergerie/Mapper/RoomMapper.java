@@ -4,37 +4,37 @@ import com.luxiergerie.DTO.RoomDTO;
 import com.luxiergerie.Model.Entity.Role;
 import com.luxiergerie.Model.Entity.Room;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
 public class RoomMapper {
     public static RoomDTO MappedRoomFrom(Room room) {
-        RoomDTO dto = new RoomDTO();
-        dto.setId(room.getId());
-        dto.setRoomNumber(room.getRoomNumber());
-        dto.setFloor(room.getFloor());
-        dto.setRole(room.getRole());
-        if(room.getClient() != null)
-        {
-            dto.setClient(room.getClient());
+        RoomDTO roomDTO = new RoomDTO();
+        roomDTO.setId(room.getId());
+        roomDTO.setRoomNumber(room.getRoomNumber());
+        roomDTO.setFloor(room.getFloor());
+        roomDTO.setRole(room.getRole());
+        if (room.getClient() != null) {
+            roomDTO.setClient(room.getClient());
         }
         if (room.getSojourns() != null) {
-            dto.setSojourns(room.getSojourns().stream()
+            roomDTO.setSojourns(room.getSojourns().stream()
                     .map(SojournMapper::MappedSojournFrom)
                     .collect(toList()));
         }
-        return dto;
+        return roomDTO;
     }
 
-    public static Room MappedRoomFrom(RoomDTO dto, Role role) {
+    public static Room MappedRoomFrom(RoomDTO roomDTO, Role role) {
         Room room = new Room();
-        room.setRoomNumber(dto.getRoomNumber());
-        room.setFloor(dto.getFloor());
+        room.setRoomNumber(roomDTO.getRoomNumber());
+        room.setFloor(roomDTO.getFloor());
         room.setRole(role);
-        if (dto.getSojourns() != null) {
-            room.setSojourns(dto.getSojourns().stream()
+        if (roomDTO.getSojourns() != null) {
+            room.setSojourns(roomDTO.getSojourns().stream()
                     .map(SojournMapper::MappedSojournFrom)
                     .collect(toList()));
         }
         return room;
     }
+
 }

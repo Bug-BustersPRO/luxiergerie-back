@@ -32,7 +32,6 @@ public class CategoryService {
     public CategoryService(CategoryRepository categoryRepository, SectionRepository sectionRepository) {
         this.categoryRepository = categoryRepository;
         this.sectionRepository = sectionRepository;
-
     }
 
     @Transactional
@@ -44,7 +43,6 @@ public class CategoryService {
             throw new RuntimeException("Category not found with ID: " + id);
         }
     }
-
 
     @Transactional
     public List<AccommodationDTO> getAccommodationsByCategory(UUID id) {

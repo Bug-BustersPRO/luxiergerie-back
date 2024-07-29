@@ -21,7 +21,7 @@ public class Room {
     @Column(nullable = false, name = "floor")
     private int floor;
 
-    @ManyToOne( cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     @JoinColumn(name = "role_id")
     private Role role;
@@ -107,4 +107,5 @@ public class Room {
     public Room findByClient_Id(UUID id) {
         return this;
     }
+
 }
