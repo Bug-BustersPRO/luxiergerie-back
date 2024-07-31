@@ -1,8 +1,10 @@
 package com.luxiergerie.Controllers;
 
 import com.luxiergerie.DTO.RoomDTO;
+import com.luxiergerie.Domain.Entity.Client;
 import com.luxiergerie.Domain.Entity.Role;
 import com.luxiergerie.Domain.Entity.Room;
+import com.luxiergerie.Domain.Entity.Sojourn;
 import com.luxiergerie.Domain.Mapper.RoomMapper;
 import com.luxiergerie.Domain.Repository.RoleRepository;
 import com.luxiergerie.Domain.Repository.RoomRepository;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 @RestController
@@ -105,7 +108,7 @@ public class RoomController {
             throw new RuntimeException("Role not found with name: " + roomDTO.getRole().getName());
         }
         Optional<Room> roomToChange = this.roomRepository.findById(roomId);
-        if (roomToChange.isPresent()){
+        if (roomToChange.isPresent()) {
             Room room = roomToChange.get();
             room.setRoomNumber(roomDTO.getRoomNumber());
             room.setFloor(roomDTO.getFloor());
@@ -120,9 +123,21 @@ public class RoomController {
 
     @DeleteMapping("/{roomId}")
     public void deleteRoom(@PathVariable UUID roomId) {
-        if (!this.roomRepository.existsById(roomId)) {
+        Room room = this.roomRepository.findById(roomId).orElse(null);
+        assert nonNull(room);
+        Client client = room.getClient();
+        Sojourn sojourn = room.getSojourns().stream().findFirst().orElse(null);
+        if (!roomRepository.existsById(roomId)) {
             throw new RuntimeException("Room not found with id: " + roomId);
         }
+        if (nonNull(client)) {
+            throw new RuntimeException("Room is currently occupied by a client.");
+        }
+        if (nonNull(sojourn)) {
+            throw new RuntimeException("There is a sojourn for this room.");
+        }
+        room.setClient(null);
+        room.setRole(null);
         this.roomRepository.deleteById(roomId);
     }
 
@@ -130,4 +145,5 @@ public class RoomController {
     public void deleteAllRooms() {
         this.roomRepository.deleteAll();
     }
+
 }

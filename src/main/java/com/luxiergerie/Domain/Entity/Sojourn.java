@@ -2,17 +2,7 @@ package com.luxiergerie.Domain.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.luxiergerie.Domain.Enums.SojournStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
-
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

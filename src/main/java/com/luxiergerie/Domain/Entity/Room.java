@@ -3,7 +3,6 @@ package com.luxiergerie.Domain.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -22,7 +21,7 @@ public class Room {
     @Column(nullable = false, name = "floor")
     private int floor;
 
-    @ManyToOne( cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     @JoinColumn(name = "role_id")
     private Role role;

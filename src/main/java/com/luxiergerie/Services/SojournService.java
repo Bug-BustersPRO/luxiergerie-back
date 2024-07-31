@@ -21,7 +21,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import static com.luxiergerie.Domain.Enums.SojournStatus.*;
-import static java.util.Objects.*;
+import static java.util.Objects.isNull;
 
 @Service
 public class SojournService {
@@ -83,9 +83,9 @@ public class SojournService {
 
         String sojournIdentifier =
                 client.getFirstName().substring(0, 1) + client.getLastName().substring(0, 1) +
-                room.getRoomNumber() + adjustedEntryDate.getDayOfMonth() +
-                adjustedEntryDate.getMonthValue() + adjustedEntryDate.getYear() +
-                identifiedUnique;
+                        room.getRoomNumber() + adjustedEntryDate.getDayOfMonth() +
+                        adjustedEntryDate.getMonthValue() + adjustedEntryDate.getYear() +
+                        identifiedUnique;
 
         sojourn.setSojournIdentifier(sojournIdentifier);
         sojourn.setClient(client);
@@ -171,8 +171,8 @@ public class SojournService {
         List<Sojourn> sojourns = this.sojournRepository.findAll();
         for (Sojourn sojourn : sojourns) {
             if (sojourn.getEntryDate().getDayOfMonth() == LocalDateTime.now().getDayOfMonth() &&
-                sojourn.getEntryDate().getMonthValue() == LocalDateTime.now().getMonthValue() &&
-                sojourn.getEntryDate().getYear() == LocalDateTime.now().getYear()) {
+                    sojourn.getEntryDate().getMonthValue() == LocalDateTime.now().getMonthValue() &&
+                    sojourn.getEntryDate().getYear() == LocalDateTime.now().getYear()) {
                 sojourn.setStatus(IN_PROGRESS);
                 this.sojournRepository.save(sojourn);
             }
@@ -184,8 +184,8 @@ public class SojournService {
         List<Sojourn> sojourns = this.sojournRepository.findAll();
         for (Sojourn sojourn : sojourns) {
             if (sojourn.getExitDate().getDayOfMonth() == LocalDateTime.now().getDayOfMonth() &&
-                sojourn.getExitDate().getMonthValue() == LocalDateTime.now().getMonthValue() &&
-                sojourn.getExitDate().getYear() == LocalDateTime.now().getYear()) {
+                    sojourn.getExitDate().getMonthValue() == LocalDateTime.now().getMonthValue() &&
+                    sojourn.getExitDate().getYear() == LocalDateTime.now().getYear()) {
                 sojourn.setStatus(FINISHED);
                 this.sojournRepository.save(sojourn);
             }
