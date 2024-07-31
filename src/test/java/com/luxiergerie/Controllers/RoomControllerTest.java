@@ -22,7 +22,6 @@ import static org.mockito.Mockito.when;
 public class RoomControllerTest {
     @InjectMocks
     private RoomController roomController;
-
     @Mock
     private RoomRepository roomRepository;
 

@@ -19,23 +19,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.UUID.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
-
 class AuthControllerTest {
-
     @InjectMocks
     AuthController authController;
-
     @Mock
     private HttpServletRequest request;
     @Mock
     private PasswordEncoder passwordEncoder;
-
     @Mock
     private RoleRepository roleRepository;
     @Mock
@@ -48,38 +45,40 @@ class AuthControllerTest {
 
     @Test
     public void shouldCheckCookieTokenWithToken() {
+        //Arrange
         Cookie[] expectedCookies = new Cookie[]{new Cookie("jwt-token", "teste-moi!!!")};
         when(request.getCookies()).thenReturn(expectedCookies);
 
+        //Act
         boolean resultCookie = authController.checkCookieToken(request);
 
+        //Assert
         assertTrue(resultCookie);
     }
 
-
     @Test
     public void shouldErrorWhenCookieIsEmpty() {
-
+        //Arrange
         Cookie[] expectedCookies = new Cookie[]{};
         when(request.getCookies()).thenReturn(expectedCookies);
 
+        //Act
         boolean resultCookie = authController.checkCookieToken(request);
 
-
+        //Assert
         assertFalse(resultCookie);
     }
-
 
     @Test
     public void shouldThrownExceptionIfLastNameIsNull() throws InterruptedException {
         List<Role> roles = new ArrayList<>();
 
         Role adminRole = new Role();
-        adminRole.setId(UUID.randomUUID());
+        adminRole.setId(randomUUID());
         adminRole.setName("ROLE_ADMIN");
 
         Role employeeRole = new Role();
-        employeeRole.setId(UUID.randomUUID());
+        employeeRole.setId(randomUUID());
         employeeRole.setName("ROLE_EMPLOYEE");
 
         roles.add(adminRole);
@@ -95,7 +94,7 @@ class AuthControllerTest {
         when(employeeRepository.findAll()).thenReturn(new ArrayList<>());
         // Créer un employé invalide
         Employee invalidEmployee = new Employee();
-        invalidEmployee.setId(UUID.randomUUID());
+        invalidEmployee.setId(randomUUID());
         invalidEmployee.setRoles(roles);
         invalidEmployee.setFirstName("jojo");
         invalidEmployee.setLastName(null);
@@ -108,7 +107,6 @@ class AuthControllerTest {
 
         // Vérifier que roleRepository.findByName a été appelé exactement une fois avec le bon argument
         verify(roleRepository, times(1)).findByName("ROLE_ADMIN");
-
     }
 
     @Test
@@ -117,11 +115,11 @@ class AuthControllerTest {
         List<Role> roles = new ArrayList<>();
 
         Role adminRole = new Role();
-        adminRole.setId(UUID.randomUUID());
+        adminRole.setId(randomUUID());
         adminRole.setName("ROLE_ADMIN");
 
         Role employeeRole = new Role();
-        employeeRole.setId(UUID.randomUUID());
+        employeeRole.setId(randomUUID());
         employeeRole.setName("ROLE_EMPLOYEE");
 
         roles.add(adminRole);
@@ -138,7 +136,7 @@ class AuthControllerTest {
 
         // Créer un employé invalide
         Employee invalidEmployee = new Employee();
-        invalidEmployee.setId(UUID.randomUUID());
+        invalidEmployee.setId(randomUUID());
         invalidEmployee.setRoles(roles);
         invalidEmployee.setFirstName("jojo");
         invalidEmployee.setLastName("");
@@ -151,7 +149,6 @@ class AuthControllerTest {
 
         // Vérifier que roleRepository.findByName a été appelé exactement une fois avec le bon argument
         verify(roleRepository, times(1)).findByName("ROLE_ADMIN");
-
     }
 
     @Test
@@ -160,11 +157,11 @@ class AuthControllerTest {
         List<Role> roles = new ArrayList<>();
 
         Role adminRole = new Role();
-        adminRole.setId(UUID.randomUUID());
+        adminRole.setId(randomUUID());
         adminRole.setName("ROLE_ADMIN");
 
         Role employeeRole = new Role();
-        employeeRole.setId(UUID.randomUUID());
+        employeeRole.setId(randomUUID());
         employeeRole.setName("ROLE_EMPLOYEE");
 
         roles.add(adminRole);
@@ -181,7 +178,7 @@ class AuthControllerTest {
 
         // Créer un employé invalide
         Employee invalidEmployee = new Employee();
-        invalidEmployee.setId(UUID.randomUUID());
+        invalidEmployee.setId(randomUUID());
         invalidEmployee.setRoles(roles);
         invalidEmployee.setFirstName(null);
         invalidEmployee.setLastName("test");
@@ -194,7 +191,6 @@ class AuthControllerTest {
 
         // Vérifier que roleRepository.findByName a été appelé exactement une fois avec le bon argument
         verify(roleRepository, times(1)).findByName("ROLE_ADMIN");
-
     }
 
     @Test
@@ -203,11 +199,11 @@ class AuthControllerTest {
         List<Role> roles = new ArrayList<>();
 
         Role adminRole = new Role();
-        adminRole.setId(UUID.randomUUID());
+        adminRole.setId(randomUUID());
         adminRole.setName("ROLE_ADMIN");
 
         Role employeeRole = new Role();
-        employeeRole.setId(UUID.randomUUID());
+        employeeRole.setId(randomUUID());
         employeeRole.setName("ROLE_EMPLOYEE");
 
         roles.add(adminRole);
@@ -224,7 +220,7 @@ class AuthControllerTest {
 
         // Créer un employé invalide
         Employee invalidEmployee = new Employee();
-        invalidEmployee.setId(UUID.randomUUID());
+        invalidEmployee.setId(randomUUID());
         invalidEmployee.setRoles(roles);
         invalidEmployee.setFirstName("");
         invalidEmployee.setLastName("test");
@@ -237,7 +233,6 @@ class AuthControllerTest {
 
         // Vérifier que roleRepository.findByName a été appelé exactement une fois avec le bon argument
         verify(roleRepository, times(1)).findByName("ROLE_ADMIN");
-
     }
 
     @Test
@@ -246,11 +241,11 @@ class AuthControllerTest {
         List<Role> roles = new ArrayList<>();
 
         Role adminRole = new Role();
-        adminRole.setId(UUID.randomUUID());
+        adminRole.setId(randomUUID());
         adminRole.setName("ROLE_ADMIN");
 
         Role employeeRole = new Role();
-        employeeRole.setId(UUID.randomUUID());
+        employeeRole.setId(randomUUID());
         employeeRole.setName("ROLE_EMPLOYEE");
 
         roles.add(adminRole);
@@ -267,7 +262,7 @@ class AuthControllerTest {
 
         // Créer un employé invalide
         Employee invalidEmployee = new Employee();
-        invalidEmployee.setId(UUID.randomUUID());
+        invalidEmployee.setId(randomUUID());
         invalidEmployee.setRoles(roles);
         invalidEmployee.setFirstName("jojo");
         invalidEmployee.setLastName("test");
@@ -289,11 +284,11 @@ class AuthControllerTest {
         List<Role> roles = new ArrayList<>();
 
         Role adminRole = new Role();
-        adminRole.setId(UUID.randomUUID());
+        adminRole.setId(randomUUID());
         adminRole.setName("ROLE_ADMIN");
 
         Role employeeRole = new Role();
-        employeeRole.setId(UUID.randomUUID());
+        employeeRole.setId(randomUUID());
         employeeRole.setName("ROLE_EMPLOYEE");
 
         roles.add(adminRole);
@@ -310,7 +305,7 @@ class AuthControllerTest {
 
         // Créer un employé invalide
         Employee adminEmployee = new Employee();
-        adminEmployee.setId(UUID.randomUUID());
+        adminEmployee.setId(randomUUID());
         adminEmployee.setRoles(roles);
         adminEmployee.setFirstName("Admin");
         adminEmployee.setLastName("User");
@@ -333,11 +328,11 @@ class AuthControllerTest {
         List<Role> roles = new ArrayList<>();
 
         Role adminRole = new Role();
-        adminRole.setId(UUID.randomUUID());
+        adminRole.setId(randomUUID());
         adminRole.setName("ROLE_ADMIN");
 
         Role employeeRole = new Role();
-        employeeRole.setId(UUID.randomUUID());
+        employeeRole.setId(randomUUID());
         employeeRole.setName("ROLE_EMPLOYEE");
 
         roles.add(adminRole);
@@ -346,7 +341,7 @@ class AuthControllerTest {
         when(roleRepository.findByName("ROLE_EMPLOYEE")).thenReturn(employeeRole);
 
         Employee mockEmployee = new Employee();
-        mockEmployee.setId(UUID.randomUUID());
+        mockEmployee.setId(randomUUID());
         mockEmployee.setFirstName("John");
         mockEmployee.setLastName("Doe");
         mockEmployee.setPassword("password");
@@ -361,4 +356,5 @@ class AuthControllerTest {
             assertNotNull(mockEmployee.getSerialNumber());
         }
     }
+
 }

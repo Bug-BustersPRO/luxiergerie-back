@@ -18,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static java.util.Collections.singletonList;
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -29,10 +30,8 @@ public class PurchaseControllerTest {
     private PurchaseController purchaseController;
     @Mock
     private PurchaseService purchaseService;
-
     @Mock
     private PurchaseRepository purchaseRepository;
-
     @Mock
     private RoomRepository roomRepository;
 
@@ -43,29 +42,35 @@ public class PurchaseControllerTest {
 
     @Test
     public void testGetPurchases() {
-        List<PurchaseDTO> purchaseDTOs = Collections.singletonList(
-                new PurchaseDTO(UUID.randomUUID(), new Date(), new Client(), "En cours", new ArrayList<>(), 217, BigDecimal.valueOf(1000.00))
+        //Arrange
+        List<PurchaseDTO> purchaseDTOs = singletonList(
+                new PurchaseDTO(randomUUID(), new Date(), new Client(), "En cours", new ArrayList<>(), 217, BigDecimal.valueOf(1000.00))
         );
         when(purchaseService.getPurchases()).thenReturn(purchaseDTOs);
 
+        //Act
         List<PurchaseDTO> result = purchaseController.getPurchases();
 
+        //Assert
         assertEquals(purchaseDTOs.size(), result.size());
         verify(purchaseService).getPurchases();
     }
 
     @Test
     public void testGetPurchaseById() {
-        UUID purchaseId = UUID.randomUUID();
+        //Arrange
+        UUID purchaseId = randomUUID();
         PurchaseDTO expectedDTO = new PurchaseDTO(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>(), 217, BigDecimal.valueOf(1000.00));
         Purchase purchase = new Purchase(purchaseId, expectedDTO.getDate(), expectedDTO.getClient(), expectedDTO.getStatus());
         purchase.setAccommodations(expectedDTO.getAccommodations());
 
         when(purchaseService.getPurchase(purchaseId)).thenReturn(expectedDTO);
 
+        //Act
         ResponseEntity<PurchaseDTO> response = purchaseController.getPurchase(purchaseId);
         PurchaseDTO result = response.getBody();
 
+        //Assert
         assertNotNull(result);
         assertAll(
                 () -> assertEquals(expectedDTO.getId(), result.getId()),
@@ -84,12 +89,11 @@ public class PurchaseControllerTest {
         assertThrows(ResponseStatusException.class, () -> {
             purchaseController.getPurchase(purchaseId);
         });
-
     }
 
     @Test
     public void testCreatePurchase() {
-        UUID purchaseId = UUID.randomUUID();
+        UUID purchaseId = randomUUID();
         PurchaseDTO purchaseDTO = new PurchaseDTO(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>(), 217, BigDecimal.valueOf(1000.00));
         Purchase expectedPurchase = new Purchase(purchaseId, purchaseDTO.getDate(), purchaseDTO.getClient(), purchaseDTO.getStatus());
         expectedPurchase.setAccommodations(purchaseDTO.getAccommodations());
@@ -101,13 +105,12 @@ public class PurchaseControllerTest {
 
         assertNotNull(response);
         assertEquals(CREATED, response.getStatusCode());
-
     }
 
     @Test
     public void testUpdatePurchase_Success() {
         // Arrange
-        UUID purchaseId = UUID.randomUUID();
+        UUID purchaseId = randomUUID();
         PurchaseDTO purchaseDTO = new PurchaseDTO(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>(), 217, BigDecimal.valueOf(1000.00));
         Purchase existingPurchase = new Purchase(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>());
         Purchase updatedPurchase = new Purchase(purchaseId, purchaseDTO.getDate(), purchaseDTO.getClient(), purchaseDTO.getStatus());
@@ -123,15 +126,13 @@ public class PurchaseControllerTest {
 
         // Assert
         assertEquals(OK, response.getStatusCode());
-
     }
 
     @Test
     public void testUpdatePurchase_BadRequest() {
         // Arrange
-        UUID purchaseId = UUID.randomUUID();
+        UUID purchaseId = randomUUID();
         PurchaseDTO purchaseDTO = new PurchaseDTO(purchaseId, new Date(), new Client(), "En cours", new ArrayList<>(), 217, BigDecimal.valueOf(1000.00));
-
         // Simulate an IllegalArgumentException being thrown by the service
         doThrow(new IllegalArgumentException()).when(purchaseService).updatePurchase(any(UUID.class), any(PurchaseDTO.class));
 
@@ -139,25 +140,19 @@ public class PurchaseControllerTest {
         ResponseEntity<PurchaseDTO> response = purchaseController.updatePurchase(purchaseId, purchaseDTO);
 
         // Assert
-        assertAll(
-                () -> assertEquals(BAD_REQUEST, response.getStatusCode())
-        );
-    }
-
-    @Test
-    public void testUpdatePurchaseThrowsExceptionIfPurchaseNotFound() {
-        UUID purchaseId = randomUUID();
-        Purchase purchase = new Purchase(purchaseId, new Date(), new Client(), "En cours");
-        when(purchaseRepository.findById(purchaseId)).thenReturn(Optional.empty());
+        assertEquals(BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
     public void testDeletePurchase() {
+        //Arrange
         UUID purchaseId = randomUUID();
         when(purchaseRepository.existsById(purchaseId)).thenReturn(true);
 
+        //Act
         purchaseController.deletePurchase(purchaseId);
 
+        //Assert
         verify(purchaseRepository).deleteById(purchaseId);
     }
 
