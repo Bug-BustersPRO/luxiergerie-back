@@ -1,7 +1,18 @@
 package com.luxiergerie.Model.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.luxiergerie.Model.Enums.SojournStatus;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -32,10 +43,12 @@ public class Sojourn {
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
+    @JsonIgnore
     private Client client;
 
     @ManyToOne
     @JoinColumn(name = "room_id", nullable = false)
+    @JsonIgnore
     private Room room;
 
     // getters and setters
