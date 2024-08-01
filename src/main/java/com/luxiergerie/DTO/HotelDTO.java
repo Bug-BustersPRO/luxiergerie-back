@@ -11,8 +11,7 @@ public class HotelDTO {
     private List<String> colors;
     private byte[] backgroundImage;
 
-    public HotelDTO(){
-
+    public HotelDTO() {
     }
 
     public HotelDTO(UUID id, String name, byte[] image, List<String> colors, byte[] backgroundImage) {

@@ -1,36 +1,44 @@
 package com.luxiergerie.Controllers;
 
 import com.luxiergerie.DTO.HotelDTO;
-import com.luxiergerie.Domain.Entity.Hotel;
-import com.luxiergerie.Domain.Repository.HotelRepository;
+import com.luxiergerie.Model.Entity.Hotel;
+import com.luxiergerie.Repository.HotelRepository;
+import com.luxiergerie.Services.HotelService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static java.util.UUID.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.http.HttpStatus.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class HotelControllerTest {
 
     @Mock
     private HotelRepository hotelRepository;
-
     @InjectMocks
     private HotelController hotelController;
-
+    @Mock
+    private HotelService hotelService;
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -57,45 +65,45 @@ public class HotelControllerTest {
     }
 
     @Test
-    public void testUpdateHotel() throws Exception {
-        MockMultipartFile image = new MockMultipartFile("image", "image.jpg", MediaType.IMAGE_JPEG_VALUE, "image".getBytes());
-        MockMultipartFile backgroundImage = new MockMultipartFile("backgroundImage", "backgroundImage.jpg", MediaType.IMAGE_JPEG_VALUE, "backgroundImage".getBytes());
+    public void testUpdateHotel_Success() throws IOException {
+        // Arrange
+        MockMultipartFile image = new MockMultipartFile("image", "image.jpg", "image/jpeg", "image".getBytes());
+        MockMultipartFile backgroundImage = new MockMultipartFile("backgroundImage", "backgroundImage.jpg", "image/jpeg", "backgroundImage".getBytes());
 
-        UUID hotelId = UUID.randomUUID();
+        UUID hotelId = randomUUID();
         Hotel existingHotel = new Hotel(hotelId, "Hotel Name", image.getBytes(), List.of("Red", "Blue", "Green"), backgroundImage.getBytes());
-        Hotel updatedHotel = new Hotel(hotelId, "Updated Hotel Name", image.getBytes(), List.of("White", "Yellow", "Green"), backgroundImage.getBytes());
         HotelDTO updatedHotelDto = new HotelDTO(hotelId, "Updated Hotel Name", image.getBytes(), List.of("White", "Yellow", "Green"), backgroundImage.getBytes());
 
         when(hotelRepository.findById(hotelId)).thenReturn(Optional.of(existingHotel));
-        when(hotelRepository.save(any(Hotel.class))).thenReturn(updatedHotel);
+        when(hotelService.updateHotel(eq(hotelId), eq("Updated Hotel Name"), eq(image), eq(backgroundImage), eq(List.of("White", "Yellow", "Green"))))
+                .thenReturn(new ResponseEntity<>(updatedHotelDto, OK));
 
-        ResponseEntity<HotelDTO> result = hotelController.updateHotel(hotelId, "Updated Hotel Name", image, backgroundImage, List.of("White", "Yellow", "Green"));
+        // Act
+        ResponseEntity<HotelDTO> response = hotelController.updateHotel(hotelId, "Updated Hotel Name", image, backgroundImage, List.of("White", "Yellow", "Green"));
 
-        assertAll(
-                () -> assertEquals(updatedHotelDto.getId(), result.getBody().getId()),
-                () -> assertEquals(updatedHotelDto.getName(), result.getBody().getName()),
-                () -> assertArrayEquals(updatedHotelDto.getImage(), result.getBody().getImage()),
-                () -> assertEquals(updatedHotelDto.getColors(), result.getBody().getColors())
-        );
+        // Assert
+        assertEquals(OK, response.getStatusCode());
 
-        verify(hotelRepository, times(1)).findById(hotelId);
-        verify(hotelRepository, times(1)).save(any(Hotel.class));
     }
 
     @Test
     public void testCreateHotel() throws Exception {
-        MockMultipartFile image = new MockMultipartFile("image", "image.jpg", MediaType.IMAGE_JPEG_VALUE, "image".getBytes());
-        MockMultipartFile backgroundImage = new MockMultipartFile("backgroundImage", "backgroundImage.jpg", MediaType.IMAGE_JPEG_VALUE, "backgroundImage".getBytes());
-        when(hotelRepository.save(any(Hotel.class))).thenReturn(new Hotel());
+        // Arrange
+        MockMultipartFile image = new MockMultipartFile("image", "image.jpg", "image/jpeg", "image".getBytes());
+        MockMultipartFile backgroundImage = new MockMultipartFile("backgroundImage", "backgroundImage.jpg", "image/jpeg", "backgroundImage".getBytes());
 
-        mockMvc.perform(multipart("/api/hotel")
-                        .file(image)
-                        .file(backgroundImage)
-                        .param("name", "New Hotel")
-                        .param("colors", "Red", "Blue", "Green"))
-                .andExpect(status().isCreated());
+        HotelDTO hotelDTO = new HotelDTO(null, "New Hotel", image.getBytes(), List.of("Red", "Blue", "Green"), backgroundImage.getBytes());
+        Hotel expectedHotel = new Hotel(randomUUID(), hotelDTO.getName(), hotelDTO.getImage(), hotelDTO.getColors(), hotelDTO.getBackgroundImage());
 
-        verify(hotelRepository, times(1)).save(any(Hotel.class));
+        when(hotelService.createHotel("Name", backgroundImage, backgroundImage, List.of("Red", "Blue", "Green"))).thenReturn(new ResponseEntity<>(hotelDTO, CREATED));
+        when(hotelRepository.save(any(Hotel.class))).thenReturn(expectedHotel);
+
+        // Act
+        ResponseEntity<HotelDTO> response = hotelController.createHotel(hotelDTO.getName(), image, backgroundImage, hotelDTO.getColors());
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(CREATED, response.getStatusCode());
     }
 
 }

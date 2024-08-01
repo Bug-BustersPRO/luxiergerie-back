@@ -1,7 +1,7 @@
 package com.luxiergerie.DTO;
 
-import com.luxiergerie.Domain.Entity.Client;
-import com.luxiergerie.Domain.Entity.Role;
+import com.luxiergerie.Model.Entity.Client;
+import com.luxiergerie.Model.Entity.Role;
 
 import java.util.List;
 import java.util.Objects;
@@ -46,11 +46,16 @@ public class RoomDTO {
         return role;
     }
 
-    public Client getClient() { return client; }
+    public Client getClient() {
+        return client;
+    }
 
-    public void setClient(Client client) { this.client = client; }
+    public void setClient(Client client) {
+        this.client = client;
+    }
 
-    public void setRole(Role role) { this.role = role;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public List<SojournDTO> getSojourns() {
@@ -78,4 +83,5 @@ public class RoomDTO {
         result = 31 * result + Objects.hashCode(client);
         return result;
     }
+
 }

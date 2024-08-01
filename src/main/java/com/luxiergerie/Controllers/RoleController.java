@@ -1,23 +1,27 @@
 package com.luxiergerie.Controllers;
 
-import com.luxiergerie.Domain.Entity.Role;
-import com.luxiergerie.Domain.Repository.RoleRepository;
+import com.luxiergerie.Model.Entity.Role;
+import com.luxiergerie.Repository.RoleRepository;
+import com.luxiergerie.Services.RoleService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/api/role")
 public class RoleController {
 
     private final RoleRepository roleRepository;
+    private final RoleService roleService;
 
-    public RoleController(RoleRepository roleRepository) {
+    public RoleController(RoleRepository roleRepository, RoleService roleService) {
         this.roleRepository = roleRepository;
+        this.roleService = roleService;
     }
 
     @GetMapping("")
@@ -38,14 +42,15 @@ public class RoleController {
     }
 
     @PutMapping("/{id}")
-    public Role updateRole(@PathVariable UUID id, @RequestBody Role role) {
-        Optional<Role> roleOptional = roleRepository.findById(id);
-        if (roleOptional.isPresent()) {
-            Role roleToUpdate = roleOptional.get();
-            roleToUpdate.setName(role.getName());
-            return roleRepository.save(roleToUpdate);
+    public ResponseEntity<Role> updateRole(@PathVariable UUID id, @RequestBody Role role) {
+        try {
+            roleService.updateRole(id, role);
+            return new ResponseEntity<>(OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(BAD_REQUEST);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(NOT_FOUND);
         }
-        throw new RuntimeException("Role not found with id : " + id);
     }
 
     @DeleteMapping("/{id}")
