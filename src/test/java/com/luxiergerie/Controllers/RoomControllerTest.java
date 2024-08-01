@@ -1,11 +1,11 @@
 package com.luxiergerie.Controllers;
 
 import com.luxiergerie.DTO.RoomDTO;
-import com.luxiergerie.Domain.Entity.Client;
-import com.luxiergerie.Domain.Entity.Employee;
-import com.luxiergerie.Domain.Entity.Role;
-import com.luxiergerie.Domain.Entity.Room;
-import com.luxiergerie.Domain.Repository.RoomRepository;
+import com.luxiergerie.Model.Entity.Client;
+import com.luxiergerie.Model.Entity.Employee;
+import com.luxiergerie.Model.Entity.Role;
+import com.luxiergerie.Model.Entity.Room;
+import com.luxiergerie.Repository.RoomRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -22,7 +22,6 @@ import static org.mockito.Mockito.when;
 public class RoomControllerTest {
     @InjectMocks
     private RoomController roomController;
-
     @Mock
     private RoomRepository roomRepository;
 

@@ -1,14 +1,14 @@
 package com.luxiergerie.Services;
 
 import com.luxiergerie.DTO.SojournDTO;
-import com.luxiergerie.Domain.Entity.Client;
-import com.luxiergerie.Domain.Entity.Room;
-import com.luxiergerie.Domain.Entity.Sojourn;
-import com.luxiergerie.Domain.Mapper.SojournMapper;
-import com.luxiergerie.Domain.Repository.ClientRepository;
-import com.luxiergerie.Domain.Repository.RoleRepository;
-import com.luxiergerie.Domain.Repository.RoomRepository;
-import com.luxiergerie.Domain.Repository.SojournRepository;
+import com.luxiergerie.Mapper.SojournMapper;
+import com.luxiergerie.Model.Entity.Client;
+import com.luxiergerie.Model.Entity.Room;
+import com.luxiergerie.Model.Entity.Sojourn;
+import com.luxiergerie.Repository.ClientRepository;
+import com.luxiergerie.Repository.RoleRepository;
+import com.luxiergerie.Repository.RoomRepository;
+import com.luxiergerie.Repository.SojournRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import static com.luxiergerie.Domain.Enums.SojournStatus.*;
+import static com.luxiergerie.Model.Enums.SojournStatus.*;
 import static java.util.Objects.isNull;
 
 @Service
@@ -104,7 +104,6 @@ public class SojournService {
         //String emailBody = "Your new PIN is: " + sojourn.getPin() + " and your identifier is: " + sojourn.getSojournIdentifier();
         //emailService.sendEmail(sojourn.getClient().getEmail(), emailSubject, emailBody);
     }
-
 
     @Transactional
     public Sojourn updateSojourn(UUID sojournId, SojournDTO sojournDTO) {
@@ -191,4 +190,5 @@ public class SojournService {
             }
         }
     }
+
 }

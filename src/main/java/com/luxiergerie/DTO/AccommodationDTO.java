@@ -1,13 +1,12 @@
 package com.luxiergerie.DTO;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.luxiergerie.Domain.Entity.Purchase;
+import com.luxiergerie.Model.Entity.Purchase;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Value;
 
 public class AccommodationDTO {
 
@@ -78,11 +77,11 @@ public class AccommodationDTO {
     }
 
     public Integer getQuantity() {
-      return quantity;
+        return quantity;
     }
 
     public void setQuantity(Integer quantity) {
-      this.quantity = quantity;
+        this.quantity = quantity;
     }
 
 
@@ -103,11 +102,11 @@ public class AccommodationDTO {
     }
 
     public boolean isReservable() {
-      return isReservable;
+        return isReservable;
     }
 
     public void setReservable(boolean isReservable) {
-      this.isReservable = isReservable;
+        this.isReservable = isReservable;
     }
 
 }

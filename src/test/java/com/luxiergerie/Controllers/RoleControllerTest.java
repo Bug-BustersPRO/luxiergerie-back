@@ -1,7 +1,7 @@
 package com.luxiergerie.Controllers;
 
-import com.luxiergerie.Domain.Entity.Role;
-import com.luxiergerie.Domain.Repository.RoleRepository;
+import com.luxiergerie.Model.Entity.Role;
+import com.luxiergerie.Repository.RoleRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,18 +12,16 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
+import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RoleControllerTest {
-
     @InjectMocks
     RoleController roleController;
-
     @Mock
     private RoleRepository roleRepository;
 
@@ -33,7 +31,7 @@ class RoleControllerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
-        Role expectedRole = new Role(UUID.randomUUID(), "ROLE_EMPLOYEE", new ArrayList<>());
+        Role expectedRole = new Role(randomUUID(), "ROLE_EMPLOYEE", new ArrayList<>());
         when(roleRepository.save(expectedRole)).thenReturn(expectedRole);
 
         // Act
