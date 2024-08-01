@@ -49,9 +49,8 @@ public class SectionService {
     @Transactional
     public SectionDTO createSection(String name, String description, MultipartFile image, String title) throws IOException {
         List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
-        if (nonNull(image) && (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType()))) {
-            throw new IllegalArgumentException("Invalid image");
-        }
+
+        CheckSizeAndNotNullImage(image, imageExtension);
 
         List<Section> sections = sectionRepository.findAll();
         Section section = new Section();
@@ -71,9 +70,11 @@ public class SectionService {
                                                     @RequestParam(value = "title", required = false) String title) throws IOException {
         List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
         List<Section> sections = sectionRepository.findAll();
+
         if (nonNull(image) && (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType()))) {
             return new ResponseEntity<>(BAD_REQUEST);
         }
+
         UUID nonNullId = Objects.requireNonNull(id, "Section ID must not be null");
         Optional<Section> sectionOptional = sectionRepository.findById(nonNullId);
         if (sectionOptional.isPresent()) {
@@ -88,6 +89,12 @@ public class SectionService {
             return new ResponseEntity<>(MappedSectionFrom(updatedSection), OK);
         } else {
             throw new RuntimeException("Section not found with id: " + nonNullId);
+        }
+    }
+
+    private static void CheckSizeAndNotNullImage(MultipartFile image, List<String> imageExtension) {
+        if (nonNull(image) && (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType()))) {
+            throw new IllegalArgumentException("Invalid image");
         }
     }
 

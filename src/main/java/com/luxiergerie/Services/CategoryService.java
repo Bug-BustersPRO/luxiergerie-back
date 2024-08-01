@@ -72,9 +72,7 @@ public class CategoryService {
     public CategoryDTO createCategory(String name, String description, UUID section_id, MultipartFile image) throws IOException {
         List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
 
-        if (nonNull(image) && (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType()))) {
-            throw new IllegalArgumentException("Invalid image file");
-        }
+        CheckSizeAndNotNullImage(image, imageExtension);
 
         Optional<Section> sectionOptional = sectionRepository.findById(section_id);
         if (sectionOptional.isPresent()) {
@@ -101,9 +99,7 @@ public class CategoryService {
                                       MultipartFile image) throws IOException {
         List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
 
-        if (nonNull(image) && (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType()))) {
-            throw new IllegalArgumentException("Invalid image file");
-        }
+        CheckSizeAndNotNullImage(image, imageExtension);
 
         UUID nonNullId = requireNonNull(category_id, "Category ID must not be null");
         UUID nonNullSectionId = requireNonNull(section_id, "Section ID must not be null");
@@ -126,7 +122,12 @@ public class CategoryService {
         } else {
             throw new RuntimeException("Category not found with id: " + nonNullId);
         }
+    }
 
+    private static void CheckSizeAndNotNullImage(MultipartFile image, List<String> imageExtension) {
+        if (nonNull(image) && (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType()))) {
+            throw new IllegalArgumentException("Invalid image file");
+        }
     }
 
 }
