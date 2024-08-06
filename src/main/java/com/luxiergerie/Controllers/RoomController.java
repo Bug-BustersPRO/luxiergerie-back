@@ -20,8 +20,6 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping("/api/rooms")
 public class RoomController {
 
-    //ATTENTION A TESTER QUAND FRONT DISPO !!!!!!!!
-
     private final RoomRepository roomRepository;
     private final RoleRepository roleRepository;
     private final RoomService roomService;
@@ -86,18 +84,11 @@ public class RoomController {
     }
 
     @DeleteMapping("/{roomId}")
-    public ResponseEntity<Void> deleteRoom(@PathVariable UUID roomId) {
+    public void deleteRoom(@PathVariable UUID roomId) {
         try {
             roomService.deleteRoom(roomId);
-            return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
-            if (e.getMessage().contains("not found")) {
-                return new ResponseEntity<>(NOT_FOUND);
-            } else if (e.getMessage().contains("permission")) {
-                return new ResponseEntity<>(FORBIDDEN);
-            } else {
-                return new ResponseEntity<>(BAD_REQUEST);
-            }
+            throw new RuntimeException("Room not found with id: " + roomId);
         }
     }
 

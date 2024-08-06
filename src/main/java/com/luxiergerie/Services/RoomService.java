@@ -2,8 +2,10 @@ package com.luxiergerie.Services;
 
 import com.luxiergerie.DTO.RoomDTO;
 import com.luxiergerie.Mapper.RoomMapper;
+import com.luxiergerie.Model.Entity.Client;
 import com.luxiergerie.Model.Entity.Role;
 import com.luxiergerie.Model.Entity.Room;
+import com.luxiergerie.Model.Entity.Sojourn;
 import com.luxiergerie.Repository.RoleRepository;
 import com.luxiergerie.Repository.RoomRepository;
 import org.springframework.http.HttpStatus;
@@ -109,10 +111,22 @@ public class RoomService {
         }
     }
 
+    @Transactional
     public void deleteRoom(@PathVariable UUID roomId) {
-        if (!this.roomRepository.existsById(roomId)) {
+        Room room = this.roomRepository.findById(roomId).orElse(null);
+        if (room == null) {
             throw new RuntimeException("Room not found with id: " + roomId);
         }
+        Client client = room.getClient();
+        Sojourn sojourn = room.getSojourns().stream().findFirst().orElse(null);
+        if (client != null) {
+            throw new RuntimeException("Room is currently occupied by a client.");
+        }
+        if (sojourn != null) {
+            throw new RuntimeException("There is a sojourn for this room.");
+        }
+        room.setClient(null);
+        room.setRole(null);
         this.roomRepository.deleteById(roomId);
     }
 
