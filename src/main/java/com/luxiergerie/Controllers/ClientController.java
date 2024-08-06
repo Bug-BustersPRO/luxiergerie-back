@@ -8,14 +8,15 @@ import com.luxiergerie.Repository.RoomRepository;
 import com.luxiergerie.Services.ClientService;
 import com.luxiergerie.Services.EmailService;
 import com.luxiergerie.Services.SMSService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/api/client")
@@ -39,18 +40,21 @@ public class ClientController {
 
     @GetMapping
     public List<ClientDTO> getClients() {
-        return this.clientRepository.findAll().stream().map(ClientMapper::MappedClientFrom).collect(toList());
+        return this.clientRepository.findAll()
+                .stream()
+                .map(ClientMapper::MappedClientFrom)
+                .collect(toList());
     }
 
     @PostMapping
     public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO clientDTO) {
         try {
             ClientDTO createdClient = clientService.createClient(clientDTO);
-            return new ResponseEntity<>(createdClient, HttpStatus.CREATED);
+            return new ResponseEntity<>(createdClient, CREATED);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(BAD_REQUEST);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -58,14 +62,14 @@ public class ClientController {
     public ResponseEntity<ClientDTO> updateClient(@PathVariable UUID clientId, @RequestBody ClientDTO clientDTO) {
         try {
             ClientDTO updatedClient = clientService.updateClient(clientId, clientDTO);
-            if (updatedClient == null) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            if (isNull(updatedClient)) {
+                return new ResponseEntity<>(NOT_FOUND);
             }
             return ResponseEntity.ok(updatedClient);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(BAD_REQUEST);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -74,9 +78,9 @@ public class ClientController {
         try {
             return clientService.addRoomToClient(clientId, roleName);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(BAD_REQUEST);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -85,9 +89,9 @@ public class ClientController {
         try {
             return clientService.deleteClient(clientId);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(BAD_REQUEST);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
         }
     }
 
