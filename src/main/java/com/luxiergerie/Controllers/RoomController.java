@@ -2,9 +2,7 @@ package com.luxiergerie.Controllers;
 
 import com.luxiergerie.DTO.RoomDTO;
 import com.luxiergerie.Mapper.RoomMapper;
-import com.luxiergerie.Model.Entity.Client;
 import com.luxiergerie.Model.Entity.Room;
-import com.luxiergerie.Model.Entity.Sojourn;
 import com.luxiergerie.Repository.RoleRepository;
 import com.luxiergerie.Repository.RoomRepository;
 import com.luxiergerie.Services.RoomService;
@@ -15,15 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/api/rooms")
 public class RoomController {
-
-    //ATTENTION A TESTER QUAND FRONT DISPO !!!!!!!!
 
     private final RoomRepository roomRepository;
     private final RoleRepository roleRepository;
@@ -90,26 +85,16 @@ public class RoomController {
 
     @DeleteMapping("/{roomId}")
     public void deleteRoom(@PathVariable UUID roomId) {
-        Room room = this.roomRepository.findById(roomId).orElse(null);
-        assert nonNull(room);
-        Client client = room.getClient();
-        Sojourn sojourn = room.getSojourns().stream().findFirst().orElse(null);
-        if (!roomRepository.existsById(roomId)) {
+        try {
+            roomService.deleteRoom(roomId);
+        } catch (RuntimeException e) {
             throw new RuntimeException("Room not found with id: " + roomId);
         }
-        if (nonNull(client)) {
-            throw new RuntimeException("Room is currently occupied by a client.");
-        }
-        if (nonNull(sojourn)) {
-            throw new RuntimeException("There is a sojourn for this room.");
-        }
-        room.setClient(null);
-        room.setRole(null);
-        this.roomRepository.deleteById(roomId);
     }
 
     @DeleteMapping("/delete-all")
     public void deleteAllRooms() {
         this.roomRepository.deleteAll();
     }
+
 }
