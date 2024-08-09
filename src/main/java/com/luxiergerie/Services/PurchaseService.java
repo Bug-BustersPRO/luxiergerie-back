@@ -43,15 +43,25 @@ public class PurchaseService {
         List<Purchase> purchases = purchaseRepository.findAll();
         List<Room> rooms = roomRepository.findAll();
 
-        return purchases.stream()
-                .map(PurchaseMapper::MappedPurchaseFrom)
+        return getPurchaseDTOS(purchases)
+                .stream()
                 .map(purchaseDTO -> {
-                    rooms.stream()
-                            .filter(room -> nonNull(room.getClient()) && room.getClient().getId().equals(purchaseDTO.getClient().getId()))
-                            .findFirst()
-                            .ifPresent(room -> purchaseDTO.setRoomNumber(room.getRoomNumber()));
+                    setRoomNumberIfClientIsNotNull(purchaseDTO, rooms);
                     return purchaseDTO;
                 })
+                .collect(toList());
+    }
+
+    private static void setRoomNumberIfClientIsNotNull(PurchaseDTO purchaseDTO, List<Room> rooms) {
+        rooms.stream()
+                .filter(room -> nonNull(room.getClient()) && room.getClient().getId().equals(purchaseDTO.getClient().getId()))
+                .findFirst()
+                .ifPresent(room -> purchaseDTO.setRoomNumber(room.getRoomNumber()));
+    }
+
+    private static List<PurchaseDTO> getPurchaseDTOS(List<Purchase> purchases) {
+        return purchases.stream()
+                .map(PurchaseMapper::MappedPurchaseFrom)
                 .collect(toList());
     }
 
