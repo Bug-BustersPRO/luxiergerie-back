@@ -47,7 +47,7 @@ public class PurchaseService {
                 .map(PurchaseMapper::MappedPurchaseFrom)
                 .map(purchaseDTO -> {
                     rooms.stream()
-                            .filter(room -> room.getClient().getId().equals(purchaseDTO.getClient().getId()))
+                            .filter(room -> nonNull(room.getClient()) && room.getClient().getId().equals(purchaseDTO.getClient().getId()))
                             .findFirst()
                             .ifPresent(room -> purchaseDTO.setRoomNumber(room.getRoomNumber()));
                     return purchaseDTO;
@@ -68,6 +68,7 @@ public class PurchaseService {
 
         // Create a map of client IDs to room numbers for quick lookup
         Map<UUID, Integer> clientIdToRoomNumber = rooms.stream()
+                .filter(room -> nonNull(room.getClient()))
                 .collect(toMap(room -> room.getClient().getId(), Room::getRoomNumber));
 
         // Process the purchases
