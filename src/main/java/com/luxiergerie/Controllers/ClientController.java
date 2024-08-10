@@ -46,6 +46,14 @@ public class ClientController {
                 .collect(toList());
     }
 
+    @GetMapping("/{clientId}")
+    public ResponseEntity<ClientDTO> getClient(@PathVariable UUID clientId) {
+        return this.clientRepository.findById(clientId)
+                .map(ClientMapper::MappedClientFrom)
+                .map(ResponseEntity::ok)
+                .orElse(new ResponseEntity<>(NOT_FOUND));
+    }
+
     @PostMapping
     public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO clientDTO) {
         try {

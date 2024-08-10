@@ -1,6 +1,5 @@
 package com.luxiergerie.Controllers;
 
-import com.luxiergerie.DTO.PurchaseDTO;
 import com.luxiergerie.Model.Entity.*;
 import com.luxiergerie.Model.Enums.SojournStatus;
 import com.luxiergerie.Repository.*;
@@ -10,21 +9,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static com.luxiergerie.Model.Enums.SojournStatus.RESERVED;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -98,7 +94,8 @@ public class PurchaseControllerIntegrationTest {
         sojourn.setRoom(room);
         sojourn.setEntryDate(entyDate);
         sojourn.setExitDate(exitDate);
-        sojourn.setStatus(sojournStatus);
+        sojourn.setStatus(RESERVED);
+        sojourn.setSojournIdentifier("AB1234");
         sojourn = sojournRepository.save(sojourn);
 
         room.setSojourns(new ArrayList<>(List.of(sojourn))); // Utilisez une ArrayList mutable ici
@@ -109,7 +106,7 @@ public class PurchaseControllerIntegrationTest {
         category.setId(UUID.randomUUID());
         category.setName("Boissons");
         category.setDescription("Boissons fraîches");
-        category.setImage("dummyImage".getBytes());
+        category.setImage("dummyImage" .getBytes());
         category = categoryRepository.save(category);
 
         // Setup d'une accommodation
@@ -117,7 +114,7 @@ public class PurchaseControllerIntegrationTest {
         accommodation.setId(UUID.randomUUID());
         accommodation.setName("Coca-Cola");
         accommodation.setDescription("Boisson gazeuse");
-        accommodation.setImage("dummyImage".getBytes());
+        accommodation.setImage("dummyImage" .getBytes());
         accommodation.setPrice(BigDecimal.valueOf(2.50));
         accommodation.setReservable(true);
         accommodation.setCategory(category); // Lien avec la catégorie sauvegardée
@@ -137,44 +134,45 @@ public class PurchaseControllerIntegrationTest {
 
     @Test
     @WithMockUser(username = "testuser", roles = {"USER"})
-    void testGetPurchases() throws Exception {
+    public void testGetPurchases() throws Exception {
         mockMvc.perform(get("/api/purchases"))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser(username = "testuser", roles = {"USER"})
-    void testGetPurchase() throws Exception {
+    public void testGetPurchase() throws Exception {
         mockMvc.perform(get("/api/purchases/" + existingPurchase.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.client.id").value(existingClient.getId().toString()));
     }
 
+    // TODO : FIX CREATE AND UPDATE
 //    @Test
 //    @WithMockUser(username = "testuser", roles = {"USER"})
 //    void testCreatePurchase() throws Exception {
+//        // Création du PurchaseDTO
 //        PurchaseDTO purchaseDTO = new PurchaseDTO();
 //        purchaseDTO.setClient(existingClient);
 //        purchaseDTO.setDate(new Date());
-//        purchaseDTO.setStatus("Validée");
+//        purchaseDTO.setStatus("En cours");
+//        purchaseDTO.setTotalPrice(BigDecimal.valueOf(100.00));
+//        purchaseDTO.setAccommodations(new ArrayList<>(List.of(accommodation)));
 //
-//        List<Accommodation> accommodations = new ArrayList<>();
-//        accommodations.add(accommodation);
-//        purchaseDTO.setAccommodations(accommodations);
-//
-//        // Conversion de la date en format ISO-8601
-//        String formattedDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(purchaseDTO.getDate());
+//        // Formater correctement la date en ISO-8601 pour la requête JSON
+//        String formattedDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(new Date());
 //
 //        mockMvc.perform(post("/api/purchases")
 //                        .contentType(MediaType.APPLICATION_JSON)
 //                        .content("{\"client\":{\"id\":\"" + existingClient.getId() + "\"},"
 //                                + "\"date\":\"" + formattedDate + "\","
-//                                + "\"status\":\"Validée\","
-//                                + "\"accommodations\":[{\"id\":\"" + accommodation.getId() + "\"}],"
-//                                + "\"totalPrice\":100.00}")
-//                ).andDo(print())
+//                                + "\"status\":\"En cours\","
+//                                + "\"totalPrice\":100.00,"
+//                                + "\"accommodations\":[{\"id\":\"" + accommodation.getId() + "\"}]}"
+//                        ))
 //                .andExpect(status().isCreated());
 //    }
+
 
 //    @Test
 //    void testUpdatePurchase() throws Exception {
@@ -186,12 +184,14 @@ public class PurchaseControllerIntegrationTest {
 //                .andExpect(status().isOk());
 //    }
 
-//    @Test
-//    void testDeletePurchase() throws Exception {
-//        mockMvc.perform(delete("/api/purchases/" + existingPurchase.getId()))
-//                .andExpect(status().isOk());
-//
-//        mockMvc.perform(get("/api/purchases/" + existingPurchase.getId()))
-//                .andExpect(status().isNotFound());
-//    }
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    void testDeletePurchase() throws Exception {
+        mockMvc.perform(delete("/api/purchases/" + existingPurchase.getId()))
+                .andExpect(status().isOk());
+
+        Optional<Purchase> deletedPurchase = purchaseRepository.findById(existingPurchase.getId());
+        assertTrue(deletedPurchase.isEmpty(), "L'achat devrait être supprimé");
+    }
+
 }
