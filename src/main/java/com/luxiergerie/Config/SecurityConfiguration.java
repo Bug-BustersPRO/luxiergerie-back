@@ -67,4 +67,5 @@ public class SecurityConfiguration {
         SecretKey originalKey = new SecretKeySpec(jwtSecret.getBytes(), "HmacSHA256");
         return NimbusJwtDecoder.withSecretKey(originalKey).build();
     }
+
 }

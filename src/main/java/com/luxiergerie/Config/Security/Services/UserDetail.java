@@ -41,4 +41,5 @@ public class UserDetail implements UserDetailsService {
                 .collect(toSet());
         return new User(serialNumber, user.getPassword(), authorities);
     }
+
 }

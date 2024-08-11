@@ -55,7 +55,7 @@ public class PurchaseController {
     public ResponseEntity<PurchaseDTO> createPurchase(@RequestBody PurchaseDTO purchaseDTO) {
         try {
             purchaseService.createPurchase(purchaseDTO);
-            return ResponseEntity.status(CREATED).build();
+            return new ResponseEntity<>(CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(BAD_REQUEST);
         }

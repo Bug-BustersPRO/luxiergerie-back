@@ -35,6 +35,15 @@ public class RoomService {
     }
 
     @Transactional
+    public RoomDTO getRoom(@PathVariable UUID roomId) {
+        Room room = this.roomRepository.findById(roomId).orElse(null);
+        if (isNull(room)) {
+            throw new RuntimeException("Room not found with id: " + roomId);
+        }
+        return MappedRoomFrom(room);
+    }
+
+    @Transactional
     public List<RoomDTO> createRooms(@RequestBody RoomDTO roomDTO, @PathVariable int maxRooms, @RequestParam(defaultValue = "100") int startRoomNumber) {
         List<Room> existingRooms = this.roomRepository.findAll();
         int existingRoomCount = existingRooms.size();
