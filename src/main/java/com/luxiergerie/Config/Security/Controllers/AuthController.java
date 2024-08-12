@@ -42,14 +42,6 @@ import static org.springframework.security.core.context.SecurityContextHolder.ge
 import static org.springframework.security.crypto.factory.PasswordEncoderFactories.createDelegatingPasswordEncoder;
 
 
-/**
- * Controller class for handling authentication-related endpoints.
- */
-
-/**
- * This class represents the controller for authentication-related operations.
- * It handles registration, login, and logout functionality.
- */
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {

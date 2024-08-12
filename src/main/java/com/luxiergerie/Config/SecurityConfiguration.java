@@ -23,10 +23,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-/**
- * This class represents the security configuration for the application.
- * It provides the necessary beans and configurations for authentication and authorization.
- */
+
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfiguration {
