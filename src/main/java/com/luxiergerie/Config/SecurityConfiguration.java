@@ -23,10 +23,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-/**
- * This class represents the security configuration for the application.
- * It provides the necessary beans and configurations for authentication and authorization.
- */
+
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfiguration {
@@ -67,4 +64,5 @@ public class SecurityConfiguration {
         SecretKey originalKey = new SecretKeySpec(jwtSecret.getBytes(), "HmacSHA256");
         return NimbusJwtDecoder.withSecretKey(originalKey).build();
     }
+
 }

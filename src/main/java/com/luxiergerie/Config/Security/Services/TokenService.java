@@ -23,9 +23,6 @@ import static java.time.temporal.ChronoUnit.HOURS;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Objects.nonNull;
 
-/**
- * This class is responsible for generating JWT tokens for authentication.
- */
 @Service
 public class TokenService {
 
@@ -38,11 +35,7 @@ public class TokenService {
     private boolean isEmployee = true;
     private Sojourn sojourn;
 
-    /**
-     * Constructs a TokenService object with the specified JwtEncoder.
-     *
-     * @param encoder the JwtEncoder used to encode the JWT tokens.
-     */
+
     public TokenService(JwtEncoder encoder, BlackListTokenService blackListTokenService,
                         BlackListedTokenRepository blackListedTokenRepository, EmployeeRepository employeeRepository, SojournRepository sojournRepository, JwtDecoder jwtDecoder) {
         this.encoder = encoder;
@@ -53,12 +46,6 @@ public class TokenService {
         this.jwtDecoder = jwtDecoder;
     }
 
-    /**
-     * Generates a JWT token based on the provided authentication information.
-     *
-     * @param auth the authentication object containing the user's credentials and authorities.
-     * @return the generated JWT token.
-     */
     public String generateToken(Authentication auth) {
         UUID userId = findUserId(auth);
 

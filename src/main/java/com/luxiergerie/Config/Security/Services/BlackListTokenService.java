@@ -13,9 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * This class represents a service for managing blacklisted tokens.
- */
+
 @Service
 public class BlackListTokenService {
     private final BlackListedTokenRepository blacklistedTokenRepository;

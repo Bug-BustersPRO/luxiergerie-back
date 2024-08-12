@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.*;
 
@@ -36,6 +37,14 @@ public class RoomController {
         return rooms.stream()
                 .map(RoomMapper::MappedRoomFrom)
                 .collect(toList());
+    }
+
+    @GetMapping("/{roomId}")
+    public RoomDTO getRoom(@PathVariable UUID roomId) {
+        if (isNull(roomId)) {
+            throw new RuntimeException("Room not found with id: " + roomId);
+        }
+        return roomService.getRoom(roomId);
     }
 
     @GetMapping("/available")

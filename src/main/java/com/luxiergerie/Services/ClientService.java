@@ -1,7 +1,6 @@
 package com.luxiergerie.Services;
 
 import com.luxiergerie.DTO.ClientDTO;
-import com.luxiergerie.Mapper.ClientMapper;
 import com.luxiergerie.Model.Entity.Client;
 import com.luxiergerie.Model.Entity.Role;
 import com.luxiergerie.Model.Entity.Room;
@@ -12,14 +11,12 @@ import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 import static com.luxiergerie.Mapper.ClientMapper.MappedClientFrom;
 import static java.lang.StrictMath.random;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.*;
 
 @Service

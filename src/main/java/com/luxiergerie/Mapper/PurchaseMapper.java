@@ -20,12 +20,12 @@ public class PurchaseMapper {
         BigDecimal totalPrice = purchase.getAccommodations().stream()
                 .map(Accommodation::getPrice).reduce(BigDecimal::add).orElse(ZERO);
         purchaseDto.setTotalPrice(totalPrice);
+
         return purchaseDto;
     }
 
     public static Purchase MappedPurchaseFrom(PurchaseDTO purchaseDto) {
         Purchase purchase = new Purchase();
-        purchase.setId(purchaseDto.getId());
         purchase.setDate(purchaseDto.getDate());
         purchase.setClient(purchaseDto.getClient());
         purchase.setStatus(purchaseDto.getStatus());
