@@ -1,16 +1,15 @@
-  package com.luxiergerie.DTO;
+package com.luxiergerie.DTO;
 
-  import com.luxiergerie.Domain.Entity.Accommodation;
-  import com.luxiergerie.Domain.Entity.Client;
+import com.luxiergerie.Model.Entity.Accommodation;
+import com.luxiergerie.Model.Entity.Client;
 
-  import java.math.BigDecimal;
-  import java.util.ArrayList;
-  import java.util.Date;
-  import java.util.List;
-  import java.util.UUID;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
-
-  public class PurchaseDTO {
+public class PurchaseDTO {
     private UUID id;
     private Date date;
     private Client client;
@@ -20,80 +19,81 @@
     private BigDecimal totalPrice;
 
     public PurchaseDTO(UUID id, Date date, Client client, String status, List<Accommodation> accommodations, int roomNumber, BigDecimal totalPrice) {
-      this.id = id;
-      this.date = date;
-      this.client = client;
-      this.status = status;
-      this.accommodations = accommodations;
-      this.roomNumber = roomNumber;
-      this.totalPrice = totalPrice;
+        this.id = id;
+        this.date = date;
+        this.client = client;
+        this.status = status;
+        this.accommodations = accommodations;
+        this.roomNumber = roomNumber;
+        this.totalPrice = totalPrice;
     }
 
     public UUID getId() {
-      return id;
+        return id;
     }
 
     public void setId(UUID id) {
-      this.id = id;
+        this.id = id;
     }
 
     public Date getDate() {
-      return date;
+        return date;
     }
 
     public void setDate(Date date) {
-      this.date = date;
+        this.date = date;
     }
 
     public Client getClient() {
-      return client;
+        return client;
     }
 
     public void setClient(Client client) {
-      this.client = client;
+        this.client = client;
     }
 
     public String getStatus() {
-      return status;
+        return status;
     }
 
     public void setStatus(String status) {
-      this.status = status;
+        this.status = status;
     }
 
     public List<Accommodation> getAccommodations() {
-      return accommodations;
+        return accommodations;
     }
 
     public void setAccommodations(List<Accommodation> accommodations) {
-      this.accommodations = accommodations;
+        this.accommodations = accommodations;
     }
 
     public BigDecimal getTotalPrice() {
-      return totalPrice;
+        return totalPrice;
     }
 
     public void setTotalPrice(BigDecimal totalPrice) {
-      this.totalPrice = totalPrice;
+        this.totalPrice = totalPrice;
     }
 
     public int getRoomNumber() {
-      return roomNumber;
+        return roomNumber;
     }
 
     public void setRoomNumber(int roomNumber) {
-      this.roomNumber = roomNumber;
+        this.roomNumber = roomNumber;
     }
 
     public PurchaseDTO(UUID id, Date date, Client client, String status, List<Accommodation> accommodations, int roomNumber) {
-      this.id = id;
-      this.date = date;
-      this.client = client;
-      this.status = status;
-      this.accommodations = accommodations;
-      this.roomNumber = roomNumber;
+        this.id = id;
+        this.date = date;
+        this.client = client;
+        this.status = status;
+        this.accommodations = accommodations;
+        this.roomNumber = roomNumber;
     }
 
     public PurchaseDTO() {
     }
-  }
+
+}

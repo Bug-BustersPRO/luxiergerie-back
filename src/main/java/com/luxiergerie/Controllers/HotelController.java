@@ -1,21 +1,20 @@
 package com.luxiergerie.Controllers;
 
 import com.luxiergerie.DTO.HotelDTO;
-import com.luxiergerie.Domain.Entity.Hotel;
-import com.luxiergerie.Domain.Mapper.HotelMapper;
-import com.luxiergerie.Domain.Repository.HotelRepository;
-import org.springframework.http.HttpStatus;
+import com.luxiergerie.Mapper.HotelMapper;
+import com.luxiergerie.Model.Entity.Hotel;
+import com.luxiergerie.Repository.HotelRepository;
+import com.luxiergerie.Services.HotelService;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
-import static com.luxiergerie.Domain.Mapper.HotelMapper.MappedHotelFrom;
-import static java.util.Objects.*;
+
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.*;
 
@@ -24,9 +23,11 @@ import static org.springframework.http.HttpStatus.*;
 public class HotelController {
 
     private final HotelRepository hotelRepository;
+    private final HotelService hotelService;
 
-    public HotelController(HotelRepository hotelRepository) {
+    public HotelController(HotelRepository hotelRepository, HotelService hotelService) {
         this.hotelRepository = hotelRepository;
+        this.hotelService = hotelService;
     }
 
     @GetMapping("/infos")
@@ -39,22 +40,20 @@ public class HotelController {
 
     @GetMapping("/image")
     public ResponseEntity<byte[]> getHotelImage() {
-        Optional<Hotel> hotelOptional = hotelRepository.findAll().stream().findFirst();
-        if (hotelOptional.isPresent()) {
-            byte[] image = hotelOptional.get().getImage();
+        try {
+            byte[] image = hotelService.getHotelImage().getBody();
             return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
-        } else {
+        } catch (RuntimeException e) {
             return new ResponseEntity<>(NOT_FOUND);
         }
     }
 
     @GetMapping("/background-image")
     public ResponseEntity<byte[]> getHotelBackgroundImage() {
-        Optional<Hotel> hotelOptional = hotelRepository.findAll().stream().findFirst();
-        if (hotelOptional.isPresent()) {
-            byte[] backgroundImage = hotelOptional.get().getBackgroundImage();
+        try {
+            byte[] backgroundImage = hotelService.getHotelBackgroundImage().getBody();
             return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(backgroundImage);
-        } else {
+        } catch (RuntimeException e) {
             return new ResponseEntity<>(NOT_FOUND);
         }
     }
@@ -65,29 +64,12 @@ public class HotelController {
                                                 @RequestParam(value = "image", required = false) MultipartFile image,
                                                 @RequestParam(value = "backgroundImage", required = false) MultipartFile backgroundImage,
                                                 @RequestParam(value = "colors", required = false) List<String> colors) throws IOException {
-        Optional<Hotel> hotelOptional = hotelRepository.findById(id);
-        if (hotelOptional.isPresent()) {
-            Hotel hotelToUpdate = hotelOptional.get();
-
-            if (nonNull(name)) {
-                hotelToUpdate.setName(name);
-            }
-            if (nonNull(colors)) {
-                if (colors.size() > 3) {
-                    return new ResponseEntity<>(BAD_REQUEST);
-                }
-                hotelToUpdate.setColors(colors);
-            }
-            if (nonNull(image) && !image.isEmpty()) {
-                hotelToUpdate.setImage(image.getBytes());
-            }
-            if (nonNull(backgroundImage) && !backgroundImage.isEmpty()) {
-                hotelToUpdate.setBackgroundImage(backgroundImage.getBytes());
-            }
-
-            Hotel updatedHotel = hotelRepository.save(hotelToUpdate);
-            return new ResponseEntity<>(MappedHotelFrom(updatedHotel), OK);
-        } else {
+        try {
+            hotelService.updateHotel(id, name, image, backgroundImage, colors);
+            return new ResponseEntity<>(OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(BAD_REQUEST);
+        } catch (RuntimeException e) {
             return new ResponseEntity<>(NOT_FOUND);
         }
     }
@@ -97,31 +79,13 @@ public class HotelController {
                                                 @RequestParam("image") MultipartFile image,
                                                 @RequestParam("backgroundImage") MultipartFile backgroundImage,
                                                 @RequestParam("colors") List<String> colors) throws IOException {
+        try {
+            hotelService.createHotel(name, image, backgroundImage, colors);
+            return new ResponseEntity<>(CREATED);
 
-        List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
-        List<Hotel> hotels = hotelRepository.findAll();
-        if (!hotels.isEmpty()) {
-            return new ResponseEntity<>(CONFLICT);
-        }
-
-        if (colors.size() > 3) {
+        } catch (BadRequestException e) {
             return new ResponseEntity<>(BAD_REQUEST);
         }
-
-        if (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType())) {
-            return new ResponseEntity<>(BAD_REQUEST);
-        }
-        if (backgroundImage.getSize() > 1_000_000 || !imageExtension.contains(backgroundImage.getContentType())) {
-            return new ResponseEntity<>(BAD_REQUEST);
-        }
-
-        Hotel hotel = new Hotel();
-        hotel.setName(name);
-        hotel.setColors(colors);
-        hotel.setImage(image.getBytes());
-        hotel.setBackgroundImage(backgroundImage.getBytes());
-        Hotel savedHotel = hotelRepository.save(hotel);
-        return new ResponseEntity<>(MappedHotelFrom(savedHotel), CREATED);
     }
 
 }

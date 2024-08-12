@@ -1,14 +1,14 @@
-  package com.luxiergerie.DTO;
+package com.luxiergerie.DTO;
 
-  import com.luxiergerie.Domain.Entity.Accommodation;
+import com.luxiergerie.Model.Entity.Accommodation;
 
-  import java.math.BigDecimal;
-  import java.util.ArrayList;
-  import java.util.Date;
-  import java.util.List;
-  import java.util.UUID;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
-  public class PurchaseForBillDTO {
+public class PurchaseForBillDTO {
     private UUID id;
     private Date date;
     private String status;
@@ -16,53 +16,54 @@
     private BigDecimal totalPrice;
 
     public UUID getId() {
-      return id;
+        return id;
     }
 
     public void setId(UUID id) {
-      this.id = id;
+        this.id = id;
     }
 
     public Date getDate() {
-      return date;
+        return date;
     }
 
     public void setDate(Date date) {
-      this.date = date;
+        this.date = date;
     }
 
     public String getStatus() {
-      return status;
+        return status;
     }
 
     public void setStatus(String status) {
-      this.status = status;
+        this.status = status;
     }
 
     public List<Accommodation> getAccommodations() {
-      return accommodations;
+        return accommodations;
     }
 
     public void setAccommodations(List<Accommodation> accommodations) {
-      this.accommodations = accommodations;
+        this.accommodations = accommodations;
     }
 
     public BigDecimal getTotalPrice() {
-      return totalPrice;
+        return totalPrice;
     }
 
     public void setTotalPrice(BigDecimal totalPrice) {
-      this.totalPrice = totalPrice;
+        this.totalPrice = totalPrice;
     }
 
     public PurchaseForBillDTO() {
     }
 
     public PurchaseForBillDTO(UUID id, Date date, String status, List<Accommodation> accommodations, BigDecimal totalPrice) {
-      this.id = id;
-      this.date = date;
-      this.status = status;
-      this.accommodations = accommodations;
-      this.totalPrice = totalPrice;
+        this.id = id;
+        this.date = date;
+        this.status = status;
+        this.accommodations = accommodations;
+        this.totalPrice = totalPrice;
     }
-  }
+
+}

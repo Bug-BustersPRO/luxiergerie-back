@@ -1,7 +1,7 @@
 package com.luxiergerie.DTO;
 
-import com.luxiergerie.Domain.Entity.Purchase;
-import com.luxiergerie.Domain.Entity.Role;
+import com.luxiergerie.Model.Entity.Purchase;
+import com.luxiergerie.Model.Entity.Role;
 
 import java.util.List;
 import java.util.UUID;
@@ -91,4 +91,5 @@ public class ClientDTO {
     public void setSojourns(List<SojournDTO> sojourns) {
         this.sojourns = sojourns;
     }
+
 }

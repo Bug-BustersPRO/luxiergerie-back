@@ -1,6 +1,6 @@
 package com.luxiergerie.DTO;
 
-import com.luxiergerie.Domain.Entity.Role;
+import com.luxiergerie.Model.Entity.Role;
 
 import java.util.List;
 import java.util.UUID;

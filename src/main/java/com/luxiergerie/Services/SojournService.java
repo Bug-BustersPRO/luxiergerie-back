@@ -1,29 +1,30 @@
 package com.luxiergerie.Services;
 
 import com.luxiergerie.DTO.SojournDTO;
-import com.luxiergerie.Domain.Entity.Client;
-import com.luxiergerie.Domain.Entity.Room;
-import com.luxiergerie.Domain.Entity.Sojourn;
-import com.luxiergerie.Domain.Enums.SojournStatus;
-import com.luxiergerie.Domain.Mapper.SojournMapper;
-import com.luxiergerie.Domain.Repository.ClientRepository;
-import com.luxiergerie.Domain.Repository.RoleRepository;
-import com.luxiergerie.Domain.Repository.RoomRepository;
-import com.luxiergerie.Domain.Repository.SojournRepository;
+import com.luxiergerie.Mapper.SojournMapper;
+import com.luxiergerie.Model.Entity.Client;
+import com.luxiergerie.Model.Entity.Room;
+import com.luxiergerie.Model.Entity.Sojourn;
+import com.luxiergerie.Repository.ClientRepository;
+import com.luxiergerie.Repository.RoleRepository;
+import com.luxiergerie.Repository.RoomRepository;
+import com.luxiergerie.Repository.SojournRepository;
+import org.apache.coyote.BadRequestException;
+import org.apache.http.client.HttpResponseException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.NotAcceptableStatusException;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
-import static com.luxiergerie.Domain.Enums.SojournStatus.*;
-import static java.util.Objects.*;
+import static com.luxiergerie.Model.Enums.SojournStatus.*;
+import static java.util.Objects.isNull;
 
 @Service
 public class SojournService {
@@ -76,6 +77,10 @@ public class SojournService {
             throw new RuntimeException("There are no rooms available for the selected dates.");
         }
 
+        if (adjustedExitDate.isBefore(adjustedEntryDate)) {
+            throw new NotAcceptableStatusException("Exit date cannot be before entry date.");
+        }
+
         int pin = new Random().nextInt(9000) + 1000;
         sojourn.setPin(pin);
 
@@ -85,9 +90,9 @@ public class SojournService {
 
         String sojournIdentifier =
                 client.getFirstName().substring(0, 1) + client.getLastName().substring(0, 1) +
-                room.getRoomNumber() + adjustedEntryDate.getDayOfMonth() +
-                adjustedEntryDate.getMonthValue() + adjustedEntryDate.getYear() +
-                identifiedUnique;
+                        room.getRoomNumber() + adjustedEntryDate.getDayOfMonth() +
+                        adjustedEntryDate.getMonthValue() + adjustedEntryDate.getYear() +
+                        identifiedUnique;
 
         sojourn.setSojournIdentifier(sojournIdentifier);
         sojourn.setClient(client);
@@ -95,6 +100,7 @@ public class SojournService {
 
         client.getSojourns().add(sojourn);
         room.getSojourns().add(sojourn);
+        room.setClient(client);
 
         this.sojournRepository.save(sojourn);
         this.clientRepository.save(client);
@@ -106,17 +112,18 @@ public class SojournService {
         //emailService.sendEmail(sojourn.getClient().getEmail(), emailSubject, emailBody);
     }
 
-
     @Transactional
     public Sojourn updateSojourn(UUID sojournId, SojournDTO sojournDTO) {
         Sojourn sojourn = this.sojournRepository.findById(sojournId).orElseThrow(() -> new RuntimeException("Sojourn not found with id: " + sojournId));
+        Room room = this.roomRepository.findById(sojournDTO.getRoomId()).orElseThrow(() -> new RuntimeException("Room not found with id: " + sojournDTO.getRoomId()));
         LocalDateTime adjustedEntryDate = sojournDTO.getEntryDate().atTime(LocalTime.of(14, 0));
         LocalDateTime adjustedExitDate = sojournDTO.getExitDate().atTime(LocalTime.of(11, 0));
         sojourn.setEntryDate(adjustedEntryDate);
         sojourn.setExitDate(adjustedExitDate);
         sojourn.setStatus(sojournDTO.getStatus());
         sojourn.setClient(this.getClient(sojournDTO.getClientId()));
-        sojourn.setRoom(this.getRoom(sojournDTO.getRoomRole().getName(), adjustedEntryDate, adjustedExitDate));
+        sojourn.setRoom(room);
+        room.setClient(this.clientRepository.findById(sojournDTO.getClientId()).get());
         this.sojournRepository.save(sojourn);
         return sojourn;
     }
@@ -126,6 +133,8 @@ public class SojournService {
         if (!this.sojournRepository.existsById(sojournId)) {
             throw new RuntimeException("Sojourn not found with id: " + sojournId);
         }
+        Room room = this.sojournRepository.findById(sojournId).get().getRoom();
+        room.setClient(null);
         this.sojournRepository.deleteById(sojournId);
     }
 
@@ -168,8 +177,8 @@ public class SojournService {
         List<Sojourn> sojourns = this.sojournRepository.findAll();
         for (Sojourn sojourn : sojourns) {
             if (sojourn.getEntryDate().getDayOfMonth() == LocalDateTime.now().getDayOfMonth() &&
-                sojourn.getEntryDate().getMonthValue() == LocalDateTime.now().getMonthValue() &&
-                sojourn.getEntryDate().getYear() == LocalDateTime.now().getYear()) {
+                    sojourn.getEntryDate().getMonthValue() == LocalDateTime.now().getMonthValue() &&
+                    sojourn.getEntryDate().getYear() == LocalDateTime.now().getYear()) {
                 sojourn.setStatus(IN_PROGRESS);
                 this.sojournRepository.save(sojourn);
             }
@@ -181,11 +190,12 @@ public class SojournService {
         List<Sojourn> sojourns = this.sojournRepository.findAll();
         for (Sojourn sojourn : sojourns) {
             if (sojourn.getExitDate().getDayOfMonth() == LocalDateTime.now().getDayOfMonth() &&
-                sojourn.getExitDate().getMonthValue() == LocalDateTime.now().getMonthValue() &&
-                sojourn.getExitDate().getYear() == LocalDateTime.now().getYear()) {
+                    sojourn.getExitDate().getMonthValue() == LocalDateTime.now().getMonthValue() &&
+                    sojourn.getExitDate().getYear() == LocalDateTime.now().getYear()) {
                 sojourn.setStatus(FINISHED);
                 this.sojournRepository.save(sojourn);
             }
         }
     }
+
 }

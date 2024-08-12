@@ -16,14 +16,17 @@ INSERT INTO employee_role (role_id, employee_id) VALUES (UUID_TO_BIN('103111f6-d
 
 INSERT INTO client (id, first_name, last_name, pin, email, phone_number) VALUES (UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910755'), 'Jocelyn', 'De ChNord', '1234', 'jocelyn@jocelyn.fr', '06 01 02 03 04');
 INSERT INTO client (id, first_name, last_name, pin, email, phone_number) VALUES (UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910756'), 'Mohammed', 'Ali', '1235', 'ali@ali.fr' , '06 01 02 03 05');
-INSERT INTO client (id, first_name, last_name, pin, email, phone_number) VALUES (UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910757'), 'Jean', 'Bon', '1236', 'jambon@yummi.gloups', '06 01 02 03 06');
+INSERT INTO client (id, first_name, last_name, pin, email, phone_number) VALUES (UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910757'), 'Jean', 'Charles', '1236', 'jc@yahoo.com', '06 01 02 03 06');
+INSERT INTO client (id, first_name, last_name, pin, email, phone_number) VALUES (UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910758'), 'Harry', 'Potter', '1236', 'hp@yahoo.com', '06 01 02 03 06');
+INSERT INTO client (id, first_name, last_name, pin, email, phone_number) VALUES (UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910759'), 'Nicolas', 'Simpson', '1236', 'nicolas.simp@gmail.com', '06 01 02 03 06');
+INSERT INTO client (id, first_name, last_name, pin, email, phone_number) VALUES (UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910760'), 'Sophie', 'Casillas', '1236', 's.c@yahoo.com', '06 01 02 03 06');
 
 INSERT INTO room (id, number, client_id, floor, role_id) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd72'), '237', UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910755'), '2', UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55445'));
 INSERT INTO room (id, number, client_id, floor, role_id) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd73'), '238', UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910756'), '2', UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55445'));
 INSERT INTO room (id, number, client_id, floor, role_id) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd74'), '239', UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910757'), '2', UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55446'));
 
 INSERT INTO room (id, number, client_id, floor, role_id) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd76'), '235', null, '2', UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55445'));
-INSERT INTO room (id, number, client_id, floor, role_id) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd77'), '285', null, '2', UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55445'));
+INSERT INTO room (id, number, client_id, floor, role_id) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd47'), '285', null, '2', UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55445'));
 INSERT INTO room (id, number, client_id, floor, role_id) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd78'), '305', null, '3', UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55446'));
 
 INSERT INTO section (id, name, image, title, description) VALUES (UUID_TO_BIN('99f2a753-be71-49a8-b73a-9a10b330af2d'), 'Room service', LOAD_FILE('/var/lib/mysql-files/roomService.jpeg'), 'Le service de chambre', 'Bénéficiez de notre service de chambre 24h/24 et 7j/7 pour toutes vos envies');
@@ -73,8 +76,6 @@ INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_
 INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('8166c677-a237-4936-b639-9ffec6c2862c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a1'));
 INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('8166c677-a237-4936-b639-9ffec6c2862c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a3'));
 
-INSERT INTO sojourn (id, client_id, roomRole, start_date, end_date, status, pin) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd75'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910755'), UUID_TO_BIN('103111f6-d6f3-4587-98f2-fac7b9c55445'), '2024-07-01', '2024-07-30', 'IN_PROGRESS', 1234);
-
-INSERT INTO sojourn (id, client_id, room_id, entry_date, exit_date, status, pin, sojourn_identifier) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd75'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910755'), UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd72'), '2024-07-24', '2024-07-30', 'IN_PROGRESS', 1234, 'SOJ1234');
-INSERT INTO sojourn (id, client_id, room_id, entry_date, exit_date, status, pin, sojourn_identifier) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd76'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910756'), UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd73'), '2024-07-25', '2024-10-05', 'IN_PROGRESS', 1234, 'SOJ1235');
-INSERT INTO sojourn (id, client_id, room_id, entry_date, exit_date, status, pin, sojourn_identifier) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd77'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910757'), UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd74'), '2024-07-26', '2024-09-28', 'IN_PROGRESS', 1234, 'SOJ1236');
+INSERT INTO sojourn (id, client_id, room_id, entry_date, exit_date, status, pin, sojourn_identifier) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd10'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910755'), UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd72'), '2024-07-24', '2024-10-30', 'IN_PROGRESS', 1234, 'SOJ1234');
+INSERT INTO sojourn (id, client_id, room_id, entry_date, exit_date, status, pin, sojourn_identifier) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd11'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910756'), UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd73'), '2024-07-25', '2024-10-05', 'IN_PROGRESS', 1234, 'SOJ1235');
+INSERT INTO sojourn (id, client_id, room_id, entry_date, exit_date, status, pin, sojourn_identifier) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd12'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910757'), UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd74'), '2024-07-26', '2024-09-28', 'IN_PROGRESS', 1234, 'SOJ1236');

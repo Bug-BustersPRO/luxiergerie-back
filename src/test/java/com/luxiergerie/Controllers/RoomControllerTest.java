@@ -1,23 +1,26 @@
 package com.luxiergerie.Controllers;
 
 import com.luxiergerie.DTO.RoomDTO;
-import com.luxiergerie.Domain.Entity.Client;
-import com.luxiergerie.Domain.Entity.Employee;
-import com.luxiergerie.Domain.Entity.Role;
-import com.luxiergerie.Domain.Entity.Room;
-import com.luxiergerie.Domain.Repository.RoomRepository;
+import com.luxiergerie.Model.Entity.Client;
+import com.luxiergerie.Model.Entity.Employee;
+import com.luxiergerie.Model.Entity.Role;
+import com.luxiergerie.Model.Entity.Room;
+import com.luxiergerie.Repository.RoomRepository;
+import com.luxiergerie.Services.RoomService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class RoomControllerTest {
     @InjectMocks
@@ -25,6 +28,9 @@ public class RoomControllerTest {
 
     @Mock
     private RoomRepository roomRepository;
+
+    @Mock
+    private RoomService roomService;
 
     @BeforeEach
     void setUp() {
@@ -121,6 +127,55 @@ public class RoomControllerTest {
         List<RoomDTO> availableRooms = roomController.getAvailableRooms();
 
         assertEquals(roomsWithoutClients.size(), availableRooms.size());
+    }
+
+    @Test
+    public void testCreateRoom() {
+        RoomDTO roomDTO = new RoomDTO();
+        roomDTO.setRoomNumber(1);
+        roomDTO.setFloor(1);
+        Role role = new Role();
+        role.setName("ROLE_GOLD");
+        roomDTO.setRole(role);
+
+        when(roomService.createRoom(roomDTO)).thenReturn(HttpStatus.CREATED);
+
+        HttpStatus status = roomController.createRoom(roomDTO);
+
+        assertEquals(HttpStatus.CREATED, status);
+    }
+
+    @Test
+    public void testUpdateRoom() {
+        UUID roomId = UUID.randomUUID();
+        RoomDTO roomDTO = new RoomDTO();
+        roomDTO.setRoomNumber(1);
+        roomDTO.setFloor(1);
+        Role role = new Role();
+        role.setName("ROLE_GOLD");
+        roomDTO.setRole(role);
+
+        when(roomService.updateRoom(roomId, roomDTO)).thenReturn(roomDTO);
+
+        ResponseEntity<RoomDTO> response = roomController.updateRoom(roomId, roomDTO);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(roomDTO, response.getBody());
+    }
+
+    @Test
+    public void testDeleteRoom() {
+        UUID roomId = UUID.randomUUID();
+        roomController.deleteRoom(roomId);
+
+        verify(roomService, times(1)).deleteRoom(roomId);
+    }
+
+    @Test
+    public void testDeleteAllRooms() {
+        roomController.deleteAllRooms();
+
+        verify(roomRepository, times(1)).deleteAll();
     }
 
 }
