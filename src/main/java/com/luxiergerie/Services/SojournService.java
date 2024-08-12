@@ -9,10 +9,13 @@ import com.luxiergerie.Repository.ClientRepository;
 import com.luxiergerie.Repository.RoleRepository;
 import com.luxiergerie.Repository.RoomRepository;
 import com.luxiergerie.Repository.SojournRepository;
+import org.apache.coyote.BadRequestException;
+import org.apache.http.client.HttpResponseException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.NotAcceptableStatusException;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -72,6 +75,10 @@ public class SojournService {
 
         if (isNull(room)) {
             throw new RuntimeException("There are no rooms available for the selected dates.");
+        }
+
+        if (adjustedExitDate.isBefore(adjustedEntryDate)) {
+            throw new NotAcceptableStatusException("Exit date cannot be before entry date.");
         }
 
         int pin = new Random().nextInt(9000) + 1000;
