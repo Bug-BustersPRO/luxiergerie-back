@@ -7,8 +7,10 @@ services:
     env_file:
       - .env
     environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: luxiergerie
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpassword
     volumes:
       - ./src/main/resources/import.sql:/docker-entrypoint-initdb.d/import.sql
       - mysql-data:/var/lib/mysql
@@ -26,9 +28,9 @@ services:
       dockerfile: Dockerfile
     image: bugbstrspro/luxiergerie:dev
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/${MYSQL_DATABASE}
-      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
-      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/luxiergerie
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=userpassword
       - SPRING_JPA_HIBERNATE_DDL_AUTO=create
     ports:
       - '8090:8090'
