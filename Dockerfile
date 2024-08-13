@@ -1,6 +1,9 @@
 # Use a base image with Java 21
 FROM openjdk:21
 
+# Switch to root to change permissions
+USER root
+
 # Copy the JAR package into the image
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar
