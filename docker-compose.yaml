@@ -3,7 +3,7 @@ services:
   mysqldb:
     image: mysql:8.0.33
     ports:
-      - "3306:3306"
+      - "5455:5455"
     env_file:
       - .env
     environment:

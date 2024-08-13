@@ -3,6 +3,105 @@ USE luxiergerie;
 GRANT ALL PRIVILEGES ON luxiergerie.* TO 'user'@'%';
 FLUSH PRIVILEGES;
 
+
+-- Création des tables
+CREATE TABLE employee (
+    id BINARY(16) PRIMARY KEY,
+    serial_number VARCHAR(50) NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE role (
+    id BINARY(16) PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE employee_role (
+    role_id BINARY(16),
+    employee_id BINARY(16),
+    PRIMARY KEY(role_id, employee_id),
+    FOREIGN KEY (role_id) REFERENCES role(id),
+    FOREIGN KEY (employee_id) REFERENCES employee(id)
+);
+
+CREATE TABLE client (
+    id BINARY(16) PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    pin VARCHAR(10),
+    email VARCHAR(100),
+    phone_number VARCHAR(20)
+);
+
+CREATE TABLE room (
+    id BINARY(16) PRIMARY KEY,
+    number VARCHAR(10) NOT NULL,
+    client_id BINARY(16),
+    floor VARCHAR(10) NOT NULL,
+    role_id BINARY(16),
+    FOREIGN KEY (client_id) REFERENCES client(id),
+    FOREIGN KEY (role_id) REFERENCES role(id)
+);
+
+CREATE TABLE section (
+    id BINARY(16) PRIMARY KEY,
+    name VARCHAR(100),
+    image VARCHAR(255),
+    title VARCHAR(255),
+    description TEXT
+);
+
+CREATE TABLE category (
+    id BINARY(16) PRIMARY KEY,
+    name VARCHAR(100),
+    image VARCHAR(255),
+    description TEXT,
+    section_id BINARY(16),
+    FOREIGN KEY (section_id) REFERENCES section(id)
+);
+
+CREATE TABLE accommodation (
+    id BINARY(16) PRIMARY KEY,
+    category_id BINARY(16),
+    name VARCHAR(100),
+    image VARCHAR(255),
+    description TEXT,
+    price DECIMAL(10, 2),
+    is_reservable BOOLEAN,
+    FOREIGN KEY (category_id) REFERENCES category(id)
+);
+
+CREATE TABLE purchase (
+    id BINARY(16) PRIMARY KEY,
+    client_id BINARY(16),
+    status VARCHAR(50),
+    date DATETIME,
+    FOREIGN KEY (client_id) REFERENCES client(id)
+);
+
+CREATE TABLE purchase_accommodation (
+    purchase_id BINARY(16),
+    accommodation_id BINARY(16),
+    PRIMARY KEY(purchase_id, accommodation_id),
+    FOREIGN KEY (purchase_id) REFERENCES purchase(id),
+    FOREIGN KEY (accommodation_id) REFERENCES accommodation(id)
+);
+
+CREATE TABLE sojourn (
+    id BINARY(16) PRIMARY KEY,
+    client_id BINARY(16),
+    room_id BINARY(16),
+    entry_date DATE,
+    exit_date DATE,
+    status VARCHAR(50),
+    pin INT,
+    sojourn_identifier VARCHAR(50),
+    FOREIGN KEY (client_id) REFERENCES client(id),
+    FOREIGN KEY (room_id) REFERENCES room(id)
+);
+
 INSERT INTO employee (id, serial_number, first_name, last_name, password) VALUES (UUID_TO_BIN('b947b56e-e411-4212-9165-e4ec544260c7'), '12345678', 'John', 'Doe', '{bcrypt}$2y$10$Bu60rq.7TQqRputduY7ji./v1sQzD1X4mRsG/LlC2wdZ81xeDku1i');
 INSERT INTO employee (id, serial_number, first_name, last_name, password) VALUES (UUID_TO_BIN('5d13beb5-e46b-42d7-a0e8-85cfd8ba42bd'), '12345679', 'Dédé', 'Le Dé', '{bcrypt}$2y$10$Bu60rq.7TQqRputduY7ji./v1sQzD1X4mRsG/LlC2wdZ81xeDku1i');
 INSERT INTO employee (id, serial_number, first_name, last_name, password) VALUES (UUID_TO_BIN('a3855957-c6d3-40ac-acf7-d44cbd3108c0'), '12345670', 'Max', 'Ime', '{bcrypt}$2y$10$Bu60rq.7TQqRputduY7ji./v1sQzD1X4mRsG/LlC2wdZ81xeDku1i');
@@ -70,15 +169,15 @@ INSERT INTO purchase (id, client_id, status, date) VALUES (UUID_TO_BIN('8166c677
 INSERT INTO purchase (id, client_id, status, date) VALUES (UUID_TO_BIN('349f12f9-fafd-48ef-a975-ea722b2635b6'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910756'), 'Terminée', '2021-06-01 12:00:00');
 INSERT INTO purchase (id, client_id, status, date) VALUES (UUID_TO_BIN('3c9896fd-7751-4bcf-90fb-457a4ff7ffd0'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910757'), 'Validée', '2021-06-01 12:00:00');
 
-INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('ed0c5d4b-171e-442f-9531-ae7893d07ecf'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a2'));
-INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('ed0c5d4b-171e-442f-9531-ae7893d07ecf'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a4'));
-INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('a495ce02-ad51-4382-908b-180905ea344c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a6'));
-INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('a495ce02-ad51-4382-908b-180905ea344c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a8'));
-INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('a495ce02-ad51-4382-908b-180905ea344c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca110'));
-INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('a495ce02-ad51-4382-908b-180905ea344c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca112'));
-INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('8166c677-a237-4936-b639-9ffec6c2862c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca114'));
-INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('8166c677-a237-4936-b639-9ffec6c2862c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a1'));
-INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('8166c677-a237-4936-b639-9ffec6c2862c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a3'));
+-- INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('ed0c5d4b-171e-442f-9531-ae7893d07ecf'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a2'));
+-- INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('ed0c5d4b-171e-442f-9531-ae7893d07ecf'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a4'));
+-- INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('a495ce02-ad51-4382-908b-180905ea344c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a6'));
+-- INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('a495ce02-ad51-4382-908b-180905ea344c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a8'));
+-- INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('a495ce02-ad51-4382-908b-180905ea344c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca110'));
+-- INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('a495ce02-ad51-4382-908b-180905ea344c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca112'));
+-- INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('8166c677-a237-4936-b639-9ffec6c2862c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca114'));
+-- INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('8166c677-a237-4936-b639-9ffec6c2862c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a1'));
+-- INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('8166c677-a237-4936-b639-9ffec6c2862c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a3'));
 
 INSERT INTO sojourn (id, client_id, room_id, entry_date, exit_date, status, pin, sojourn_identifier) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd10'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910755'), UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd72'), '2024-07-24', '2024-10-30', 'IN_PROGRESS', 1234, 'SOJ1234');
 INSERT INTO sojourn (id, client_id, room_id, entry_date, exit_date, status, pin, sojourn_identifier) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd11'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910756'), UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd73'), '2024-07-25', '2024-10-05', 'IN_PROGRESS', 1234, 'SOJ1235');
