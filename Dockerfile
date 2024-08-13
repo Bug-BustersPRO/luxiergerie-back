@@ -15,7 +15,7 @@ RUN chmod 644 /docker-entrypoint-initdb.d/import.sql
 EXPOSE 8090
 
 # Expose the MySQL port (if your application needs to connect to MySQL within the same container)
-EXPOSE 3306
+EXPOSE 5455
 
 # Run the App
 ENTRYPOINT ["java", "-jar", "/app.jar"]
