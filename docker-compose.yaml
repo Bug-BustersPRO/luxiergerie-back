@@ -7,8 +7,10 @@ services:
     env_file:
       - .env
     environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+        MYSQL_ROOT_PASSWORD: rootpassword
+        MYSQL_DATABASE: testdb
+        MYSQL_USER: user
+        MYSQL_PASSWORD: userpassword
     volumes:
       - ./src/main/resources/import.sql:/docker-entrypoint-initdb.d/import.sql
       - mysql-data:/var/lib/mysql
