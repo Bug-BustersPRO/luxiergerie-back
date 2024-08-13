@@ -28,7 +28,7 @@ jobs:
           --health-timeout=5s
           --health-retries=3
         volumes:
-          - ${{ github.workspace }}/src/main/resources/import.sql:/docker-entrypoint-initdb.d/import.sql
+          - ./src/main/resources/import.sql:/docker-entrypoint-initdb.d/import.sql
 
     steps:
       - uses: actions/checkout@v4
