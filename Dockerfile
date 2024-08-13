@@ -11,6 +11,10 @@ COPY ./src/main/resources/import.sql /docker-entrypoint-initdb.d/
 # Ensure the correct permissions on the import.sql file
 RUN chmod 644 /docker-entrypoint-initdb.d/import.sql
 
+# Double-check permissions and ownership (if necessary)
+RUN chown mysql:mysql /docker-entrypoint-initdb.d/import.sql && \
+    chmod 644 /docker-entrypoint-initdb.d/import.sql
+
 # Expose the application port
 EXPOSE 8090
 
