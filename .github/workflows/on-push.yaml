@@ -6,7 +6,7 @@ on:
       - main
       - dev
   pull_request:
-    branches: [ "main", "dev" ]
+    branches: [ "main","dev" ]
 
 jobs:
   build:
@@ -16,10 +16,10 @@ jobs:
       mysql:
         image: mysql:8.0.33
         env:
-          MYSQL_ROOT_PASSWORD: rootpassword
-          MYSQL_DATABASE: luxiergerie
-          MYSQL_USER: user
-          MYSQL_PASSWORD: userpassword
+            MYSQL_ROOT_PASSWORD: rootpassword
+            MYSQL_DATABASE: luxiergerie
+            MYSQL_USER: user
+            MYSQL_PASSWORD: userpassword
         ports:
           - "3306:3306"
         options: >-
@@ -27,8 +27,8 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
-        # volumes:
-        #  - ${{ github.workspace }}/src/main/resources/import.sql:/docker-entrypoint-initdb.d/import.sql
+        volumes:
+          - ${{ github.workspace }}/src/main/resources/import.sql:/docker-entrypoint-initdb.d/import.sql
 
     steps:
       - uses: actions/checkout@v4
