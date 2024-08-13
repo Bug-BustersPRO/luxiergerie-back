@@ -1,8 +1,6 @@
-CREATE DATABASE IF NOT EXISTS luxiergerie;
+DROP DATABASE IF EXISTS luxiergerie;
+CREATE DATABASE luxiergerie;
 USE luxiergerie;
-GRANT ALL PRIVILEGES ON luxiergerie.* TO 'user'@'%';
-FLUSH PRIVILEGES;
-
 
 -- Création des tables
 CREATE TABLE employee (
@@ -11,6 +9,27 @@ CREATE TABLE employee (
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE hotel (
+    id BINARY(16) PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    image LONGBLOB NOT NULL,
+    background_image LONGBLOB NOT NULL
+);
+
+CREATE TABLE hotel_colors (
+    hotel_id BINARY(16),
+    colors VARCHAR(50) NOT NULL,
+    FOREIGN KEY (hotel_id) REFERENCES hotel(id)
+);
+
+CREATE TABLE blacklisted_token (
+     id BINARY(16) PRIMARY KEY,
+     token VARCHAR(600) NOT NULL,
+     expiry_date TIMESTAMP NOT NULL,
+     user_id BINARY(16) NOT NULL,
+     isBlackListed BOOLEAN DEFAULT FALSE NOT NULL
 );
 
 CREATE TABLE role (
@@ -143,21 +162,21 @@ INSERT INTO category (id, name, image, description, section_id) VALUES (UUID_TO_
 INSERT INTO category (id, name, image, description, section_id) VALUES (UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca54'), 'Nettoyage', 'nettoyage.png', 'Le service de nettoyage', UUID_TO_BIN('99f2a753-be71-49a8-b73a-9a10b330af2e'));
 INSERT INTO category (id, name, image, description, section_id) VALUES (UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca55'), 'Garage', 'garage.jpg', 'Le garagiste à votre service', UUID_TO_BIN('99f2a753-be71-49a8-b73a-9a10b330af2e'));
 
-INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca121'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca49'), 'Coca', 'coca.jpg', 'Coca cola', '2.5', 0);
-INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca122'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca49'), 'Fanta', 'fanta.jpg', 'Fanta orange', '2.5',  0);
-INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca123'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca49'), 'Sprite', 'sprite.jpeg', 'Sprite', '2.5', 0);
-INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a4'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca50'), 'Salade verte', 'salade-verte.jpg', 'La salade verte et sa sauce au basilique sauvage (capturé par un dresseur renommé).', '7.90', 0);
-INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a5'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca50'), 'Salade César', 'salade-cesar.jpeg', 'Salade préparée par Jules César lui-même!! (voyage dans le temps inclus)', '150350', 0);
-INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a6'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca51'), 'Steak frites', 'steak-frites.jpg', 'Steak de boeuf accompagné de frites maison', '15.90', 0);
-INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a7'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca51'), 'Poulet rôti', 'poulet-roti.jpeg', 'Poulet rôti accompagné de pommes de terre', '12.90', 0);
-INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a8'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca52'), 'Tarte aux pommes', 'tarte-pomme.jpg', 'Tarte aux pommes et sa boule de glace vanille', '7.90', 0);
-INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a9'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca52'), 'Mousse au chocolat', 'mousse-chocolat.jpeg', 'Mousse au chocolat et sa crème chantilly', '7.90', 0);
-INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca110'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca53'), 'Chemise', 'chemise.jpg', 'Nettoyage de chemise', '5.4', 0);
-INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca111'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca53'), 'Pantalon', 'pantalon.jpg', 'Nettoyage de pantalon', '7.2', 0);
-INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca112'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca54'), 'Chambre simple', 'chambre-simple.jpg', 'Nettoyage de chambre simple (si vous avez fait la fête un peu mais pas trop)', '20', 0);
-INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca113'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca54'), 'Chambre double', 'chambre-double.jpg', 'Nettoyage de chambre double (si vous avez fait la "fête" un peu mais pas trop)', '30', 0);
-INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca114'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca55'), 'Vidange', 'vidange.png', 'Vidange de votre véhicule, huile premium de qualité, pressée depuis l"olivier du jardin', '150', 0);
-INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca115'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca55'), 'Pneus', 'pneus.jpg', 'Une sélection de pneus de qualité, à partir de 200€ le pneu', '200', 0);
+INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca121'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca49'), 'Coca', 'coca.jpg', 'Coca cola', '2.5', true);
+INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca122'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca49'), 'Fanta', 'fanta.jpg', 'Fanta orange', '2.5',  true);
+INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca123'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca49'), 'Sprite', 'sprite.jpeg', 'Sprite', '2.5', true);
+INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a4'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca50'), 'Salade verte', 'salade-verte.jpg', 'La salade verte et sa sauce au basilique sauvage (capturé par un dresseur renommé).', '7.90', true);
+INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a5'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca50'), 'Salade César', 'salade-cesar.jpeg', 'Salade préparée par Jules César lui-même!! (voyage dans le temps inclus)', '150350', true);
+INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a6'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca51'), 'Steak frites', 'steak-frites.jpg', 'Steak de boeuf accompagné de frites maison', '15.90', true);
+INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a7'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca51'), 'Poulet rôti', 'poulet-roti.jpeg', 'Poulet rôti accompagné de pommes de terre', '12.90', true);
+INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a8'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca52'), 'Tarte aux pommes', 'tarte-pomme.jpg', 'Tarte aux pommes et sa boule de glace vanille', '7.90', true);
+INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a9'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca52'), 'Mousse au chocolat', 'mousse-chocolat.jpeg', 'Mousse au chocolat et sa crème chantilly', '7.90', true);
+INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca110'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca53'), 'Chemise', 'chemise.jpg', 'Nettoyage de chemise', '5.4', true);
+INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca111'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca53'), 'Pantalon', 'pantalon.jpg', 'Nettoyage de pantalon', '7.2', true);
+INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca112'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca54'), 'Chambre simple', 'chambre-simple.jpg', 'Nettoyage de chambre simple (si vous avez fait la fête un peu mais pas trop)', '20', true);
+INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca113'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca54'), 'Chambre double', 'chambre-double.jpg', 'Nettoyage de chambre double (si vous avez fait la "fête" un peu mais pas trop)', '30', true);
+INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca114'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca55'), 'Vidange', 'vidange.png', 'Vidange de votre véhicule, huile premium de qualité, pressée depuis l"olivier du jardin', '150', true);
+INSERT INTO accommodation (id, category_id, name, image, description, price, is_reservable) VALUES (UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca115'), UUID_TO_BIN('897e8a87-dd69-4019-a275-ac0bdbafca55'), 'Pneus', 'pneus.jpg', 'Une sélection de pneus de qualité, à partir de 200€ le pneu', '200', true);
 
 INSERT INTO purchase (id, client_id, status, date) VALUES (UUID_TO_BIN('ed0c5d4b-171e-442f-9531-ae7893d07ecf'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910755'), 'En cours', '2021-06-01 12:00:00');
 INSERT INTO purchase (id, client_id, status, date) VALUES (UUID_TO_BIN('730eff62-3b62-4153-aba2-d1e62cb10ed5'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910756'), 'Validée', '2021-06-01 12:00:00');
@@ -168,16 +187,6 @@ INSERT INTO purchase (id, client_id, status, date) VALUES (UUID_TO_BIN('92caa110
 INSERT INTO purchase (id, client_id, status, date) VALUES (UUID_TO_BIN('8166c677-a237-4936-b639-9ffec6c2862c'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910755'), 'Terminée', '2021-06-01 12:00:00');
 INSERT INTO purchase (id, client_id, status, date) VALUES (UUID_TO_BIN('349f12f9-fafd-48ef-a975-ea722b2635b6'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910756'), 'Terminée', '2021-06-01 12:00:00');
 INSERT INTO purchase (id, client_id, status, date) VALUES (UUID_TO_BIN('3c9896fd-7751-4bcf-90fb-457a4ff7ffd0'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910757'), 'Validée', '2021-06-01 12:00:00');
-
--- INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('ed0c5d4b-171e-442f-9531-ae7893d07ecf'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a2'));
--- INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('ed0c5d4b-171e-442f-9531-ae7893d07ecf'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a4'));
--- INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('a495ce02-ad51-4382-908b-180905ea344c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a6'));
--- INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('a495ce02-ad51-4382-908b-180905ea344c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a8'));
--- INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('a495ce02-ad51-4382-908b-180905ea344c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca110'));
--- INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('a495ce02-ad51-4382-908b-180905ea344c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca112'));
--- INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('8166c677-a237-4936-b639-9ffec6c2862c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca114'));
--- INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('8166c677-a237-4936-b639-9ffec6c2862c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a1'));
--- INSERT INTO purchase_accommodation (purchase_id, accommodation_id) VALUES (UUID_TO_BIN('8166c677-a237-4936-b639-9ffec6c2862c'), UUID_TO_BIN('da304725-ae61-4a2b-ae04-73ba596ca1a3'));
 
 INSERT INTO sojourn (id, client_id, room_id, entry_date, exit_date, status, pin, sojourn_identifier) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd10'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910755'), UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd72'), '2024-07-24', '2024-10-30', 'IN_PROGRESS', 1234, 'SOJ1234');
 INSERT INTO sojourn (id, client_id, room_id, entry_date, exit_date, status, pin, sojourn_identifier) VALUES (UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd11'), UUID_TO_BIN('a0618bf9-75b5-49d2-9e93-fca420910756'), UUID_TO_BIN('e4f522cc-d0bd-419f-9034-faf1f19bbd73'), '2024-07-25', '2024-10-05', 'IN_PROGRESS', 1234, 'SOJ1235');

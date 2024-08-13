@@ -3,7 +3,7 @@ services:
   mysqldb:
     image: mysql:8.0.33
     ports:
-      - "5455:5455"
+      - "5455:3306"
     env_file:
       - .env
     environment:
@@ -28,10 +28,10 @@ services:
       dockerfile: Dockerfile
     image: bugbstrspro/luxiergerie:dev
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/${MYSQL_DATABASE}
-      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
-      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/luxiergerie
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=userpassword
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create
     ports:
       - '8090:8090'
     depends_on:
@@ -40,20 +40,20 @@ services:
     networks:
       - springboot-mysql-network
 
-  luxiergerie-main:
-      image: bugbstrspro/luxiergerie:main
-      environment:
-        - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/${MYSQL_DATABASE}
-        - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
-        - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
-        - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
-      ports:
-        - '9080:8080'
-      depends_on:
-        mysqldb:
-          condition: service_healthy
-      networks:
-        - springboot-mysql-network
+#  luxiergerie-main:
+#      image: bugbstrspro/luxiergerie:main
+#      environment:
+#        - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/luxiergerie
+#        - SPRING_DATASOURCE_USERNAME=user
+#        - SPRING_DATASOURCE_PASSWORD=userpassword
+#        - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+#      ports:
+#        - '9080:8080'
+#      depends_on:
+#        mysqldb:
+#          condition: service_healthy
+#      networks:
+#        - springboot-mysql-network
 
 volumes:
   mysql-data:

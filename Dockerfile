@@ -21,7 +21,7 @@ RUN chown mysql:mysql /docker-entrypoint-initdb.d/import.sql
 EXPOSE 8090
 
 # Expose the MySQL port
-EXPOSE 5455
+EXPOSE 3306
 
 # Run the App
 ENTRYPOINT ["java", "-jar", "/app.jar"]
