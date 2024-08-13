@@ -41,9 +41,9 @@ services:
   luxiergerie-main:
       image: bugbstrspro/luxiergerie:main
       environment:
-        - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/${MYSQL_DATABASE}
-        - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
-        - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+        - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/luxiergerie
+        - SPRING_DATASOURCE_USERNAME=user
+        - SPRING_DATASOURCE_PASSWORD=userpassword
         - SPRING_JPA_HIBERNATE_DDL_AUTO=create
       ports:
         - '9080:8080'
