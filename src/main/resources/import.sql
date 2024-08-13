@@ -1,5 +1,6 @@
 CREATE DATABASE IF NOT EXISTS luxiergerie;
 USE luxiergerie;
+GRANT ALL PRIVILEGES ON luxiergerie.* TO 'user'@'%';
 
 INSERT INTO employee (id, serial_number, first_name, last_name, password) VALUES (UUID_TO_BIN('b947b56e-e411-4212-9165-e4ec544260c7'), '12345678', 'John', 'Doe', '{bcrypt}$2y$10$Bu60rq.7TQqRputduY7ji./v1sQzD1X4mRsG/LlC2wdZ81xeDku1i');
 INSERT INTO employee (id, serial_number, first_name, last_name, password) VALUES (UUID_TO_BIN('5d13beb5-e46b-42d7-a0e8-85cfd8ba42bd'), '12345679', 'Dédé', 'Le Dé', '{bcrypt}$2y$10$Bu60rq.7TQqRputduY7ji./v1sQzD1X4mRsG/LlC2wdZ81xeDku1i');
