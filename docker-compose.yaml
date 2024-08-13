@@ -12,7 +12,7 @@ services:
         MYSQL_USER: user
         MYSQL_PASSWORD: userpassword
     volumes:
-      - ./src/main/resources/import.sql:/docker-entrypoint-initdb.d/import.sql
+      - $PWD/src/main/resources/import.sql:/docker-entrypoint-initdb.d/import.sql
       - mysql-data:/var/lib/mysql
     networks:
       - springboot-mysql-network
