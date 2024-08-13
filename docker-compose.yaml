@@ -8,7 +8,7 @@ services:
       - .env
     environment:
         MYSQL_ROOT_PASSWORD: rootpassword
-        MYSQL_DATABASE: testdb
+        MYSQL_DATABASE: luxiergerie
         MYSQL_USER: user
         MYSQL_PASSWORD: userpassword
     volumes:

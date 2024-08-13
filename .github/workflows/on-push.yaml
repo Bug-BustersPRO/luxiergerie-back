@@ -17,7 +17,7 @@ jobs:
         image: mysql:8.0.33
         env:
             MYSQL_ROOT_PASSWORD: rootpassword
-            MYSQL_DATABASE: testdb
+            MYSQL_DATABASE: luxiergerie
             MYSQL_USER: user
             MYSQL_PASSWORD: userpassword
         ports:
