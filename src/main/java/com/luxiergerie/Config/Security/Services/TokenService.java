@@ -128,7 +128,7 @@ public class TokenService {
 
     private boolean validateToken(String token) {
         BlackListedToken blackListedToken = blackListedTokenRepository.findByToken(token);
-        if (nonNull(blackListedToken) && !blackListedToken.isBlackListed()) {
+        if (nonNull(blackListedToken) && !blackListedToken.getBlackListed()) {
             Date expirationDate = this.getTokenExpirationDate(String.valueOf(token));
             if (Instant.now().isAfter(expirationDate.toInstant()) || Instant.now().isAfter(blackListedToken.getExpiryDate())) {
                 blackListedToken.setBlackListed(true);

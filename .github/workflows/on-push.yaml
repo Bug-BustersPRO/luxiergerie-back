@@ -14,12 +14,12 @@ jobs:
 
     services:
       mysql:
-        image: mysql:8.0.33
+        image: mysql:8.0.30
         env:
-            MYSQL_ROOT_PASSWORD: rootpassword
+            MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: luxiergerie
-            MYSQL_USER: user
-            MYSQL_PASSWORD: userpassword
+            MYSQL_USER: test
+            MYSQL_PASSWORD: test
         ports:
           - "5455:3306"
         options: >-

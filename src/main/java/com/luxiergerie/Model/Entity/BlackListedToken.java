@@ -1,6 +1,7 @@
 package com.luxiergerie.Model.Entity;
 
 import jakarta.persistence.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -22,14 +23,15 @@ public class BlackListedToken {
     @Column(nullable = false, name = "user_id")
     private UUID userId;
 
-    @Column(nullable = false, name = "isBlackListed")
-    private Boolean isBlackListed;
+    @Value("false")
+    @Column(nullable = false, name = "is_black_Listed", columnDefinition = "boolean default false")
+    private boolean isBlackListed;
 
 
     public BlackListedToken() {
     }
 
-    public BlackListedToken(UUID id, String token, Instant expiryDate, UUID userId, Boolean isBlackListed) {
+    public BlackListedToken(UUID id, String token, Instant expiryDate, UUID userId, boolean isBlackListed) {
         this.id = id;
         this.token = token;
         this.expiryDate = expiryDate;
@@ -70,12 +72,12 @@ public class BlackListedToken {
         this.userId = userId;
     }
 
-    public Boolean isBlackListed() {
+    public Boolean getBlackListed() {
         return isBlackListed;
     }
 
-    public void setBlackListed(Boolean blackListed) {
-        isBlackListed = blackListed;
+    public void setBlackListed(boolean isBlackListed) {
+        this.isBlackListed = isBlackListed;
     }
 
 }
