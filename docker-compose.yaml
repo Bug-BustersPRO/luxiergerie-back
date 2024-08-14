@@ -45,7 +45,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/luxiergerie
       - SPRING_DATASOURCE_USERNAME=test
       - SPRING_DATASOURCE_PASSWORD=test
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
     ports:
       - '8090:8090'
     depends_on:
