@@ -22,6 +22,7 @@ jobs:
           sleep 15
       - name: Test
         run: |
+          cat src/main/resources/import.sql | docker compose exec -T mysqldb mysql -utest -ptest luxiergerie
           docker compose exec luxiergerie-dev mvn install
       - name: Push
         env:
