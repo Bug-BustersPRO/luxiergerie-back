@@ -1,12 +1,8 @@
-version: '3.8'
-
 services:
   mysqldb:
     image: mysql:8.0.30
     ports:
       - "5455:3306"
-    env_file:
-      - .env
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: luxiergerie

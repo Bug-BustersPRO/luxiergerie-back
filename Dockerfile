@@ -1,27 +1,28 @@
-# Use a base image with Java 21
 FROM openjdk:21
 
-# Switch to root to change permissions
-USER root
+# Install Maven
 
-# Copy the JAR package into the image
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
+ENV MAVEN_HOME=/usr/share/maven
+RUN set -e -u -x \
+    && mkdir -p /usr/share/maven /usr/share/maven/ref \
+    && curl -fsSL -o /tmp/apache-maven.tar.gz https://apache.osuosl.org/maven/maven-3/3.9.8/binaries/apache-maven-3.9.8-bin.tar.gz \
+    && tar -xzf /tmp/apache-maven.tar.gz -C /usr/share/maven --strip-components=1 \
+    && rm -f /tmp/apache-maven.tar.gz \
+    && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
 
-# Copy the import.sql file into the image (assuming it exists at the specified path)
-COPY ./src/main/resources/import.sql /docker-entrypoint-initdb.d/
+# Copy sources
 
-# Ensure the correct permissions on the import.sql file
-RUN chmod 755 /docker-entrypoint-initdb.d/import.sql
+WORKDIR /app
+COPY . /app
 
-# Double-check permissions and ownership
-RUN chown root:root /docker-entrypoint-initdb.d/import.sql
+# Install dependencies
 
-# Expose the application port
+RUN set -e -u -x \
+    && mvn clean install -DskipTests \
+    && ln -s /app/target/*.jar /app/target/app.jar
+
+# Configure Docker
+
 EXPOSE 8090
 
-# Expose the MySQL port
-EXPOSE 3306
-
-# Run the App
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/target/app.jar"]
