@@ -11,21 +11,24 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-      - name: Build with Maven
-        run: mvn clean install
-      - name: Build and Push Docker Image
+      - name: Build
+        run: |
+          docker compose build
+      - name: Start
+        run: |
+          docker compose up -d
+          sleep 15
+      - name: Test
+        run: |
+          cat src/main/resources/import.sql | docker compose exec -T mysqldb mysql -utest -ptest luxiergerie
+          docker compose exec luxiergerie-dev mvn install
+      - name: Push
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
-          docker build -t bugbstrspro/luxiergerie:${GITHUB_REF##*/} .
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+          docker tag bugbstrspro/luxiergerie:dev bugbstrspro/luxiergerie:${GITHUB_REF##*/}
           docker push bugbstrspro/luxiergerie:${GITHUB_REF##*/}

@@ -1,21 +1,19 @@
-version: '3.7'
 services:
   mysqldb:
-    image: mysql:8.0.33
+    image: mysql:8.0.30
     ports:
-      - 5455:5455
-    env_file:
-      - .env
+      - "5455:3306"
     environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: luxiergerie
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
     volumes:
-      - ./src/main/resources/import.sql:/docker-entrypoint-initdb.d/import.sql
       - mysql-data:/var/lib/mysql
     networks:
       - springboot-mysql-network
     healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       retries: 10
       interval: 3s
       timeout: 30s
@@ -26,10 +24,10 @@ services:
       dockerfile: Dockerfile
     image: bugbstrspro/luxiergerie:dev
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/${MYSQL_DATABASE}
-      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
-      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=create
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/luxiergerie
+      - SPRING_DATASOURCE_USERNAME=test
+      - SPRING_DATASOURCE_PASSWORD=test
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     ports:
       - '8090:8090'
     depends_on:
@@ -38,24 +36,9 @@ services:
     networks:
       - springboot-mysql-network
 
-  luxiergerie-main:
-      image: bugbstrspro/luxiergerie:main
-      environment:
-        - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/${MYSQL_DATABASE}
-        - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
-        - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
-        - SPRING_JPA_HIBERNATE_DDL_AUTO=create
-      ports:
-        - '9080:8080'
-      depends_on:
-        mysqldb:
-          condition: service_healthy
-      networks:
-        - springboot-mysql-network
-
 volumes:
   mysql-data:
+
 networks:
   springboot-mysql-network:
     name: springboot-mysql-network
-  demo:

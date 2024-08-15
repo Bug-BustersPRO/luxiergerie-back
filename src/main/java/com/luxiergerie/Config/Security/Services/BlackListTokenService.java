@@ -29,7 +29,7 @@ public class BlackListTokenService {
         if (Instant.now().isAfter(expiryDate)) {
             blacklistedToken.setBlackListed(true);
         }
-        return blacklistedToken.isBlackListed();
+        return blacklistedToken.getBlackListed();
     }
 
     public void deleteToken(String token) {
@@ -48,7 +48,7 @@ public class BlackListTokenService {
                 Map<String, Object> claims = jwt.getClaims();
                 Instant expiryDate = (Instant) claims.get("exp");
                 System.out.println(expiryDate);
-                if (!token.isBlackListed() && (now.isAfter(token.getExpiryDate()) || now.isAfter(expiryDate))) {
+                if (!token.getBlackListed() && (now.isAfter(token.getExpiryDate()) || now.isAfter(expiryDate))) {
                     token.setBlackListed(true);
                     blacklistedTokenRepository.save(token);
                 }

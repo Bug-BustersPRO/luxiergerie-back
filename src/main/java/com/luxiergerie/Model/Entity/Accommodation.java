@@ -1,6 +1,7 @@
 package com.luxiergerie.Model.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -41,7 +42,8 @@ public class Accommodation {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToMany(mappedBy = "accommodations", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "accommodations")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JsonIgnore
     private List<Purchase> purchases = new ArrayList<>();
 

@@ -32,3 +32,10 @@ et définir les variables d'environnement DOCKERHUB_USERNAME, DOCKERHUB_TOKEN
 3 - Push sur le repository Github
 
 4 - En cas d'erreur "Permission denied" sur Github actions, saisissez la commande : chmod +x mvnw pour accorder les permissions d'exécution au fichier mvnw
+
+Pour accéder à mysql depuis docker :
+docker exec -it <container_id_or_name> bash
+mysql -u root -p
+# Entrez le mot de passe root
+use luxiergerie;
+show tables;
