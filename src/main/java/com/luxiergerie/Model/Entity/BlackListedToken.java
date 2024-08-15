@@ -23,19 +23,19 @@ public class BlackListedToken {
     @Column(nullable = false, name = "user_id")
     private UUID userId;
 
-    @Column(nullable = false, name = "isblacklisted")
-    private Boolean isblacklisted;
+    @Column(nullable = false, name = "isBlackListed")
+    private Boolean isBlackListed;
 
 
     public BlackListedToken() {
     }
 
-    public BlackListedToken(UUID id, String token, Instant expiryDate, UUID userId, Boolean isblacklisted) {
+    public BlackListedToken(UUID id, String token, Instant expiryDate, UUID userId, Boolean isBlackListed) {
         this.id = id;
         this.token = token;
         this.expiryDate = expiryDate;
         this.userId = userId;
-        this.isblacklisted = isblacklisted;
+        this.isBlackListed = isBlackListed;
     }
 
 
@@ -72,11 +72,11 @@ public class BlackListedToken {
     }
 
     public Boolean getBlackListed() {
-        return isblacklisted;
+        return isBlackListed;
     }
 
-    public void setBlackListed(Boolean isblacklisted) {
-        this.isblacklisted = isblacklisted;
+    public void setBlackListed(Boolean isBlackListed) {
+        this.isBlackListed = isBlackListed;
     }
 
 }

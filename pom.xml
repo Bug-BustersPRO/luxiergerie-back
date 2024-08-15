@@ -15,21 +15,12 @@
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>21</java.version>
-        <liquibase.url>jdbc:mysql://localhost:3306/luxiergerie</liquibase.url>
-        <liquibase.username>root</liquibase.username>
-        <liquibase.password>test</liquibase.password>
-        <liquibase.changeLogFile>src/main/resources/db/changelog/db.changelog-master.xml</liquibase.changeLogFile>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-            <version>4.20.0</version>
         </dependency>
         <dependency>
             <groupId>io.rest-assured</groupId>
@@ -111,20 +102,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <groupId>org.liquibase</groupId>
-                <artifactId>liquibase-maven-plugin</artifactId>
-                <version>4.24.0</version>
-                <configuration>
-                    <propertyFileWillOverride>true</propertyFileWillOverride>
-                    <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
-                    <changeLogFile>${liquibase.changeLogFile}</changeLogFile>
-                    <url>${liquibase.url}</url>
-                    <username>${liquibase.username}</username>
-                    <password>${liquibase.password}</password>
-                </configuration>
             </plugin>
         </plugins>
     </build>

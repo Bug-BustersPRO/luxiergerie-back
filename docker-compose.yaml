@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   mysqldb:
     image: mysql:8.0.30
@@ -11,30 +13,14 @@ services:
       MYSQL_USER: test
       MYSQL_PASSWORD: test
     volumes:
-      - ./src/main/resources/import.sql:/docker-entrypoint-initdb.d/import.sql
       - mysql-data:/var/lib/mysql
     networks:
       - springboot-mysql-network
     healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       retries: 10
       interval: 3s
       timeout: 30s
-
-  liquibase:
-    image: liquibase/liquibase
-    depends_on:
-      - mysqldb
-    environment:
-      LIQUIBASE_URL: jdbc:mysql://mysqldb:3306/luxiergerie
-      LIQUIBASE_CHANGELOG_FILE: /liquibase/changelog/db.changelog-master.xml
-      LIQUIBASE_USERNAME: test
-      LIQUIBASE_PASSWORD: test
-    volumes:
-      - ./src/main/resources/db/changelog:/liquibase/changelog
-    command: update
-    networks:
-      - springboot-mysql-network
 
   luxiergerie-dev:
     build:
@@ -45,12 +31,22 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/luxiergerie
       - SPRING_DATASOURCE_USERNAME=test
       - SPRING_DATASOURCE_PASSWORD=test
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     ports:
       - '8090:8090'
     depends_on:
       mysqldb:
         condition: service_healthy
+    networks:
+      - springboot-mysql-network
+
+  sql-importer:
+    image: mysql:8.0.30
+    depends_on:
+      - luxiergerie-dev
+    command: bash -c "sleep 30 && mysql -h mysqldb -u test -ptest luxiergerie < /docker-entrypoint-initdb.d/import.sql"
+    volumes:
+      - ./src/main/resources/import.sql:/docker-entrypoint-initdb.d/import.sql
     networks:
       - springboot-mysql-network
 

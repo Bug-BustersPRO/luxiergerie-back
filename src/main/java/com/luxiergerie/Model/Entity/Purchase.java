@@ -29,8 +29,7 @@ public class Purchase {
     @Column(name = "status")
     private String status;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "purchase_accommodation",
             joinColumns = @JoinColumn(name = "purchase_id"),
