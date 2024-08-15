@@ -1,12 +1,8 @@
-version: '3.8'
-
 services:
   mysqldb:
     image: mysql:8.0.30
     ports:
       - "5455:3306"
-    env_file:
-      - .env
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: luxiergerie
@@ -37,16 +33,6 @@ services:
     depends_on:
       mysqldb:
         condition: service_healthy
-    networks:
-      - springboot-mysql-network
-
-  sql-importer:
-    image: mysql:8.0.30
-    depends_on:
-      - luxiergerie-dev
-    command: bash -c "sleep 30 && mysql -h mysqldb -u test -ptest luxiergerie < /docker-entrypoint-initdb.d/import.sql"
-    volumes:
-      - ./src/main/resources/import.sql:/docker-entrypoint-initdb.d/import.sql
     networks:
       - springboot-mysql-network
 
