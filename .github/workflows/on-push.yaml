@@ -34,6 +34,7 @@ jobs:
           docker push bugbstrspro/luxiergerie:${GITHUB_REF##*/}
       - name: Connect to EC2, pull and run
         run: |
+          mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
