@@ -23,7 +23,7 @@ jobs:
       - name: Test
         run: |
           cat src/main/resources/import.sql | docker compose exec -T mysqldb mysql -utest -ptest luxiergerie
-          docker compose exec luxiergerie-dev mvn install
+          docker compose exec luxiergerie-main mvn install
       - name: Push
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
