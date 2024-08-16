@@ -34,11 +34,9 @@ jobs:
           docker push bugbstrspro/luxiergerie:${GITHUB_REF##*/}
       - name: Connect to EC2, pull and run
         run: |
-        # Créer un fichier temporaire pour stocker la clé privée SSH
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-        # Connexion à EC2, mise à jour de l'environnement et redémarrage des conteneurs Docker
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} "
           echo 'SPRING_DATASOURCE_URL=${{ secrets.RDS_ENDPOINT }}' > .env
           echo 'SPRING_DATASOURCE_USERNAME=${{ secrets.RDS_DATABASE_USER }}' >> .env
