@@ -35,7 +35,7 @@ jobs:
       - name: Connect to EC2, pull and run
         run: |
           ls -al ~
-          ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} "
+          ssh -i ${{secrets.EC2_SSH_PRIVATE_KEY}} ubuntu@${{ secrets.EC2_HOST }} "
           echo 'SPRING_DATASOURCE_URL=${{ secrets.RDS_ENDPOINT }}' > .env
           echo 'SPRING_DATASOURCE_USERNAME=${{ secrets.RDS_DATABASE_USER }}' >> .env
           echo 'SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_DATABASE_TOKEN }}' >> .env
