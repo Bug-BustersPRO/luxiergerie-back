@@ -39,7 +39,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} << EOF
           sudo touch /home/ubuntu/.env
-          sudo chmod 644 /home/ubuntu/.env
+          sudo chmod 666 /home/ubuntu/.env
           sudo sh -c "echo 'SPRING_DATASOURCE_URL=${{ secrets.RDS_ENDPOINT }}' > /home/ubuntu/.env"
           sudo sh -c "echo 'SPRING_DATASOURCE_USERNAME=${{ secrets.RDS_DATABASE_USER }}' >> /home/ubuntu/.env"
           sudo sh -c "echo 'SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_DATABASE_TOKEN }}' >> /home/ubuntu/.env"
