@@ -38,9 +38,12 @@ jobs:
           echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} << EOF
-          export SPRING_DATASOURCE_URL=${{ secrets.RDS_ENDPOINT }}
-          export SPRING_DATASOURCE_USERNAME=${{ secrets.RDS_DATABASE_USER }}
-          export SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_DATABASE_TOKEN }}
+          sudo rm -f /home/ubuntu/.env
+          sudo touch /home/ubuntu/.env
+          sudo chmod 666 /home/ubuntu/.env
+          sudo sh -c "echo 'SPRING_DATASOURCE_URL=${{ secrets.RDS_ENDPOINT }}' > /home/ubuntu/.env"
+          sudo sh -c "echo 'SPRING_DATASOURCE_USERNAME=${{ secrets.RDS_DATABASE_USER }}' >> /home/ubuntu/.env"
+          sudo sh -c "echo 'SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_DATABASE_TOKEN }}' >> /home/ubuntu/.env"
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin <<< ${{ secrets.DOCKERHUB_TOKEN }}
           docker pull bugbstrspro/luxiergerie:${GITHUB_REF##*/}
           docker-compose down
