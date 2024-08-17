@@ -42,7 +42,7 @@ jobs:
           sudo chmod 644 /home/ubuntu/.env
           sudo sh -c "echo 'SPRING_DATASOURCE_URL=${{ secrets.RDS_ENDPOINT }}' > /home/ubuntu/.env"
           sudo sh -c "echo 'SPRING_DATASOURCE_USERNAME=${{ secrets.RDS_DATABASE_USER }}' >> /home/ubuntu/.env"
-          sudo sh -c "echo 'SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_DATABASE_TOKEN }}' >> /home/ubuntu/.env
+          sudo sh -c "echo 'SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_DATABASE_TOKEN }}' >> /home/ubuntu/.env"
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin <<< ${{ secrets.DOCKERHUB_TOKEN }}
           docker pull bugbstrspro/luxiergerie:${GITHUB_REF##*/}
           docker-compose down
