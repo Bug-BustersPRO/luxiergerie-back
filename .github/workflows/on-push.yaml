@@ -38,22 +38,14 @@ jobs:
           echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} << EOF
-          if [ -f /home/ubuntu/.env ]; then
-          sudo rm /home/ubuntu/.env 
-          fi
-      
-          sudo touch /home/ubuntu/.env  
-          sudo chmod 666 /home/ubuntu/.env
-      
-          sudo sh -c "echo 'SPRING_DATASOURCE_URL=${{ secrets.RDS_ENDPOINT }}' > /home/ubuntu/.env"
-          sudo sh -c "echo 'SPRING_DATASOURCE_USERNAME=${{ secrets.RDS_DATABASE_USER }}' >> /home/ubuntu/.env"
-          sudo sh -c "echo 'SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_DATABASE_TOKEN }}' >> /home/ubuntu/.env"
-      
-          sudo ls -l /home/ubuntu/.env 
-      
           sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin <<< ${{ secrets.DOCKERHUB_TOKEN }}
           sudo docker pull bugbstrspro/luxiergerie:${GITHUB_REF##*/}
-          sudo docker-compose down
-          sudo docker-compose up -d
-          
+          sudo SPRING_DATASOURCE_URL=${{ secrets.RDS_ENDPOINT }} \
+          SPRING_DATASOURCE_USERNAME=${{ secrets.RDS_DATABASE_USER }} \
+          SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_DATABASE_TOKEN }} \
+          docker-compose down
+          sudo SPRING_DATASOURCE_URL=${{ secrets.RDS_ENDPOINT }} \
+          SPRING_DATASOURCE_USERNAME=${{ secrets.RDS_DATABASE_USER }} \
+          SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_DATABASE_TOKEN }} \
+          docker-compose up -d
           EOF
