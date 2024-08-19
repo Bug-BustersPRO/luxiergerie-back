@@ -23,12 +23,29 @@ jobs:
       - name: Test
         run: |
           cat src/main/resources/import.sql | docker compose exec -T mysqldb mysql -utest -ptest luxiergerie
-          docker compose exec luxiergerie-dev mvn install
+          docker compose exec luxiergerie-main mvn install
       - name: Push
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
-          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-          docker tag bugbstrspro/luxiergerie:dev bugbstrspro/luxiergerie:${GITHUB_REF##*/}
+          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin <<< ${{ secrets.DOCKERHUB_TOKEN }}
+          docker tag bugbstrspro/luxiergerie:main bugbstrspro/luxiergerie:${GITHUB_REF##*/}
           docker push bugbstrspro/luxiergerie:${GITHUB_REF##*/}
+      - name: Connect to EC2, pull and run
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} << EOF
+          sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin <<< ${{ secrets.DOCKERHUB_TOKEN }}
+          sudo docker pull bugbstrspro/luxiergerie:${GITHUB_REF##*/}
+          sudo SPRING_DATASOURCE_URL=${{ secrets.RDS_ENDPOINT }} \
+          SPRING_DATASOURCE_USERNAME=${{ secrets.RDS_DATABASE_USER }} \
+          SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_DATABASE_TOKEN }} \
+          docker-compose down
+          sudo SPRING_DATASOURCE_URL=${{ secrets.RDS_ENDPOINT }} \
+          SPRING_DATASOURCE_USERNAME=${{ secrets.RDS_DATABASE_USER }} \
+          SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_DATABASE_TOKEN }} \
+          docker-compose up -d
+          EOF
