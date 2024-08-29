@@ -13,7 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(@Nullable CorsRegistry registry) {
         if (registry != null) {
             registry.addMapping("/**")
-                    .allowedOrigins("https://www.luxiergerie.tech", "http://localhost:8081")
+                    .allowedOrigins("https://luxiergerie.tech", "https://www.luxiergerie.tech", "http://localhost:8081")
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
                     .allowedHeaders("Content-Type", "Date", "Total-Count", "loginInfo", "Authorization", "Token")
                     .allowCredentials(true);
