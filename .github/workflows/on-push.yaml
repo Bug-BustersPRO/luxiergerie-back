@@ -38,14 +38,15 @@ jobs:
           echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} << EOF
+          cd /home/ubuntu/docker
           sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin <<< ${{ secrets.DOCKERHUB_TOKEN }}
           sudo docker pull bugbstrspro/luxiergerie:${GITHUB_REF##*/}
           sudo SPRING_DATASOURCE_URL=${{ secrets.RDS_ENDPOINT }} \
           SPRING_DATASOURCE_USERNAME=${{ secrets.RDS_DATABASE_USER }} \
           SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_DATABASE_TOKEN }} \
-          docker-compose down
+          sudo docker compose down
           sudo SPRING_DATASOURCE_URL=${{ secrets.RDS_ENDPOINT }} \
           SPRING_DATASOURCE_USERNAME=${{ secrets.RDS_DATABASE_USER }} \
           SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_DATABASE_TOKEN }} \
-          docker-compose up -d
+          sudo docker compose up --build
           EOF
