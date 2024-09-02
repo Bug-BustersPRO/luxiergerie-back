@@ -42,16 +42,16 @@ jobs:
           sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin <<< ${{ secrets.DOCKERHUB_TOKEN }}
           sudo docker pull bugbstrspro/luxiergerie:${GITHUB_REF##*/}
           
-          SPRING_DATASOURCE_URL=${{ secrets.RDS_ENDPOINT }} \
-          SPRING_DATASOURCE_USERNAME=${{ secrets.RDS_DATABASE_USER }} \
-          SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_DATABASE_PASSWORD }} \
+          export SPRING_DATASOURCE_URL=${{ secrets.RDS_ENDPOINT }} 
+          export SPRING_DATASOURCE_USERNAME=${{ secrets.RDS_DATABASE_USER }} 
+          export SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_DATABASE_TOKEN }} 
           sudo docker-compose down
           
           sudo docker compose down
           sudo docker system prune -a -f
           
-          SPRING_DATASOURCE_URL=${{ secrets.RDS_ENDPOINT }} \
-          SPRING_DATASOURCE_USERNAME=${{ secrets.RDS_DATABASE_USER }} \
-          SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_DATABASE_PASSWORD }} \
+          export SPRING_DATASOURCE_URL=${{ secrets.RDS_ENDPOINT }} 
+          export SPRING_DATASOURCE_USERNAME=${{ secrets.RDS_DATABASE_USER }} 
+          export SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_DATABASE_TOKEN }} 
           sudo docker compose up --build
           EOF
