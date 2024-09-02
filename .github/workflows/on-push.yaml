@@ -45,6 +45,6 @@ jobs:
           export SPRING_DATASOURCE_USERNAME=${{ secrets.RDS_DATABASE_USER }} \
           export SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_DATABASE_TOKEN }} \
           sudo docker compose down
-          sudo docker system prune -a
+          sudo docker system prune -a -f
           sudo docker compose up --build
           EOF
