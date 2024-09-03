@@ -33,6 +33,10 @@ jobs:
           docker tag bugbstrspro/luxiergerie:main bugbstrspro/luxiergerie:${GITHUB_REF##*/}
           docker push bugbstrspro/luxiergerie:${GITHUB_REF##*/}
       - name: Connect to EC2, pull and run
+        env:
+          SPRING_DATASOURCE_URL: ${{ secrets.RDS_ENDPOINT }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.RDS_DATABASE_USER }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.RDS_DATABASE_TOKEN }}
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
@@ -40,11 +44,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} << EOF
           cd /home/ubuntu/docker
           sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin <<< ${{ secrets.DOCKERHUB_TOKEN }}
-          sudo docker pull bugbstrspro/luxiergerie:${GITHUB_REF##*/}
-          
-          export SPRING_DATASOURCE_URL="${{ secrets.RDS_ENDPOINT }}"
-          export SPRING_DATASOURCE_USERNAME="${{ secrets.RDS_DATABASE_USER }}"
-          export SPRING_DATASOURCE_PASSWORD="${{ secrets.RDS_DATABASE_TOKEN }}"        
+          sudo docker pull bugbstrspro/luxiergerie:${GITHUB_REF##*/}  
           
           sudo docker compose down
           sudo docker system prune -a -f
