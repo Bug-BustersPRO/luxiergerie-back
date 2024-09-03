@@ -47,6 +47,7 @@ jobs:
           sudo docker pull bugbstrspro/luxiergerie:${GITHUB_REF##*/}  
           
           > .env
+          sleep 10
           echo SPRING_DATASOURCE_URL=${{ secrets.RDS_ENDPOINT }} >> .env
           echo SPRING_DATASOURCE_USERNAME=${{ secrets.RDS_DATABASE_USER }} >> .env
           echo SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_DATABASE_TOKEN }} >> .env
