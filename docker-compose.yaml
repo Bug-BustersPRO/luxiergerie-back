@@ -26,9 +26,9 @@ services:
     security_opt:
       - apparmor=unconfined
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/luxiergerie
-      - SPRING_DATASOURCE_USERNAME=test
-      - SPRING_DATASOURCE_PASSWORD=test
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     ports:
       - '9080:8090'
