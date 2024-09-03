@@ -49,9 +49,10 @@ jobs:
           sudo docker compose down
           sudo docker system prune -a -f
           
-          SPRING_DATASOURCE_URL="${{ secrets.RDS_ENDPOINT }}" \
-          SPRING_DATASOURCE_USERNAME="${{ secrets.RDS_DATABASE_USER }}" \
-          SPRING_DATASOURCE_PASSWORD="${{ secrets.RDS_DATABASE_TOKEN }}" \
-          
+          echo SPRING_DATASOURCE_URL=${{ secrets.RDS_ENDPOINT }} > .env
+          echo SPRING_DATASOURCE_USERNAME=${{ secrets.RDS_DATABASE_USER }} >> .env
+          echo SPRING_DATASOURCE_PASSWORD=${{ secrets.RDS_DATABASE_TOKEN }} >> .env
+          sudo docker compose --env-file .env up --build -d
+
           sudo docker compose up --build
           EOF
