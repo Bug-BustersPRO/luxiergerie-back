@@ -24,11 +24,6 @@ jobs:
         run: |
           cat src/main/resources/import.sql | docker compose exec -T mysqldb mysql -utest -ptest luxiergerie
           docker compose exec luxiergerie-main mvn install
-
-  push_docker_image:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
       - name: Push Docker Image
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -37,13 +32,8 @@ jobs:
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin <<< ${{ secrets.DOCKERHUB_TOKEN }}
           docker tag bugbstrspro/luxiergerie:main bugbstrspro/luxiergerie:${GITHUB_REF##*/}
           docker push bugbstrspro/luxiergerie:${GITHUB_REF##*/}
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: push_docker_image
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Connect to EC2, pull and run
+      - name: Deploy to EC2 (only on main)
+        if: github.ref == 'refs/heads/main'
         env:
           SPRING_DATASOURCE_URL: ${{ secrets.RDS_ENDPOINT }}
           SPRING_DATASOURCE_USERNAME: ${{ secrets.RDS_DATABASE_USER }}
@@ -55,7 +45,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} << EOF
           cd /home/ubuntu/docker
           sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin <<< ${{ secrets.DOCKERHUB_TOKEN }}
-          sudo docker pull bugbstrspro/luxiergerie:${GITHUB_REF##*/}   
+          sudo docker pull bugbstrspro/luxiergerie:${GITHUB_REF##*/}  
           sudo docker compose down
           sudo docker system prune -a -f
           sudo docker compose up --build -d
