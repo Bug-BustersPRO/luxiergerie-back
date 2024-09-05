@@ -61,6 +61,7 @@ public class HotelService {
                                                 @RequestParam(value = "backgroundImage", required = false) MultipartFile backgroundImage,
                                                 @RequestParam(value = "colors", required = false) List<String> colors) throws IOException {
         Optional<Hotel> hotelOptional = hotelRepository.findById(id);
+        List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif", "image/webp");
         if (hotelOptional.isPresent()) {
             Hotel hotelToUpdate = hotelOptional.get();
 
@@ -73,11 +74,15 @@ public class HotelService {
                 }
                 hotelToUpdate.setColors(colors);
             }
-            if (nonNull(image) && !image.isEmpty()) {
+            if (nonNull(image) && !image.isEmpty() && image.getSize() < 1_000_000 && imageExtension.contains(image.getContentType())) {
                 hotelToUpdate.setImage(image.getBytes());
+            } else {
+                return new ResponseEntity<>(BAD_REQUEST);
             }
-            if (nonNull(backgroundImage) && !backgroundImage.isEmpty()) {
+            if (nonNull(backgroundImage) && !backgroundImage.isEmpty() && backgroundImage.getSize() < 1_000_000 && imageExtension.contains(backgroundImage.getContentType())) {
                 hotelToUpdate.setBackgroundImage(backgroundImage.getBytes());
+            } else {
+                return new ResponseEntity<>(BAD_REQUEST);
             }
 
             Hotel updatedHotel = hotelRepository.save(hotelToUpdate);
@@ -93,7 +98,7 @@ public class HotelService {
                                                 @RequestParam("backgroundImage") MultipartFile backgroundImage,
                                                 @RequestParam("colors") List<String> colors) throws IOException {
 
-        List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
+        List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif", "image/webp");
         List<Hotel> hotels = hotelRepository.findAll();
         if (!hotels.isEmpty()) {
             return new ResponseEntity<>(CONFLICT);

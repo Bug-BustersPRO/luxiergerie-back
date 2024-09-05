@@ -70,7 +70,7 @@ public class CategoryService {
 
     @Transactional
     public CategoryDTO createCategory(String name, String description, UUID section_id, MultipartFile image) throws IOException {
-        List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
+        List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif", "image/webp");
 
         CheckSizeAndNotNullImage(image, imageExtension);
 
@@ -97,7 +97,7 @@ public class CategoryService {
                                       UUID section_id,
                                       UUID category_id,
                                       MultipartFile image) throws IOException {
-        List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
+        List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif", "image/webp");
 
         CheckSizeAndNotNullImage(image, imageExtension);
 

@@ -23,6 +23,8 @@ services:
       context: .
       dockerfile: Dockerfile
     image: bugbstrspro/luxiergerie:main
+    security_opt:
+      - apparmor=unconfined
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/luxiergerie
       - SPRING_DATASOURCE_USERNAME=test
