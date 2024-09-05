@@ -48,7 +48,7 @@ public class SectionService {
 
     @Transactional
     public SectionDTO createSection(String name, String description, MultipartFile image, String title) throws IOException {
-        List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
+        List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif", "image/webp");
 
         CheckSizeAndNotNullImage(image, imageExtension);
 
@@ -68,7 +68,7 @@ public class SectionService {
                                                     @RequestParam(value = "description", required = false) String description,
                                                     @RequestParam(value = "image", required = false) MultipartFile image,
                                                     @RequestParam(value = "title", required = false) String title) throws IOException {
-        List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif");
+        List<String> imageExtension = List.of("image/jpeg", "image/png", "image/jpg", "image/gif", "image/webp");
         List<Section> sections = sectionRepository.findAll();
 
         if (nonNull(image) && (image.getSize() > 1_000_000 || !imageExtension.contains(image.getContentType()))) {
